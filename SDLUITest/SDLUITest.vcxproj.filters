@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Objects 2D">
+      <UniqueIdentifier>{b7a312e2-a0a5-46d8-a3cd-ad999d5e135a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects 2D">
+      <UniqueIdentifier>{aa3e7944-0314-489f-8cfb-ea5d05a03f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects 3D">
+      <UniqueIdentifier>{b3682008-8759-4546-9a51-61405f23201c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects 3D">
+      <UniqueIdentifier>{81aff442-035d-4a71-ad9c-734565770b61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects 3D\Components">
+      <UniqueIdentifier>{9a534696-bdda-48d3-8bdb-e9616a5f08ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects 3D\Components">
+      <UniqueIdentifier>{6c3db7be-475d-4eb8-8d51-f68b82e005ae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpengl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject2D.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CButton.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject3D.h">
+      <Filter>Header Files\Objects 3D</Filter>
+    </ClInclude>
+    <ClInclude Include="CBaseComponent.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CStaticMeshComponent.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLabel.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLUITest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpengl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject2D.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CButton.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject3D.cpp">
+      <Filter>Source Files\Objects 3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CBaseComponent.cpp">
+      <Filter>Source Files\Objects 3D\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CStaticMeshComponent.cpp">
+      <Filter>Source Files\Objects 3D\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLabel.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
