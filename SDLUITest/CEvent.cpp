@@ -26,10 +26,6 @@ void CEvent::PollEvents()
 		{
 			_IsRunning = false;
 		}
-
-		KeyPress = this->_Event.key.keysym.sym;
-		MouseEvent = this->_Event.button;
-
 	}
 }
 
@@ -55,7 +51,7 @@ SDL_MouseButtonEvent CEvent::GetMouseData()
 	return MouseEvent;
 }
 
-int CEvent::GetButtonStatus()
+SDL_Event CEvent::GetEvent()
 {
-	return KeyPress;
+	return this->_Event;
 }

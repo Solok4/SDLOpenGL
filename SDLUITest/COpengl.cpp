@@ -137,16 +137,18 @@ void COpengl::CreateShaderProgram(int VertexID, int FragmentID)
 
 void COpengl::PrepareToLoop()
 {
-	CreateShader("Shaders/vs.vs", true);
-	CreateShader("Shaders/fs.fs", false);
+	CreateShader("Assets/Shaders/vs.vs", true);
+	CreateShader("Assets/Shaders/fs.fs", false);
 	CreateShaderProgram(0, 0);
-	glClearColor(0, 0, 0, 1);
+	glClearColor(1, 0, 0, 1);
 
 }
 
 void COpengl::PreLoop()
 {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	SelectShaderProgram(0);
 	glUseProgram(CurrentShaderProgram);
@@ -169,10 +171,8 @@ void COpengl::ProLoop(SDL_Window* Window)
 void COpengl::PreLoopPerspective()
 {
 	ViewMatrix = glm::lookAt(glm::vec3(0.f,0.f,1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	GLuint ViewID = glGetUniformLocation(CurrentShaderProgram, "View");
-	glUniformMatrix4fv(ViewID, 1, GL_FALSE, &ViewMatrix[0][0]);
-	GLuint ProjectionID = glGetUniformLocation(CurrentShaderProgram, "Projection");
-	glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, &Projection[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "Projection"), 1, GL_FALSE, &Projection[0][0]);
 	Projection = glm::perspective(glm::radians(80.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 
 
@@ -181,13 +181,13 @@ void COpengl::PreLoopPerspective()
 void COpengl::PreLoopOrtho(SDL_Window* Window)
 {
 	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, -50.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	GLuint ViewID = glGetUniformLocation(CurrentShaderProgram, "View");
-	glUniformMatrix4fv(ViewID, 1, GL_FALSE, &ViewMatrix[0][0]);
+	//GLuint ViewID = glGetUniformLocation(CurrentShaderProgram, "View");
+	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	int w = 0;
 	int h = 0;
 	SDL_GL_GetDrawableSize(Window, &w, &h);
-	GLuint ProjectionID = glGetUniformLocation(CurrentShaderProgram, "Projection");
-	glUniformMatrix4fv(ProjectionID, 1, GL_FALSE, &Projection[0][0]);
+	//GLuint ProjectionID = glGetUniformLocation(CurrentShaderProgram, "Projection");
+	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "Projection"), 1, GL_FALSE, &Projection[0][0]);
 	Projection = glm::ortho(0.0f, (float)w, (float)h, 0.0f, -0.1f, 1000.0f);
 
 }
@@ -207,6 +207,11 @@ void COpengl::SelectShaderProgram(int number)
 		CurrentShaderProgram = ShaderProgram[number];
 
 	}
+}
+
+GLuint* COpengl::GetShaderProgram()
+{
+	return &this->CurrentShaderProgram;
 }
 
 

@@ -1,8 +1,10 @@
 #pragma once
 
 #include "SDL.h"
+#include "SDL_ttf.h"
 #pragma comment(lib,"SDL2.lib")
 #pragma comment(lib,"SDL2_ttf.lib")
+#pragma comment(lib,"SDL2_image.lib")
 
 
 class CRenderer
@@ -14,6 +16,8 @@ public:
 	void Init();
 	void Destroy();
 	void Resize(int w, int h);
+	void OpenFont(const char* path);
+	TTF_Font* GetFont();
 	SDL_Window* GetWindow();
 
 
@@ -23,6 +27,7 @@ private:
 	Uint32 Flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	int ScreenWidth = 800;
 	int ScreenHeight = 600;
+	TTF_Font* Font;
 
 };
 

@@ -38,6 +38,8 @@ public:
 	void SetCameraPosition(glm::vec3 Pos);
 
 	void SelectShaderProgram(int number);
+
+	GLuint* GetShaderProgram();
 	
 
 private:

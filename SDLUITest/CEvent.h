@@ -14,7 +14,7 @@ public:
 	int GetMouseMotion(bool getX);
 	bool GetIsRunning();
 	SDL_MouseButtonEvent GetMouseData();
-	int GetButtonStatus();
+	SDL_Event GetEvent();
 
 
 private:
@@ -25,6 +25,7 @@ private:
 	int _MouseY = 0;
 
 	int KeyPress;
+	int KeyRelease;
 	SDL_MouseButtonEvent MouseEvent;
 
 	bool _IsRunning = true;

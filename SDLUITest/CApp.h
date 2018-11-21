@@ -5,10 +5,12 @@
 #include "CEvent.h"
 #include "COpengl.h"
 #include <vector>
-#include "CObject2D.h"
 #include "CObject3D.h"
-#include "CLabel.h"
-#include "CButton.h"
+
+#include "CLayout.h"
+//#include "CLabel.h"
+//#include "CButton.h"
+//#include "CObject2D.h"
 
 class CApp
 {
@@ -21,8 +23,8 @@ public:
 	void Loop();
 	void PollEvents();
 	void PreLoop();
-	void MapButtons();
 	void SetMouseLock(bool lock);
+	void TempLayout();
 
 	COpengl OpenGL;
 	CRenderer Renderer;
@@ -32,13 +34,14 @@ public:
 	int MouseY = 0;
 	bool MouseLock=false;
 
-	CLabel* label;
+	CLayout* Layout;
+	/*CLabel* label;
 	CLabel* label2;
-	CButton* butt;
+	CButton* butt;*/
 
 
 	vector<CObject3D> Objects3D;
-	vector<CObject2D> Objects2D;
+	vector<CLayout> Objects2D;
 
 };
 

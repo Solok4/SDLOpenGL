@@ -2,16 +2,16 @@
 #include "CApp.h"
 #include "CLog.h"
 #include <stdio.h>
-#include "CLabel.h"
 #include <Windows.h>
 
 
 
 CApp::CApp()
 {
-	label = new CLabel(1);
-	label2 = new CLabel(2);
-	butt = new CButton(3);
+	//label = new CLabel(1);
+	//label2 = new CLabel(2);
+	//butt = new CButton(3);
+	Layout = new CLayout();
 }
 
 
@@ -28,13 +28,15 @@ bool CApp::Init()
 	}
 	Renderer.Init();
 	OpenGL.Create(Renderer.GetWindow());
+	Renderer.OpenFont("Assets/Fonts/Raleway-Black.ttf");
 	return true;
 }
 
 void CApp::Destroy()
 {
-	label->Free();
-	label2->Free();
+	//delete butt;
+	//delete label2;
+	//delete label;
 	OpenGL.Delete();
 	Renderer.Destroy();
 	SDL_Quit();
@@ -49,9 +51,9 @@ void CApp::Loop()
 		PollEvents();
 		MouseX = Event.GetMouseMotion(true);
 		MouseY = Event.GetMouseMotion(false);
+		Layout->GetMousePosition(MouseX, MouseY);
 		if (Event.GetMouseData().button ==SDL_BUTTON_LEFT && Event.GetMouseData().state == SDL_PRESSED)
 		{
-			butt->IsClicked(Event.GetMouseData());
 		}
 		if (MouseLock)
 		{
@@ -71,33 +73,31 @@ void CApp::Loop()
 		OpenGL.PreLoop();
 
 		OpenGL.PreLoopOrtho(Renderer.GetWindow());//Perspective?
-		//OpenGL.SetCameraPosition(glm::vec3(-30.0f+(rot/8), 0.0f, -50.0f));
-		label2->SetPosition(vec2(1.0f, 0.0f));
-		label2->SetSize(vec2(10.0f));
-		label2->SetRotation(glm::vec3(0.0f, 0.0f, rot));
-		label2->PreDraw();
-		OpenGL.SetModelMatrix(label2->GetModelMatrix());
-		label2->Draw();
+		//label2->SetPosition(vec2(1.0f, 0.0f));
+		//label2->SetSize(vec2(10.0f));
+		//label2->SetRotation(glm::vec3(0.0f, 0.0f, rot));
+		//OpenGL.SetModelMatrix(label2->GetModelMatrix());
+		//label2->Draw();
 
 		OpenGL.PreLoopPerspective(); //Ortho?
 
-		label->SetPosition(vec2(600.0f, 200.0f));
-		label->SetRotation(glm::vec3(0.0f, 0.0f, -rot));
-		label->PreDraw();
-		OpenGL.SetModelMatrix(label->GetModelMatrix());
-		label->Draw();
+		Layout->Draw(&this->OpenGL);
 
-		//butt->SetPosition(vec2(10.0f, 0.0f));
-		butt->PreDraw();
-		OpenGL.SetModelMatrix(butt->GetModelMatrix());
-		butt->Draw();
+		//label->SetPosition(vec2(600.0f, 200.0f));
+		//label->SetRotation(glm::vec3(180.0f, rot,0.0f));
+		//label->SetObjectLayer(200);
+		//OpenGL.SetModelMatrix(label->GetModelMatrix());
+		//label->Draw();
 
-		for(CObject2D O : Objects2D)
-		{
-			O.PreDraw();
-			OpenGL.SetModelMatrix(O.GetModelMatrix());
-			O.Draw();
-		}
+		//butt->SetSize(vec2(50.0f));
+		//OpenGL.SetModelMatrix(butt->GetModelMatrix());
+		//butt->Draw();
+
+		//for(CObject2D O : Objects2D)
+		//{
+		//	OpenGL.SetModelMatrix(O.GetModelMatrix());
+		//	O.Draw();
+		//}
 		OpenGL.ProLoop(Renderer.GetWindow());
 		rot++;
 
@@ -108,36 +108,35 @@ void CApp::Loop()
 void CApp::PollEvents()
 {
 	Event.PollEvents();
-	//MapButtons();
 }
 
 void CApp::PreLoop()
 {
 	OpenGL.PrepareToLoop();
-	label->Prepare();
-	label2->Prepare();
-	butt->Prepare();
-	butt->AttachFunc([]() {CLog::MyLog(0, "Button Press"); });
-	for (CObject2D O : Objects2D)
-	{
-		O.Prepare();
-	}
-}
-
-void CApp::MapButtons()
-{
-	int ButtonStates = Event.GetButtonStatus();
-	switch (ButtonStates)
-	{
-		case SDLK_e:
-		MouseLock = !MouseLock;
-		break;
-	default:
-		break;
-	}
+	Layout->SetWindowData(Renderer.GetWindow());
+	Layout->AddItem(0,vec2(200.f,100.f),vec2(100.f));
+	Layout->AddItem(1, vec2(200.f, 400.f), vec2(100.f));
+	Layout->SetShaderProgram(OpenGL.GetShaderProgram());
+	Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
+	Layout->PrepareToLoop();
+	//label->Prepare();
+	//label->SetFont(Renderer.GetFont());
+	//label->SetText("Jula Dupa");
+	////glUniform1f(glGetUniformLocation(OpenGL.GetShaderProgram(), "Tex"), 0);
+	//label2->Prepare();
+	//butt->Prepare();
+	//butt->SetTexture("Assets/Textures/TestTex.jpg");
+	//butt->AttachFunc([]() {CLog::MyLog(0, "Button Press"); });
 }
 
 void CApp::SetMouseLock(bool lock)
 {
 	MouseLock = lock;
+}
+
+void CApp::TempLayout()
+{
+	CLayout Layout;
+
+
 }
