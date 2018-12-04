@@ -9,7 +9,6 @@ class CLabel :
 public:
 	CLabel();
 	~CLabel();
-	//void Draw() override;
 	void SetFont(TTF_Font* font);
 	void SetText(const char* Text);
 	virtual void Prepare() override;

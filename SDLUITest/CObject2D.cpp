@@ -120,12 +120,12 @@ void CObject2D::PreDraw()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, this->TextureID);
+
 }
 
 void CObject2D::Draw()
 {
-	
+	glBindTexture(GL_TEXTURE_2D, this->TextureID);
 	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
 
 }
@@ -180,11 +180,20 @@ void CObject2D::LoadTexture(const char * str,std::string name)
 		CLog::MyLog(1, "Failed to load a texture: " + FileName + " " + IMG_GetError());
 	}
 
+	GLint Format;
+	if (Tex->format->BitsPerPixel == 32)
+	{
+		Format = GL_RGBA;
+	}
+	else if (Tex->format->BitsPerPixel == 24)
+	{
+		Format = GL_RGB;
+	}
 	GLuint TexID;
 	glGenTextures(1, &TexID);
 	glBindTexture(GL_TEXTURE_2D, TexID);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Tex->w, Tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, Tex->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, Format, Tex->w, Tex->h, 0, Format, GL_UNSIGNED_BYTE, Tex->pixels);
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -197,7 +206,6 @@ void CObject2D::LoadTexture(const char * str,std::string name)
 
 GLuint CObject2D::GetTexture(std::string name)
 {
-	CLog::MyLog(0, name);
 	std::map<std::string, GLuint>::iterator it;
 	it = this->Textures.find(name);
 	if (it !=this->Textures.end())

@@ -18,49 +18,51 @@ void CLayout::SetWindowData(SDL_Window * WND)
 	SDL_GetWindowSize(WND, &WindowWidth, &WindowHeight);
 }
 
-void CLayout::SetShaderProgram(GLuint* Program)
-{
-	this->ShaderProgram = Program;
-}
-
 void CLayout::PrepareToLoop()
 {
-	for (CObject2D* o : Objects2D)
+	for(std::map<int,std::vector<CObject2D*>>::iterator it = Objects2D.begin();it != Objects2D.end();++it)
 	{
-		o->Prepare();
-		CButton* TryButton = dynamic_cast<CButton*>(o);
-		if (!(TryButton == NULL))
+		for (CObject2D* o : it->second)
 		{
-			TryButton->AttachFunc([]() {CLog::MyLog(0, "Print string"); });
-			continue;
+			o->Prepare();
+			CButton* TryButton = dynamic_cast<CButton*>(o);
+			if (!(TryButton == NULL))
+			{
+				TryButton->AttachFunc([]() {CLog::MyLog(0, "Print string"); });
+				continue;
+			}
+			CLabel*TryLabel = dynamic_cast<CLabel*>(o);
+			if (!(TryLabel == NULL))
+			{
+				TryLabel->SetFont(this->GetFont());
+				TryLabel->SetText("Test");
+				continue;
+			}
+			o->LoadTexture("Assets/Textures/TestTex.jpg");
+			o->BindTexture(o->GetTexture());
 		}
-		CLabel*TryLabel = dynamic_cast<CLabel*>(o);
-		if (!(TryLabel == NULL))
-		{
-			TryLabel->SetFont(this->GetFont());
-			TryLabel->SetText("Test");
-			continue;
-		}
-		o->LoadTexture("Assets/Textures/TestTex.jpg");
-		o->BindTexture(o->GetTexture());
 	}
 }
 
 void CLayout::Draw(COpengl* opengl)
 {
-	for (CObject2D* o : Objects2D)
-	{
-		opengl->SetModelMatrix(o->GetModelMatrix());
-		o->PreDraw();
-		o->Draw();
-		o->PostDraw();
-		if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
+	for (std::map<int, std::vector<CObject2D*>>::iterator it = Objects2D.begin(); it != Objects2D.end(); ++it)
+	{	
+		for (CObject2D* o : it->second)
 		{
-			CButton* temp = dynamic_cast<CButton*>(o);
-			opengl->SetModelMatrix(temp->GetLabel()->GetModelMatrix());
-			temp->GetLabel()->PreDraw();
-			temp->GetLabel()->Draw();
-			temp->GetLabel()->PostDraw();
+			o->PreDraw();
+			opengl->SetModelMatrix(o->GetModelMatrix());
+			o->Draw();
+			o->PostDraw();
+			if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
+			{
+				CButton* temp = dynamic_cast<CButton*>(o);
+				
+				temp->GetLabel()->PreDraw();
+				opengl->SetModelMatrix(temp->GetLabel()->GetModelMatrix());
+				temp->GetLabel()->Draw();
+				temp->GetLabel()->PostDraw();
+			}
 		}
 	}
 }
@@ -81,6 +83,7 @@ TTF_Font* CLayout::GetFont()
 
 void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 {
+	std::map<int, std::vector<CObject2D*>>::iterator it;
 	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
 	{
 		CLabel* temp = new CLabel();
@@ -88,7 +91,18 @@ void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_LABEL);
-		Objects2D.push_back(temp);
+		
+		it = Objects2D.find(Object2DType::OBJECT2D_LABEL);
+		if (it != Objects2D.end())
+		{
+			it->second.push_back(temp);
+		}
+		else
+		{
+
+			Objects2D.emplace(Object2DType::OBJECT2D_LABEL,std::vector<CObject2D*>(1,temp));
+		}
+		
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
@@ -97,7 +111,15 @@ void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_IMAGE);
-		Objects2D.push_back(temp);
+		it = Objects2D.find(Object2DType::OBJECT2D_IMAGE);
+		if (it != Objects2D.end())
+		{
+			it->second.push_back(temp);
+		}
+		else
+		{
+			Objects2D.emplace(Object2DType::OBJECT2D_IMAGE, std::vector<CObject2D*>(1, temp));
+		}
 	}
 	else if (id == Object2DType::OBJECT2D_BUTTON)
 	{
@@ -106,7 +128,24 @@ void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_BUTTON);
-		Objects2D.push_back(temp);
+		it = Objects2D.find(Object2DType::OBJECT2D_BUTTON);
+		if (it != Objects2D.end())
+		{
+			it->second.push_back(temp);
+		}
+		else
+		{
+			Objects2D.emplace(Object2DType::OBJECT2D_BUTTON, std::vector<CObject2D*>(1, temp));
+		}
+		//it = Objects2D.find(Object2DType::OBJECT2D_LABEL);
+		//if (it != Objects2D.end())
+		//{
+		//	it->second.push_back(temp->Label);
+		//}
+		//else
+		//{
+		//	Objects2D.emplace(Object2DType::OBJECT2D_LABEL, std::vector<CObject2D*>(1, temp->Label));
+		//}
 	}
 
 
@@ -114,11 +153,14 @@ void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 
 CObject2D * CLayout::FindObjectByName(std::string name)
 {
-	for (CObject2D* o : Objects2D)
+	for (std::map<int, std::vector<CObject2D*>>::iterator it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
-		if (o->GetName() == name)
+		for (CObject2D* o : it->second)
 		{
-			return o;
+			if (o->GetName() == name)
+			{
+				return o;
+			}
 		}
 	}
 	return NULL;
@@ -127,14 +169,14 @@ CObject2D * CLayout::FindObjectByName(std::string name)
 std::vector<CObject2D*> CLayout::GetObjectByType(int type)
 {
 	std::vector<CObject2D*> List;
-	for (CObject2D* o : Objects2D)
+	for (std::map<int, std::vector<CObject2D*>>::iterator it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
-		if (o->GetID() == type)
+		if (it->first == type)
 		{
-			List.push_back(o);
+			return it->second;
 		}
 	}
-	return List;
+	return {};
 }
 
 void CLayout::GetMousePosition(int x, int y)

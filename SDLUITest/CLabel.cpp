@@ -9,6 +9,8 @@ CLabel::CLabel()
 	this->_Size = glm::vec2(200.0f, 100.0f);
 	this->Color = { 255,255,255 };
 	this->_Rotation = vec3(180.f, 0.0f, 0.0f);
+	this->Font = TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 20);
+	this->SetText("Default");
 }
 
 
@@ -16,18 +18,6 @@ CLabel::~CLabel()
 {
 }
 
-//void CLabel::Draw()
-//{
-//	glBindVertexArray(this->_VAO);
-//	glEnableVertexAttribArray(0);
-//	glEnableVertexAttribArray(1);
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D, this->TextureID);
-//	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
-//	glDisableVertexAttribArray(1);
-//	glDisableVertexAttribArray(0);
-//	glBindVertexArray(0);
-//}
 
 void CLabel::SetFont(TTF_Font* font)
 {
@@ -68,6 +58,6 @@ TTF_Font * CLabel::GetFont()
 
 void CLabel::SetColor(SDL_Color Col)
 {
-	this->Color = Col;
+	this->Color = { Col.b ,Col.g,Col.r };
 }
 

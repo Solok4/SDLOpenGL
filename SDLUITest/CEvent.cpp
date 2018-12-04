@@ -4,6 +4,10 @@
 
 CEvent::CEvent()
 {
+	for (int i = 0; i < 322; i++)
+	{
+		this->Keys[i] = false;
+	}
 }
 
 
@@ -28,6 +32,17 @@ void CEvent::PollEvents()
 		}
 
 		MouseEvent = this->_Event.button;
+		switch(this->_Event.type)
+		{
+		case SDL_KEYDOWN:
+			Keys[this->_Event.key.keysym.sym] = true;
+			break;
+		case SDL_KEYUP:
+			Keys[this->_Event.key.keysym.sym] = false;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -51,6 +66,11 @@ bool CEvent::GetIsRunning()
 SDL_MouseButtonEvent CEvent::GetMouseData()
 {
 	return MouseEvent;
+}
+
+array<bool, 322> CEvent::GetKeyboardData()
+{
+	return this->Keys;
 }
 
 SDL_Event CEvent::GetEvent()

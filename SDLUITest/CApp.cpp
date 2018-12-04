@@ -45,6 +45,7 @@ void CApp::Loop()
 	while (Event.GetIsRunning())
 	{
 		PollEvents();
+		this->KeyEvents(this->Event.GetKeyboardData());
 		MouseX = Event.GetMouseMotion(true);
 		MouseY = Event.GetMouseMotion(false);
 		Layout->GetMousePosition(MouseX, MouseY);
@@ -94,6 +95,8 @@ void CApp::PollEvents()
 	Event.PollEvents();
 }
 
+
+
 void CApp::PreLoop()
 {
 	OpenGL.PrepareToLoop();
@@ -101,23 +104,22 @@ void CApp::PreLoop()
 		Layout->SetWindowData(Renderer.GetWindow());
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(200.f, 400.f), vec2(100.f));
-		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(100.f, 20.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
-		Layout->SetShaderProgram(OpenGL.GetShaderProgram());
 		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
 		Layout->PrepareToLoop();
 
 		CButton* TempButton = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton"));
-		TempButton->LoadTexture("Assets/Textures/TestTex.jpg");
+		TempButton->LoadTexture("Assets/Textures/Tex.tga");
 		TempButton->BindTexture(TempButton->GetTexture());
 		TempButton->AttachFunc([]() {CLog::MyLog(0, "Button Test"); });
 
 		CButton* TempButton2 = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton2"));
 		TempButton2->LoadTexture("Assets/Textures/TestTex.jpg");
-		TempButton2->AttachFunc([]() { });
+		TempButton2->BindTexture(TempButton2->GetTexture());
+		TempButton2->AttachFunc([]() {});
 		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
-		TempButton2->Label->SetColor({ 255,255,255 });
-		TempButton2->Label->SetText("TESTTEXT");
+		TempButton2->Label->SetText("ASDF");
 
 		CLabel* TempLabel = dynamic_cast<CLabel*>(Layout->FindObjectByName("TestLabel"));
 		TempLabel->SetText("Text Test");
@@ -135,3 +137,14 @@ void CApp::TempLayout()
 
 
 }
+
+void CApp::KeyEvents(array<bool, 322> keys)
+{
+	if (keys[SDLK_1])
+	{
+		CLog::MyLog(0, "Pressed 1");
+		this->MouseLock = !this->MouseLock;
+	}
+
+}
+

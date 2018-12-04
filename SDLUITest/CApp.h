@@ -5,12 +5,11 @@
 #include "CEvent.h"
 #include "COpengl.h"
 #include <vector>
+#include <array>
 #include "CObject3D.h"
 
 #include "CLayout.h"
-//#include "CLabel.h"
-//#include "CButton.h"
-//#include "CObject2D.h"
+
 
 class CApp
 {
@@ -25,6 +24,8 @@ public:
 	void PreLoop();
 	void SetMouseLock(bool lock);
 	void TempLayout();
+
+	void KeyEvents(array<bool,322> keys);
 
 	COpengl OpenGL;
 	CRenderer Renderer;

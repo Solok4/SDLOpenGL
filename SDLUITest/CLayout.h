@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <map>
 #include "CObject2D.h"
 #include "SDL.h"
 #include "SDL_ttf.h"
@@ -15,7 +15,6 @@ public:
 	CLayout();
 	~CLayout();
 	void SetWindowData(SDL_Window* WND);
-	void SetShaderProgram(GLuint* Program);
 	void PrepareToLoop();
 	void Draw(COpengl* opengl);
 	void SetFont(const char* font);
@@ -37,7 +36,7 @@ public:
 	GLuint* ShaderProgram;
 	TTF_Font* Font;
 
-	std::vector<CObject2D*> Objects2D;
+	std::map<int,std::vector<CObject2D*>> Objects2D;
 
 };
 
