@@ -52,7 +52,6 @@ void CObject2D::Prepare()
 	};
 
 
-	this->VertexCount = sizeof(vertices) / 3;
 	glGenVertexArrays(1, &this->_VAO);
 	glBindVertexArray(this->_VAO);
 
@@ -115,14 +114,24 @@ void CObject2D::SetSize(vec2 vec)
 	this->RefreshModelMatrix();
 }
 
-void CObject2D::Draw()
+void CObject2D::PreDraw()
 {
 	glBindVertexArray(this->_VAO);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->TextureID);
+}
+
+void CObject2D::Draw()
+{
+	
 	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
+
+}
+
+void CObject2D::PostDraw()
+{
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
@@ -158,13 +167,11 @@ int CObject2D::GetObjectLayer()
 	return this->Layer;
 }
 
-void CObject2D::SetTexture(const char * str)
+void CObject2D::LoadTexture(const char * str,std::string name)
 {
 	std::string FileName(str);
 	int lastSlash = FileName.find_last_of("/");
 	std::string JustFile(FileName.substr(lastSlash + 1));
-	/*int dot = JustFile.find_last_of(".");
-	std::string Extension(JustFile.substr(dot + 1));*/
 
 	SDL_Surface* Tex;
 	Tex = IMG_Load(str);
@@ -173,8 +180,9 @@ void CObject2D::SetTexture(const char * str)
 		CLog::MyLog(1, "Failed to load a texture: " + FileName + " " + IMG_GetError());
 	}
 
-	glGenTextures(1, &this->TextureID);
-	glBindTexture(GL_TEXTURE_2D, this->TextureID);
+	GLuint TexID;
+	glGenTextures(1, &TexID);
+	glBindTexture(GL_TEXTURE_2D, TexID);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Tex->w, Tex->h, 0, GL_RGB, GL_UNSIGNED_BYTE, Tex->pixels);
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -183,6 +191,45 @@ void CObject2D::SetTexture(const char * str)
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
+	this->Textures.emplace(name, TexID);
+
+}
+
+GLuint CObject2D::GetTexture(std::string name)
+{
+	CLog::MyLog(0, name);
+	std::map<std::string, GLuint>::iterator it;
+	it = this->Textures.find(name);
+	if (it !=this->Textures.end())
+	{
+		return this->Textures.at(it->first);
+	}
+	return NULL;
+}
+
+void CObject2D::BindTexture(GLuint Tex)
+{
+	this->TextureID = Tex;
+}
+
+void CObject2D::SetName(std::string name)
+{
+	this->_Name = name;
+}
+
+std::string CObject2D::GetName()
+{
+	return this->_Name;
+}
+
+void CObject2D::SetID(int id)
+{
+	this->_ID = id;
+}
+
+int CObject2D::GetID()
+{
+	return this->_ID;
 }
 
 

@@ -8,9 +8,6 @@
 
 CApp::CApp()
 {
-	//label = new CLabel(1);
-	//label2 = new CLabel(2);
-	//butt = new CButton(3);
 	Layout = new CLayout();
 }
 
@@ -34,9 +31,7 @@ bool CApp::Init()
 
 void CApp::Destroy()
 {
-	//delete butt;
-	//delete label2;
-	//delete label;
+	delete Layout;
 	OpenGL.Delete();
 	Renderer.Destroy();
 	SDL_Quit();
@@ -46,15 +41,24 @@ void CApp::Loop()
 {
 	PreLoop();
 	float rot = 0;
+	std::vector<CObject2D*> ButtonList;
 	while (Event.GetIsRunning())
 	{
 		PollEvents();
 		MouseX = Event.GetMouseMotion(true);
 		MouseY = Event.GetMouseMotion(false);
 		Layout->GetMousePosition(MouseX, MouseY);
-		if (Event.GetMouseData().button ==SDL_BUTTON_LEFT && Event.GetMouseData().state == SDL_PRESSED)
+
+		ButtonList = Layout->GetObjectByType(Object2DType::OBJECT2D_BUTTON);
+		for (CObject2D* o : ButtonList)
 		{
+			CButton* butt = dynamic_cast<CButton*>(o);
+			if (butt != NULL)
+			{
+				butt->IsClicked(Event.GetMouseData());
+			}
 		}
+
 		if (MouseLock)
 		{
 			SDL_ShowCursor(false);
@@ -68,36 +72,16 @@ void CApp::Loop()
 		{
 			SDL_ShowCursor(true);
 		}
-		//CLog::MyLog(0, "MouseX: " + std::to_string(MouseX) + " MouseY:" + std::to_string(MouseY));
 
 		OpenGL.PreLoop();
 
 		OpenGL.PreLoopOrtho(Renderer.GetWindow());//Perspective?
-		//label2->SetPosition(vec2(1.0f, 0.0f));
-		//label2->SetSize(vec2(10.0f));
-		//label2->SetRotation(glm::vec3(0.0f, 0.0f, rot));
-		//OpenGL.SetModelMatrix(label2->GetModelMatrix());
-		//label2->Draw();
+
 
 		OpenGL.PreLoopPerspective(); //Ortho?
 
 		Layout->Draw(&this->OpenGL);
 
-		//label->SetPosition(vec2(600.0f, 200.0f));
-		//label->SetRotation(glm::vec3(180.0f, rot,0.0f));
-		//label->SetObjectLayer(200);
-		//OpenGL.SetModelMatrix(label->GetModelMatrix());
-		//label->Draw();
-
-		//butt->SetSize(vec2(50.0f));
-		//OpenGL.SetModelMatrix(butt->GetModelMatrix());
-		//butt->Draw();
-
-		//for(CObject2D O : Objects2D)
-		//{
-		//	OpenGL.SetModelMatrix(O.GetModelMatrix());
-		//	O.Draw();
-		//}
 		OpenGL.ProLoop(Renderer.GetWindow());
 		rot++;
 
@@ -113,20 +97,31 @@ void CApp::PollEvents()
 void CApp::PreLoop()
 {
 	OpenGL.PrepareToLoop();
-	Layout->SetWindowData(Renderer.GetWindow());
-	Layout->AddItem(0,vec2(200.f,100.f),vec2(100.f));
-	Layout->AddItem(1, vec2(200.f, 400.f), vec2(100.f));
-	Layout->SetShaderProgram(OpenGL.GetShaderProgram());
-	Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
-	Layout->PrepareToLoop();
-	//label->Prepare();
-	//label->SetFont(Renderer.GetFont());
-	//label->SetText("Jula Dupa");
-	////glUniform1f(glGetUniformLocation(OpenGL.GetShaderProgram(), "Tex"), 0);
-	//label2->Prepare();
-	//butt->Prepare();
-	//butt->SetTexture("Assets/Textures/TestTex.jpg");
-	//butt->AttachFunc([]() {CLog::MyLog(0, "Button Press"); });
+	{
+		Layout->SetWindowData(Renderer.GetWindow());
+		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(200.f, 400.f), vec2(100.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(100.f, 20.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
+		Layout->SetShaderProgram(OpenGL.GetShaderProgram());
+		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
+		Layout->PrepareToLoop();
+
+		CButton* TempButton = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton"));
+		TempButton->LoadTexture("Assets/Textures/TestTex.jpg");
+		TempButton->BindTexture(TempButton->GetTexture());
+		TempButton->AttachFunc([]() {CLog::MyLog(0, "Button Test"); });
+
+		CButton* TempButton2 = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton2"));
+		TempButton2->LoadTexture("Assets/Textures/TestTex.jpg");
+		TempButton2->AttachFunc([]() { });
+		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton2->Label->SetColor({ 255,255,255 });
+		TempButton2->Label->SetText("TESTTEXT");
+
+		CLabel* TempLabel = dynamic_cast<CLabel*>(Layout->FindObjectByName("TestLabel"));
+		TempLabel->SetText("Text Test");
+	}
 }
 
 void CApp::SetMouseLock(bool lock)

@@ -7,11 +7,13 @@ class CLabel :
 	public CObject2D
 {
 public:
-	CLabel(unsigned int ID);
+	CLabel();
 	~CLabel();
-	void Draw() override;
+	//void Draw() override;
 	void SetFont(TTF_Font* font);
 	void SetText(const char* Text);
+	virtual void Prepare() override;
+	TTF_Font* GetFont();
 	void SetColor(SDL_Color Col);
 
 

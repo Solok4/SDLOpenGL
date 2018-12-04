@@ -75,6 +75,9 @@
     <ClInclude Include="CLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CImage.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="CLayout.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CImage.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,13 +4,12 @@
 #include "CLog.h"
 
 
-CButton::CButton(unsigned int ID)
+CButton::CButton()
 {
-	this->_ID = ID;
 	this->_Size = vec2(1.0f);
 	this->_Position = vec3(0.0f);
 	this->_Rotation = vec3(0.f);
-	this->start = SDL_GetTicks();
+	Label = new CLabel();
 }
 
 
@@ -23,13 +22,22 @@ void CButton::IsClicked(SDL_MouseButtonEvent MouseData)
 
 	if (this->_Position.x<MouseData.x &&this->_Position.x + this->_Size.x>MouseData.x && this->_Position.y<MouseData.y && this->_Position.y + this->_Size.y>MouseData.y)
 	{
-		current = SDL_GetTicks();
-		uint32 Difference = current - start;
-		if(Difference >200)
+
+		this->OnHover();
+
+		if (MouseData.button == SDL_BUTTON_LEFT && MouseData.state == SDL_PRESSED)
 		{
-			this->OnClick();
-			start = SDL_GetTicks();
+			if (!this->Pressed)
+			{
+				this->Function();
+				this->Pressed = true;
+			}
 		}
+
+	}
+	if (MouseData.button == SDL_BUTTON_LEFT && MouseData.state == SDL_RELEASED)
+	{
+		this->Pressed = false;
 	}
 }
 
@@ -38,9 +46,8 @@ void CButton::AttachFunc(void(*fun)())
 	this->Function = fun;
 }
 
-void CButton::OnClick()
+void CButton::OnHover()
 {
-	this->Function();
 }
 
 
@@ -68,8 +75,6 @@ void CButton::Prepare()
 		1,2,3
 	};
 
-
-	this->VertexCount = sizeof(vertices) / 3;
 	glGenVertexArrays(1, &this->_VAO);
 	glBindVertexArray(this->_VAO);
 
@@ -96,4 +101,13 @@ void CButton::Prepare()
 	glBindVertexArray(0);
 	this->_VBO.push_back(VBO[0]);
 	this->_VBO.push_back(VBO[1]);
+
+	Label->Prepare();
+	Label->SetPosition(vec2(this->_Position.x+(this->_Size.x / 2), this->_Position.y+(this->_Size.y/2)));
+	Label->MoveObjectLayerUp();
+}
+
+CLabel* CButton::GetLabel()
+{
+	return this->Label;
 }

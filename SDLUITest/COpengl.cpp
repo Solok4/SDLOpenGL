@@ -140,7 +140,7 @@ void COpengl::PrepareToLoop()
 	CreateShader("Assets/Shaders/vs.vs", true);
 	CreateShader("Assets/Shaders/fs.fs", false);
 	CreateShaderProgram(0, 0);
-	glClearColor(1, 0, 0, 1);
+	glClearColor(0, 0, 0, 1);
 
 }
 

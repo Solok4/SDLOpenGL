@@ -35,13 +35,10 @@ public:
 	bool MouseLock=false;
 
 	CLayout* Layout;
-	/*CLabel* label;
-	CLabel* label2;
-	CButton* butt;*/
 
 
-	vector<CObject3D> Objects3D;
-	vector<CLayout> Objects2D;
+	vector<CObject3D*> Objects3D;
+	vector<CLayout*> Objects2D;
 
 };
 

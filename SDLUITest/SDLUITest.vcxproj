@@ -171,6 +171,7 @@
     <ClInclude Include="CBaseComponent.h" />
     <ClInclude Include="CButton.h" />
     <ClInclude Include="CEvent.h" />
+    <ClInclude Include="CImage.h" />
     <ClInclude Include="CLabel.h" />
     <ClInclude Include="CLayout.h" />
     <ClInclude Include="CLog.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="CBaseComponent.cpp" />
     <ClCompile Include="CButton.cpp" />
     <ClCompile Include="CEvent.cpp" />
+    <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CLabel.cpp" />
     <ClCompile Include="CLayout.cpp" />
     <ClCompile Include="CLog.cpp" />

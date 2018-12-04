@@ -19,7 +19,7 @@ private:
 	const char* FileName;
 	
 	vector<vec3> _Vertexes;
-	vector<vec2> _Tertex;
+	vector<vec2> _Texels;
 	vector<vec3> _Normals;
 
 };

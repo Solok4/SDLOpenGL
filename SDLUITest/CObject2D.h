@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include "glm.hpp"
 #include "GL/glew.h"
 using namespace glm;
@@ -16,19 +17,31 @@ public:
 	void SetPosition(vec2 vec);
 	void SetRotation(vec3 vec);
 	void SetSize(vec2 vec);
+
+	virtual void PreDraw();
 	virtual void Draw();
+	virtual void PostDraw();
+
 	void MoveObjectLayerDown();
 	void MoveObjectLayerUp();
 	void SetObjectLayer(int Layer);
 	int GetObjectLayer();
-	void SetTexture(const char* str);
+
+	void LoadTexture(const char* str, std::string name="Default");
+	GLuint GetTexture(std::string name="Default");
+	void BindTexture(GLuint Tex);
+
+	void SetName(std::string name);
+	std::string GetName();
+	void SetID(int id);
+	int GetID();
 
 	mat4 GetModelMatrix();
 
 
 protected:
 
-	unsigned int _ID;
+	int _ID;
 	vec2 _Position;
 	vec2 _Size;
 	vec3 _Rotation;
@@ -38,9 +51,11 @@ protected:
 	bool _IsActive = true;
 	bool _IsVisible = true;
 
-	mat4 ModelMatrix;
-	unsigned int VertexCount;
+	std::string _Name;
 
+	mat4 ModelMatrix;
+
+	std::map<std::string, GLuint> Textures;
 	GLuint TextureID;
 
 	GLuint _VAO;

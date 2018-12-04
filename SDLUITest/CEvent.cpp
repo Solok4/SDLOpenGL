@@ -26,6 +26,8 @@ void CEvent::PollEvents()
 		{
 			_IsRunning = false;
 		}
+
+		MouseEvent = this->_Event.button;
 	}
 }
 

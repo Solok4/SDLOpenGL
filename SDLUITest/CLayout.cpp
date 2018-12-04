@@ -41,7 +41,8 @@ void CLayout::PrepareToLoop()
 			TryLabel->SetText("Test");
 			continue;
 		}
-		o->SetTexture("Assets/Textures/TestTex.jpg");
+		o->LoadTexture("Assets/Textures/TestTex.jpg");
+		o->BindTexture(o->GetTexture());
 	}
 }
 
@@ -50,7 +51,17 @@ void CLayout::Draw(COpengl* opengl)
 	for (CObject2D* o : Objects2D)
 	{
 		opengl->SetModelMatrix(o->GetModelMatrix());
+		o->PreDraw();
 		o->Draw();
+		o->PostDraw();
+		if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
+		{
+			CButton* temp = dynamic_cast<CButton*>(o);
+			opengl->SetModelMatrix(temp->GetLabel()->GetModelMatrix());
+			temp->GetLabel()->PreDraw();
+			temp->GetLabel()->Draw();
+			temp->GetLabel()->PostDraw();
+		}
 	}
 }
 
@@ -68,24 +79,62 @@ TTF_Font* CLayout::GetFont()
 	return this->Font;
 }
 
-void CLayout::AddItem(int id, glm::vec2 pos, glm::vec2 size)
+void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 {
-	if (id == 0)	//CObject2D
+	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
 	{
-		CObject2D* temp = new CObject2D();
+		CLabel* temp = new CLabel();
 		temp->SetPosition(pos);
 		temp->SetSize(size);
+		temp->SetName(name);
+		temp->SetID(Object2DType::OBJECT2D_LABEL);
 		Objects2D.push_back(temp);
 	}
-	else if (id == 1)	//Clabel
+	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
-		CLabel* temp = new CLabel(1);
+		CImage* temp = new CImage();
 		temp->SetPosition(pos);
 		temp->SetSize(size);
+		temp->SetName(name);
+		temp->SetID(Object2DType::OBJECT2D_IMAGE);
+		Objects2D.push_back(temp);
+	}
+	else if (id == Object2DType::OBJECT2D_BUTTON)
+	{
+		CButton* temp = new CButton();
+		temp->SetPosition(pos);
+		temp->SetSize(size);
+		temp->SetName(name);
+		temp->SetID(Object2DType::OBJECT2D_BUTTON);
 		Objects2D.push_back(temp);
 	}
 
 
+}
+
+CObject2D * CLayout::FindObjectByName(std::string name)
+{
+	for (CObject2D* o : Objects2D)
+	{
+		if (o->GetName() == name)
+		{
+			return o;
+		}
+	}
+	return NULL;
+}
+
+std::vector<CObject2D*> CLayout::GetObjectByType(int type)
+{
+	std::vector<CObject2D*> List;
+	for (CObject2D* o : Objects2D)
+	{
+		if (o->GetID() == type)
+		{
+			List.push_back(o);
+		}
+	}
+	return List;
 }
 
 void CLayout::GetMousePosition(int x, int y)
