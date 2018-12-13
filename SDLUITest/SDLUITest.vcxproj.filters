@@ -78,6 +78,12 @@
     <ClInclude Include="CLayout.h">
       <Filter>Header Files\Objects 2D</Filter>
     </ClInclude>
+    <ClInclude Include="CLayoutManager.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CModelManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -127,6 +133,12 @@
     </ClCompile>
     <ClCompile Include="CLayout.cpp">
       <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CLayoutManager.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CModelManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

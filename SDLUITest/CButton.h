@@ -2,6 +2,7 @@
 #include "CObject2D.h"
 #include "CLabel.h"
 #include <SDL.h>
+
 class CButton :
 	public CObject2D
 {

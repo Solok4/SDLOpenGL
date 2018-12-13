@@ -1,42 +1,35 @@
 #pragma once
 
 #include "glm.hpp"
-#include <vector>
-#include "CBaseComponent.h"
-using namespace glm;
-using namespace std;
-
-class CBaseComponent;
+#include <map>
+#include <memory>
+#include "CStaticMeshComponent.h"
+#include "COpengl.h"
 
 class CObject3D
 {
 public:
-	CObject3D(unsigned int ID);
+	CObject3D();
 	~CObject3D();
 
 	virtual void Prepare();
-	void PreDraw();
-	void SetPosition(vec3 vec);
-	void SetRotation(vec3 vec);
-	void SetScale(vec3 vec);
-	virtual void Draw();
-	virtual void Free();
+	void Draw(COpengl* opengl);
+	void SetName(std::string name);
+	std::string GetName();
+	void AddComponent(int id,std::string name);
+	void RemoveComponent(std::string name);
+	std::shared_ptr<CBaseComponent> GetComponentByName(std::string name);
 
 
 protected:
 
-	unsigned int _ID;
-	vec3 _Position;
-	vec3 _Scale;
-	vec3 _Rotation;
-
-	float CameraDistance;
-	bool PossesCamera = false;
-
-	mat4 ModelMatrix;
-
-	vector<CBaseComponent> _ComponentRef;
-
-	unsigned int _VAO;
+	std::shared_ptr<CObject3D> _Pointer;
+	std::string Name;
+	std::vector<std::shared_ptr<CBaseComponent>> _Components;
 };
 
+enum Object3DComponent
+{
+	BASE_COMPONENT = 0,
+	STATIC_MESH_COMPONENT,
+};

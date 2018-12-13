@@ -28,8 +28,6 @@ CObject2D::~CObject2D()
 	this->Layer = 0;
 }
 
-
-
 void CObject2D::Prepare()
 {
 	float vertices[] = {

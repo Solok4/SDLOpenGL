@@ -181,6 +181,6 @@ std::vector<CObject2D*> CLayout::GetObjectByType(int type)
 
 void CLayout::GetMousePosition(int x, int y)
 {
-	MousePosX = x;
-	MousePosY = y;
+	this->MousePosX = x;
+	this->MousePosY = y;
 }

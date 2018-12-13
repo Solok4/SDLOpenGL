@@ -3,10 +3,9 @@
 #include "gtx/transform.hpp"
 #include "gtc/matrix_transform.hpp"
 
-CObject3D::CObject3D(unsigned int ID)
+CObject3D::CObject3D()
 {
-	this->_ID = ID;
-	this->CameraDistance = 10;
+	this->AddComponent(0, "root");
 }
 
 
@@ -18,42 +17,68 @@ void CObject3D::Prepare()
 {
 }
 
-void CObject3D::PreDraw()
+void CObject3D::Draw(COpengl * opengl)
 {
-	mat4 Translation = translate(mat4(), vec3(this->_Position.x, this->_Position.y, 0.0f));
-	mat4 Scaling = scale(vec3(1.0f, 1.0f, 1.0f));
-	mat4 RotationX = rotate(radians(this->_Rotation.x), vec3(1.0f, 0.0f, 0.0f));
-	mat4 RotationY = rotate(radians(this->_Rotation.y), vec3(0.0f, 1.0f, 0.0f));
-	mat4 RotationZ = rotate(radians(this->_Rotation.z), vec3(0.0f, 0.0f, 1.0f));
-	mat4 Rotation = RotationX * RotationY *RotationZ;
-	this->ModelMatrix = Translation * Rotation* Scaling;
+	for (std::shared_ptr<CBaseComponent> o : this->_Components)
+	{
+		if (o->GetType() == Object3DComponent::STATIC_MESH_COMPONENT)
+		{
+			std::shared_ptr<CStaticMeshComponent> temp = std::dynamic_pointer_cast<CStaticMeshComponent>(o);
+			opengl->SetModelMatrix(temp->GetModelMatrix());
+			temp->Draw();
+		}
+	}
 }
 
-void CObject3D::SetPosition(vec3 vec)
+void CObject3D::SetName(std::string name)
 {
-	this->_Position.x = vec.x;
-	this->_Position.y = vec.y;
-	this->_Position.z = vec.z;
+	this->Name = name;
 }
 
-void CObject3D::SetRotation(vec3 vec)
+std::string CObject3D::GetName()
 {
-	this->_Rotation.x = vec.x;
-	this->_Rotation.y = vec.y;
-	this->_Rotation.z = vec.z;
+	return this->Name;
 }
 
-void CObject3D::SetScale(vec3 vec)
+void CObject3D::AddComponent(int id, std::string name)
 {
-	this->_Scale.x = vec.x;
-	this->_Scale.y = vec.y;
-	this->_Scale.z = vec.z;
+	if (id == Object3DComponent::BASE_COMPONENT)
+	{
+		std::shared_ptr<CBaseComponent> temp(new CBaseComponent);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::BASE_COMPONENT);
+		this->_Components.push_back(temp);
+	}
+	else if (id == Object3DComponent::STATIC_MESH_COMPONENT)
+	{
+		std::shared_ptr<CStaticMeshComponent> temp(new CStaticMeshComponent);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
+		this->_Components.push_back(temp);
+	}
 }
 
-void CObject3D::Draw()
+void CObject3D::RemoveComponent(std::string name)
 {
+	for(int i=0;i<this->_Components.size();i++)
+	{
+		std::shared_ptr<CBaseComponent> temp(this->_Components[i]);
+		if (name == temp->GetName())
+		{
+			this->_Components.emplace(this->_Components.begin()+i);
+			break;
+		}
+	}
 }
 
-void CObject3D::Free()
+std::shared_ptr<CBaseComponent> CObject3D::GetComponentByName(std::string name)
 {
+	for (std::shared_ptr<CBaseComponent> o : this->_Components)
+	{
+		if (o->GetName() == name)
+		{
+			return o;
+		}
+	}
+	return nullptr;
 }

@@ -8,7 +8,11 @@
 #include <array>
 #include "CObject3D.h"
 
-#include "CLayout.h"
+#include "CLayoutManager.h"
+#include "CModelManager.h"
+#include "CStaticMeshComponent.h"
+
+//#include "CLayout.h"
 
 
 class CApp
@@ -25,6 +29,9 @@ public:
 	void SetMouseLock(bool lock);
 	void TempLayout();
 
+	void AddObject3D(std::string name);
+	std::shared_ptr<CObject3D> GetObject3DByName(std::string name);
+
 	void KeyEvents(array<bool,322> keys);
 
 	COpengl OpenGL;
@@ -35,11 +42,11 @@ public:
 	int MouseY = 0;
 	bool MouseLock=false;
 
-	CLayout* Layout;
+	std::auto_ptr<CLayoutManager> LayoutManager;
+	std::auto_ptr<CModelManager> ModelManager;
 
 
-	vector<CObject3D*> Objects3D;
-	vector<CLayout*> Objects2D;
+	vector<std::shared_ptr<CObject3D>> Objects3D;
 
 };
 

@@ -1,10 +1,9 @@
 #pragma once
 
 #include "glm.hpp"
-#include "CObject3D.h" 
 #include "CLog.h"
-
-using namespace glm;
+#include "gtc/matrix_transform.hpp"
+#include "gtx/transform.hpp"
 
 class CObject3D;
 
@@ -13,21 +12,35 @@ class CBaseComponent
 public:
 	CBaseComponent();
 	~CBaseComponent();
+	std::shared_ptr<CBaseComponent> GetPointer();
+	void SetName(std::string name);
+	std::string GetName();
+	void AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent);
 
-	virtual void CreateComponent() = 0;
-	virtual void AttachToObject(CObject3D *obj) = 0;
-	virtual void DetachFromObject(CObject3D *obj) = 0;
-	virtual void FreeComponent() = 0;
+	void SetType(int type);
+	int GetType();
+
+	void CalculateMatrix();
+	void SetPosition(glm::vec3 pos);
+	void SetRotation(glm::vec3 rot);
+	void SetScale(glm::vec3 scale);
+	glm::mat4 GetModelMatrix();
+
+	virtual void Draw();
 
 protected:
-	unsigned int _ID;
-	unsigned int _Type; 
 
-	vec3 _Position;
-	vec3 _Scale;
-	vec3 _Rotation;
+	std::shared_ptr<CBaseComponent> _Pointer;
+	std::shared_ptr<CBaseComponent> _ParrentObject;
+	std::string _Name;
+	int _Type;
 
-	bool _IsVisible = true;
+	glm::vec3 _Position;
+	glm::vec3 _Scale;
+	glm::vec3 _Rotation;
+
+	glm::mat4 ModelMatrix;
+
 	bool _IsActive = true;
 
 };

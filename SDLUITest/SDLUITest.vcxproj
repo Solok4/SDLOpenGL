@@ -99,12 +99,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\include;D:\Projekty\BibliotekiVulkan\SDL2_ttf-2.0.14\include;D:\Projekty\BibliotekiVulkan\glew-2.1.0\include;D:\Projekty\BibliotekiVulkan\glm\glm;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\include;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glm\glm;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\lib\x86;D:\Projekty\BibliotekiVulkan\SDL2_ttf-2.0.14\lib\x86;D:\Projekty\BibliotekiVulkan\glew-2.1.0\lib\Release\Win32;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\lib\x86;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\3rd Party\SDL2-2.0.8\lib\x86;..\3rd Party\SDL2_ttf-2.0.14\lib\x86;..\3rd Party\SDL2_image-2.0.4\lib\x86;..\3rd Party\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,12 +116,12 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\include;D:\Projekty\BibliotekiVulkan\SDL2_ttf-2.0.14\include;D:\Projekty\BibliotekiVulkan\glew-2.1.0\include;D:\Projekty\BibliotekiVulkan\glm\glm;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\include;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glm\glm;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\lib\x64;D:\Projekty\BibliotekiVulkan\glew-2.1.0\lib\Release\x64;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\lib\x64;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\3rd Party\SDL2-2.0.8\lib\x64;..\3rd Party\SDL2_ttf-2.0.14\lib\x64;..\3rd Party\SDL2_image-2.0.4\lib\x64;..\3rd Party\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,14 +135,14 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\include;D:\Projekty\BibliotekiVulkan\SDL2_ttf-2.0.14\include;D:\Projekty\BibliotekiVulkan\glew-2.1.0\include;D:\Projekty\BibliotekiVulkan\glm\glm;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\include;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glm\glm;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\lib\x86;D:\Projekty\BibliotekiVulkan\SDL2_ttf-2.0.14\lib\x86;D:\Projekty\BibliotekiVulkan\glew-2.1.0\lib\Release\Win32;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\lib\x86;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\3rd Party\SDL2-2.0.8\lib\x86;..\3rd Party\SDL2_ttf-2.0.14\lib\x86;..\3rd Party\SDL2_image-2.0.4\lib\x86;..\3rd Party\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,14 +156,14 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\include;D:\Projekty\BibliotekiVulkan\SDL2_ttf-2.0.14\include;D:\Projekty\BibliotekiVulkan\glew-2.1.0\include;D:\Projekty\BibliotekiVulkan\glm\glm;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\include;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glm\glm;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Projekty\BibliotekiVulkan\SDL2_image-2.0.4\lib\x64;D:\Projekty\BibliotekiVulkan\glew-2.1.0\lib\Release\x64;D:\Projekty\BibliotekiVulkan\SDL2-2.0.8\lib\x64;D:\Projekty\BibliotekiVulkan\glfw-3.2.1\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\3rd Party\SDL2-2.0.8\lib\x64;..\3rd Party\SDL2_ttf-2.0.14\lib\x64;..\3rd Party\SDL2_image-2.0.4\lib\x64;..\3rd Party\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -180,6 +180,8 @@
     <ClInclude Include="COpengl.h" />
     <ClInclude Include="CRenderer.h" />
     <ClInclude Include="CStaticMeshComponent.h" />
+    <ClInclude Include="CLayoutManager.h" />
+    <ClInclude Include="CModelManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="XmlParser.h" />
   </ItemGroup>
@@ -197,6 +199,8 @@
     <ClCompile Include="COpengl.cpp" />
     <ClCompile Include="CRenderer.cpp" />
     <ClCompile Include="CStaticMeshComponent.cpp" />
+    <ClCompile Include="CLayoutManager.cpp" />
+    <ClCompile Include="CModelManager.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

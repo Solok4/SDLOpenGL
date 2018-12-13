@@ -1,7 +1,7 @@
 #pragma once
 #include "CBaseComponent.h"
-#include <fstream>
-#include <vector>
+#include "CModelManager.h"
+
 class CStaticMeshComponent :
 	public CBaseComponent
 {
@@ -9,18 +9,14 @@ public:
 	CStaticMeshComponent();
 	~CStaticMeshComponent();
 
-	void CreateComponent() override;
-	void FreeComponent() override;
+	void BindModel(std::shared_ptr<Model> model);
+	void Draw() override;
 
 
 private:
 
-	fstream _File;
-	const char* FileName;
+	std::shared_ptr<Model> _Model;
 	
-	vector<vec3> _Vertexes;
-	vector<vec2> _Texels;
-	vector<vec3> _Normals;
 
 };
 
