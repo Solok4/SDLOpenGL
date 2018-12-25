@@ -13,7 +13,6 @@ CRenderer::CRenderer()
 
 CRenderer::~CRenderer()
 {
-	Destroy();
 }
 
 void CRenderer::Init()

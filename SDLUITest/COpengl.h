@@ -51,8 +51,12 @@ private:
 	std::vector<unsigned int> FragmentShaders;
 	std::vector<unsigned int> ShaderProgram;
 
-	glm::mat4 Projection = glm::mat4(1.0f);
-	glm::mat4 ViewMatrix = glm::mat4(1.0f);
+	/*glm::mat4 Projection = glm::mat4(1.0f);
+	glm::mat4 ViewMatrix = glm::mat4(1.0f);*/
+
+	GLint Projection;
+	GLint ViewMatrix;
+	GLint ModelMatrix;
 
 };
 

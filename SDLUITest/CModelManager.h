@@ -3,6 +3,8 @@
 #include "GL/glew.h"
 #include <vector>
 #include <memory>
+#include "SDL_image.h"
+#include "SDL.h"
 
 struct Model
 {
@@ -12,6 +14,7 @@ struct Model
 	GLuint VAO;
 	GLuint VBOs[2];
 	GLuint EBO;
+	GLuint Tex;
 };
 
 
@@ -21,11 +24,8 @@ public:
 	CModelManager();
 	~CModelManager();
 
-	int LoadOBJ(const char* path);
-
+	int LoadOBJ(const char* path, const char* tex);
 	std::shared_ptr<Model> GetModelByName(std::string name);
-
-
 
 private:
 	std::map<std::string, std::shared_ptr<Model>> Models;

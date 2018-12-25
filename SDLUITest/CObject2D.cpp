@@ -22,10 +22,6 @@ CObject2D::CObject2D()
 
 CObject2D::~CObject2D()
 {
-	this->ModelMatrix = glm::mat4(1.0f);
-	this->_VAO = 0;
-	this->_VBO.clear();
-	this->Layer = 0;
 }
 
 void CObject2D::Prepare()
@@ -65,10 +61,12 @@ void CObject2D::Prepare()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(TexCords), TexCords, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

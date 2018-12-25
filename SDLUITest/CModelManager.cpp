@@ -14,7 +14,7 @@ CModelManager::~CModelManager()
 {
 }
 
-int CModelManager::LoadOBJ(const char * path)
+int CModelManager::LoadOBJ(const char * path, const char* tex)
 {
 	FILE* file;
 	fopen_s(&file,path, "r");
@@ -119,25 +119,21 @@ int CModelManager::LoadOBJ(const char * path)
 		unsigned int VertIndex = VertexIndices[i];
 		glm::vec3 vertex = temp_Vertices[VertIndex - 1];
 		out_Vertices.push_back(vertex);
-	}
-	if (tempModel->HasTexcords)
-	{
-		for (unsigned int i = 0; i < TexcordIndices.size(); i++)
+		if (tempModel->HasTexcords)
 		{
+
 			unsigned int TexcordIndex = TexcordIndices[i];
 			glm::vec2 texcord = temp_Texcords[TexcordIndex - 1];
 			out_Texcords.push_back(texcord);
 		}
-	}
-	if (tempModel->HasNormals)
-	{
-		for (unsigned int i = 0; i < NormalIndices.size(); i++)
+		if (tempModel->HasNormals)
 		{
 			unsigned int NormalIndex = NormalIndices[i];
 			glm::vec3 normal = temp_Normals[NormalIndex - 1];
 			out_Normals.push_back(normal);
 		}
 	}
+	
 	tempModel->IndicesCount = VertexIndices.size();
 
 	glGenVertexArrays(1, &tempModel->VAO);
@@ -146,28 +142,69 @@ int CModelManager::LoadOBJ(const char * path)
 	glGenBuffers(1, &tempModel->EBO);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempModel->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, VertexIndices.size(), VertexIndices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, VertexIndices.size() * sizeof(unsigned int), &VertexIndices[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size(), out_Vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
-	glBufferData(GL_ARRAY_BUFFER, out_Texcords.size(), out_Texcords.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	if (tempModel->HasTexcords)
+	{
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
+		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec3), &out_Texcords[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glDisableVertexAttribArray(1);
+	}
 
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
-	glBufferData(GL_ARRAY_BUFFER, out_Normals.size(), out_Normals.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
+	if (tempModel->HasNormals)
+	{
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
+		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glDisableVertexAttribArray(2);
+	}
+
+
+
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
+
+	
+	SDL_Surface* Tex = IMG_Load(tex);
+	if (!Tex)
+	{
+		CLog::MyLog(1, "Failed to load a texture");
+	}
+	else
+	{
+		GLint Format;
+		if (Tex->format->BitsPerPixel == 32)
+		{
+			Format = GL_RGBA;
+		}
+		else if (Tex->format->BitsPerPixel == 24)
+		{
+			Format = GL_RGB;
+		}
+		GLuint TexID;
+		glGenTextures(1, &TexID);
+		glBindTexture(GL_TEXTURE_2D, TexID);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, Format, Tex->w, Tex->h, 0, Format, GL_UNSIGNED_BYTE, Tex->pixels);
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		tempModel->Tex = TexID;
+	}
+
 
 
 	std::string name(path);
@@ -175,6 +212,7 @@ int CModelManager::LoadOBJ(const char * path)
 	this->Models.emplace(name.substr(slash+1, slash + 2), tempModel);
 	return 0;
 }
+
 
 std::shared_ptr<Model> CModelManager::GetModelByName(std::string name)
 {

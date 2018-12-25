@@ -72,23 +72,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(SolutionDir)$(Configuration)\Inter\</IntDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\Inter\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(SolutionDir)$(Configuration)\Inter\</IntDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\Inter\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)$(Configuration)\Inter\</IntDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\Inter\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)$(Configuration)\Inter\</IntDir>
+    <IntDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\Inter\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)\$(PlatformTarget)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -179,6 +181,8 @@
     <ClInclude Include="CObject3D.h" />
     <ClInclude Include="COpengl.h" />
     <ClInclude Include="CRenderer.h" />
+    <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
@@ -198,6 +202,8 @@
     <ClCompile Include="CObject3D.cpp" />
     <ClCompile Include="COpengl.cpp" />
     <ClCompile Include="CRenderer.cpp" />
+    <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="CStaticMeshComponent.cpp" />
     <ClCompile Include="CLayoutManager.cpp" />
     <ClCompile Include="CModelManager.cpp" />

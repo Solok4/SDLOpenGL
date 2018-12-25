@@ -7,7 +7,7 @@ CBaseComponent::CBaseComponent()
 	std::shared_ptr<CBaseComponent> temp(this);
 	this->_Pointer = temp;
 
-	this->_Position = glm::vec3(0.f, 0.f, -20.f);
+	this->_Position = glm::vec3(0.f, 0.f, 0.f);
 	this->_Rotation = glm::vec3(0.f);
 	this->_Scale = glm::vec3(1.f);
 	this->CalculateMatrix();
@@ -36,6 +36,7 @@ std::string CBaseComponent::GetName()
 void CBaseComponent::AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent)
 {
 	this->_ParrentObject = Parrent;
+	this->CalculateMatrix();
 }
 
 void CBaseComponent::SetType(int type)
@@ -63,7 +64,7 @@ void CBaseComponent::CalculateMatrix()
 	else
 	{
 		glm::mat4 Translation = glm::translate(glm::mat4(), glm::vec3(this->_ParrentObject->_Position + this->_Position));
-		glm::mat4 Scaling = glm::scale(glm::vec3(this->_Scale));
+		glm::mat4 Scaling = glm::scale(glm::vec3(this->_ParrentObject->_Scale + this->_Scale));
 		glm::mat4 RotationX = glm::rotate(glm::radians(this->_ParrentObject->_Rotation.x + this->_Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 		glm::mat4 RotationY = glm::rotate(glm::radians(this->_ParrentObject->_Rotation.y + this->_Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 RotationZ = glm::rotate(glm::radians(this->_ParrentObject->_Rotation.z + this->_Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -76,16 +77,19 @@ void CBaseComponent::CalculateMatrix()
 void CBaseComponent::SetPosition(glm::vec3 pos)
 {
 	this->_Position = pos;
+	this->CalculateMatrix();
 }
 
 void CBaseComponent::SetRotation(glm::vec3 rot)
 {
 	this->_Rotation = rot;
+	this->CalculateMatrix();
 }
 
 void CBaseComponent::SetScale(glm::vec3 scale)
 {
 	this->_Scale = scale;
+	this->CalculateMatrix();
 }
 
 glm::mat4 CBaseComponent::GetModelMatrix()

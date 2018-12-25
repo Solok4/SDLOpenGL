@@ -84,6 +84,12 @@
     <ClInclude Include="CModelManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Header Files\Objects 3D</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneManager.h">
+      <Filter>Header Files\Objects 3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -139,6 +145,12 @@
     </ClCompile>
     <ClCompile Include="CModelManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Source Files\Objects 3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneManager.cpp">
+      <Filter>Source Files\Objects 3D</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

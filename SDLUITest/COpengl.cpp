@@ -15,7 +15,6 @@ COpengl::COpengl()
 
 COpengl::~COpengl()
 {
-	Delete();
 }
 
 bool COpengl::Create(SDL_Window* Window)
@@ -153,12 +152,15 @@ void COpengl::PreLoop()
 	SelectShaderProgram(0);
 	glUseProgram(CurrentShaderProgram);
 	
+	this->ViewMatrix = glGetUniformLocation(CurrentShaderProgram, "View");
+	this->Projection = glGetUniformLocation(CurrentShaderProgram, "Projection");
+	this->ModelMatrix = glGetUniformLocation(CurrentShaderProgram, "Model");
+
 }
 
 void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
-	GLuint ModelID = glGetUniformLocation(CurrentShaderProgram, "Model");
-	glUniformMatrix4fv(ModelID, 1, GL_FALSE, &matrix[0][0]);
+	glUniformMatrix4fv(this->ModelMatrix, 1, GL_FALSE, &matrix[0][0]);
 }
 
 void COpengl::ProLoop(SDL_Window* Window)
@@ -170,25 +172,24 @@ void COpengl::ProLoop(SDL_Window* Window)
 
 void COpengl::PreLoopPerspective()
 {
-	ViewMatrix = glm::lookAt(glm::vec3(0.f,0.f,1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "Projection"), 1, GL_FALSE, &Projection[0][0]);
-	Projection = glm::perspective(glm::radians(80.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f,0.f,0.f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 Projection = glm::perspective(glm::radians(80.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+	glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(this->Projection, 1, GL_FALSE, &Projection[0][0]);
 
 
 }
 
 void COpengl::PreLoopOrtho(SDL_Window* Window)
 {
-	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, -50.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	//GLuint ViewID = glGetUniformLocation(CurrentShaderProgram, "View");
-	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	int w = 0;
 	int h = 0;
 	SDL_GL_GetDrawableSize(Window, &w, &h);
-	//GLuint ProjectionID = glGetUniformLocation(CurrentShaderProgram, "Projection");
-	glUniformMatrix4fv(glGetUniformLocation(CurrentShaderProgram, "Projection"), 1, GL_FALSE, &Projection[0][0]);
-	Projection = glm::ortho(0.0f, (float)w, (float)h, 0.0f, -0.1f, 1000.0f);
+	glm::mat4 Projection = glm::ortho(0.0f, (float)w, (float)h, 0.0f, -0.1f, 1000.0f);
+	glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(this->Projection, 1, GL_FALSE, &Projection[0][0]);
+
 
 }
 

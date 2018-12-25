@@ -12,6 +12,8 @@ CApp::CApp()
 	LayoutManager = temp;
 	std::auto_ptr<CModelManager> temp2(new CModelManager);
 	ModelManager = temp2;
+	std::auto_ptr<CSceneManager> temp3(new CSceneManager);
+	SceneManager = temp3;
 }
 
 
@@ -47,6 +49,7 @@ void CApp::Loop()
 	float rot = 0;
 	std::vector<CObject2D*> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
+	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
 	while (Event.GetIsRunning())
 	{
 		PollEvents();
@@ -77,14 +80,18 @@ void CApp::Loop()
 
 		OpenGL.PreLoop();
 
-		OpenGL.PreLoopOrtho(Renderer.GetWindow());//Perspective?
+		OpenGL.PreLoopOrtho(Renderer.GetWindow());
 
-		std::shared_ptr<CObject3D> temp(this->GetObject3DByName("Test"));
-		temp->Draw(&this->OpenGL);
+	
+		/*CurrentLayout->Draw(&this->OpenGL);
+		CurrentScene->Draw(&this->OpenGL);*/
 
 
-		OpenGL.PreLoopPerspective(); //Ortho?
-		CurrentLayout->Draw(&this->OpenGL);
+
+		OpenGL.PreLoopPerspective();
+		CurrentScene->Draw(&this->OpenGL);
+
+		
 
 		OpenGL.ProLoop(Renderer.GetWindow());
 		rot++;
@@ -114,14 +121,14 @@ void CApp::PreLoop()
 		Layout->SetWindowData(Renderer.GetWindow());
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(200.f, 400.f), vec2(100.f));
-		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300, 300.f), vec2(128.f, 64.f));
+		//Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
 		Layout->PrepareToLoop();
 
-		CButton* TempButton = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton"));
+		/*CButton* TempButton = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton"));
 		TempButton->LoadTexture("Assets/Textures/Tex.tga");
-		TempButton->BindTexture(TempButton->GetTexture());
+		TempButton->BindTexture(TempButton->GetTexture());*/
 		//TempButton->AttachFunc(MouseClick);
 
 		CButton* TempButton2 = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton2"));
@@ -135,12 +142,19 @@ void CApp::PreLoop()
 		TempLabel->SetText("Text Test");
 	}
 
-	ModelManager->LoadOBJ("Assets/Models/dompiernik.obj");
-	this->AddObject3D("Test");
-	std::shared_ptr<CObject3D> temp(this->GetObject3DByName("Test"));
-	temp->AddComponent(1, "Mesh");
-	std::shared_ptr<CStaticMeshComponent> tempStaticMesh = std::dynamic_pointer_cast<CStaticMeshComponent>(temp->GetComponentByName("Mesh"));
-	tempStaticMesh->BindModel(ModelManager->GetModelByName("dompiernik.obj"));
+	ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
+	SceneManager->AddNewScene("Default");
+	SceneManager->SetCurrentScene("Default");
+	auto tempScene = SceneManager->GetSceneByName("Default");
+	tempScene->AddObjectToScene("Test");
+	auto tempObject3D = tempScene->GetObjectByName("Test");
+	tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+	tempObject3D->SetPosition(vec3(0.f,0.f,-5.f));
+	auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+	tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Cube.obj"));
+	tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
+
+
 
 }
 
@@ -149,27 +163,6 @@ void CApp::SetMouseLock(bool lock)
 	MouseLock = lock;
 }
 
-void CApp::TempLayout()
-{
-
-}
-
-void CApp::AddObject3D(std::string name)
-{
-	std::shared_ptr<CObject3D> temp(new CObject3D);
-	temp->SetName(name);
-	Objects3D.push_back(temp);
-}
-
-std::shared_ptr<CObject3D> CApp::GetObject3DByName(std::string name)
-{
-	for (std::shared_ptr<CObject3D> o : Objects3D)
-	{
-		if (o->GetName() == name)
-			return o;
-	}
-	return nullptr;
-}
 
 void CApp::KeyEvents(array<bool, 322> keys)
 {

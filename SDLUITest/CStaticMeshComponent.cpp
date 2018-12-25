@@ -24,13 +24,18 @@ void CStaticMeshComponent::Draw()
 	{
 		glBindVertexArray(this->_Model->VAO);
 		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D,)
+		if(this->_Model->HasTexcords)
+			glEnableVertexAttribArray(1);
+		if (this->_Model->HasNormals)
+			glEnableVertexAttribArray(2);
+		glActiveTexture(GL_TEXTURE0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
+		glBindTexture(GL_TEXTURE_2D, this->_Model->Tex);
 		glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(2);
-		glDisableVertexAttribArray(1);
+		if (this->_Model->HasNormals)
+			glDisableVertexAttribArray(2);
+		if (this->_Model->HasTexcords)
+			glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 	}

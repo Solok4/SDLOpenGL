@@ -6,6 +6,7 @@
 CObject3D::CObject3D()
 {
 	this->AddComponent(0, "root");
+	this->BindRootComponent("root");
 }
 
 
@@ -24,6 +25,7 @@ void CObject3D::Draw(COpengl * opengl)
 		if (o->GetType() == Object3DComponent::STATIC_MESH_COMPONENT)
 		{
 			std::shared_ptr<CStaticMeshComponent> temp = std::dynamic_pointer_cast<CStaticMeshComponent>(o);
+			temp->CalculateMatrix();
 			opengl->SetModelMatrix(temp->GetModelMatrix());
 			temp->Draw();
 		}
@@ -81,4 +83,36 @@ std::shared_ptr<CBaseComponent> CObject3D::GetComponentByName(std::string name)
 		}
 	}
 	return nullptr;
+}
+
+void CObject3D::BindRootComponent(std::string name)
+{
+	for (auto o : this->_Components)
+	{
+		if (o->GetName() == name)
+		{
+			this->_RootComponent = o;
+			break;
+		}
+	}
+}
+
+std::shared_ptr<CBaseComponent> CObject3D::GetRootComponent()
+{
+	return this->_RootComponent;
+}
+
+void CObject3D::SetPosition(glm::vec3 pos)
+{
+	this->_RootComponent->SetPosition(pos);
+}
+
+void CObject3D::SetRotation(glm::vec3 rot)
+{
+	this->_RootComponent->SetRotation(rot);
+}
+
+void CObject3D::SetScale(glm::vec3 scale)
+{
+	this->_RootComponent->SetScale(scale);
 }

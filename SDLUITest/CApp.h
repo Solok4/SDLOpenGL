@@ -11,6 +11,7 @@
 #include "CLayoutManager.h"
 #include "CModelManager.h"
 #include "CStaticMeshComponent.h"
+#include "CSceneManager.h"
 
 //#include "CLayout.h"
 
@@ -27,10 +28,6 @@ public:
 	void PollEvents();
 	void PreLoop();
 	void SetMouseLock(bool lock);
-	void TempLayout();
-
-	void AddObject3D(std::string name);
-	std::shared_ptr<CObject3D> GetObject3DByName(std::string name);
 
 	void KeyEvents(array<bool,322> keys);
 
@@ -44,9 +41,7 @@ public:
 
 	std::auto_ptr<CLayoutManager> LayoutManager;
 	std::auto_ptr<CModelManager> ModelManager;
-
-
-	vector<std::shared_ptr<CObject3D>> Objects3D;
+	std::auto_ptr<CSceneManager> SceneManager;
 
 };
 

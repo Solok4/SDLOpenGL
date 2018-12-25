@@ -19,6 +19,11 @@ public:
 	void AddComponent(int id,std::string name);
 	void RemoveComponent(std::string name);
 	std::shared_ptr<CBaseComponent> GetComponentByName(std::string name);
+	void BindRootComponent(std::string name);
+	std::shared_ptr<CBaseComponent> GetRootComponent();
+	void SetPosition(glm::vec3 pos);
+	void SetRotation(glm::vec3 rot);
+	void SetScale(glm::vec3 scale);
 
 
 protected:
@@ -26,6 +31,7 @@ protected:
 	std::shared_ptr<CObject3D> _Pointer;
 	std::string Name;
 	std::vector<std::shared_ptr<CBaseComponent>> _Components;
+	std::shared_ptr<CBaseComponent> _RootComponent;
 };
 
 enum Object3DComponent
