@@ -28,7 +28,7 @@ public:
 
 protected:
 
-	std::shared_ptr<CObject3D> _Pointer;
+	//std::shared_ptr<CObject3D> _Pointer;
 	std::string Name;
 	std::vector<std::shared_ptr<CBaseComponent>> _Components;
 	std::shared_ptr<CBaseComponent> _RootComponent;

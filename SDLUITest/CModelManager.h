@@ -5,6 +5,8 @@
 #include <memory>
 #include "SDL_image.h"
 #include "SDL.h"
+#include <algorithm>
+#include <thread>
 
 struct Model
 {
@@ -24,11 +26,14 @@ public:
 	CModelManager();
 	~CModelManager();
 
-	int LoadOBJ(const char* path, const char* tex);
+	void LoadOBJ(const char* path, const char* tex);
+	void Load(const char* path, const char* tex);
+	void ThreadJoin();
 	std::shared_ptr<Model> GetModelByName(std::string name);
 
 private:
 	std::map<std::string, std::shared_ptr<Model>> Models;
+	std::vector<std::thread> Threads;
 };
 
 

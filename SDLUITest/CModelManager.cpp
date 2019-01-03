@@ -12,16 +12,17 @@ CModelManager::CModelManager()
 
 CModelManager::~CModelManager()
 {
+	CLog::MyLog(0, "ModelManagerDestructor");
 }
 
-int CModelManager::LoadOBJ(const char * path, const char* tex)
+void CModelManager::LoadOBJ(const char * path, const char* tex)
 {
 	FILE* file;
 	fopen_s(&file,path, "r");
 	if (file == NULL)
 	{
 		CLog::MyLog(1, "Failed to load a model from " + std::string(path));
-		return 1;
+		assert(1 < 0);
 	}
 	std::shared_ptr<Model> tempModel (new Model);
 	std::vector<glm::vec3> temp_Vertices;
@@ -68,7 +69,7 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 				if (matches != 9) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return false;
+					assert(1 < 0);
 				}
 				VertexIndices.push_back(vertexIndex[0]);
 				VertexIndices.push_back(vertexIndex[1]);
@@ -86,7 +87,7 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return false;
+					assert(1 < 0);
 				}
 				VertexIndices.push_back(vertexIndex[0]);
 				VertexIndices.push_back(vertexIndex[1]);
@@ -101,7 +102,7 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0],&vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return false;
+					assert(1 < 0);
 				}
 				VertexIndices.push_back(vertexIndex[0]);
 				VertexIndices.push_back(vertexIndex[1]);
@@ -114,6 +115,8 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 
 		}
 	}
+	fclose(file);
+
 	for (unsigned int i = 0; i < VertexIndices.size(); i++)
 	{
 		unsigned int VertIndex = VertexIndices[i];
@@ -136,6 +139,13 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 	
 	tempModel->IndicesCount = VertexIndices.size();
 
+	auto ptr = &tempModel;
+
+	if (ptr == nullptr)
+	{
+		CLog::MyLog(0, "ABC");
+	}
+
 	glGenVertexArrays(1, &tempModel->VAO);
 	glBindVertexArray(tempModel->VAO);
 	glGenBuffers(3, tempModel->VBOs);
@@ -153,7 +163,7 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 	{
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
-		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec3), &out_Texcords[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec2), &out_Texcords[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 		glDisableVertexAttribArray(1);
 	}
@@ -205,12 +215,42 @@ int CModelManager::LoadOBJ(const char * path, const char* tex)
 		tempModel->Tex = TexID;
 	}
 
+	SDL_FreeSurface(Tex);
+
 
 
 	std::string name(path);
 	int slash = name.find_last_of("/");
 	this->Models.emplace(name.substr(slash+1, slash + 2), tempModel);
-	return 0;
+}
+
+void CModelManager::Load(const char * path, const char * tex)
+{
+	std::string Extension(path);
+	std::string Name(path);
+	int slash = Name.find_last_of('/');
+	Name = Name.substr(slash + 1, slash + 2);
+	auto Model = CModelManager::GetModelByName(Name);
+	if (Model == nullptr)
+	{
+		int dot = Extension.find_last_of(".");
+		Extension = Extension.substr(dot + 1, dot + 2);
+		std::transform(Extension.begin(), Extension.end(), Extension.begin(), ::tolower);
+		const char* Ex = Extension.c_str();
+		if (strcmp(Ex, "obj") == 0)
+		{
+			std::thread t1([=] {this->LoadOBJ(path, tex); });
+			this->Threads.push_back(std::move(t1));
+		}
+	}
+}
+
+void CModelManager::ThreadJoin()
+{
+	for (auto& o : Threads)
+	{
+		o.join();
+	}
 }
 
 

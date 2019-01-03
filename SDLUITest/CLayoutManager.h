@@ -21,6 +21,6 @@ private:
 
 	std::shared_ptr<CLayout> CurrentLayout;
 
-	std::map<std::string, std::shared_ptr<CLayout>> Layouts;
+	std::vector<std::shared_ptr<CLayout>> Layouts;
 };
 

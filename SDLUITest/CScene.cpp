@@ -10,9 +10,10 @@ CScene::CScene()
 
 CScene::~CScene()
 {
+	CLog::MyLog(0, "SceneDestructor "+this->GetName());
 }
 
-void CScene::AddObjectToScene( std::string Name)
+void CScene::AddObjectToScene(std::string Name)
 {
 	std::shared_ptr<CObject3D> temp(new CObject3D);
 	temp->SetName(Name);
@@ -34,7 +35,7 @@ std::shared_ptr<CObject3D> CScene::GetObjectByName(std::string Name)
 
 void CScene::RemoveObjectFromScene(std::string Name)
 {
-	for (int i = 0; i < this->Objects3D.size(); i++)
+	for (unsigned int i = 0; i < this->Objects3D.size(); i++)
 	{
 		if (this->Objects3D[i]->GetName() == Name)
 		{

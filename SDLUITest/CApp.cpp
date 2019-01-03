@@ -8,17 +8,15 @@
 
 CApp::CApp()
 {
-	std::auto_ptr<CLayoutManager> temp(new CLayoutManager);
-	LayoutManager = temp;
-	std::auto_ptr<CModelManager> temp2(new CModelManager);
-	ModelManager = temp2;
-	std::auto_ptr<CSceneManager> temp3(new CSceneManager);
-	SceneManager = temp3;
+	LayoutManager = std::make_unique<CLayoutManager>();
+	ModelManager = std::make_unique<CModelManager>();
+	SceneManager = std::make_unique<CSceneManager>();
 }
 
 
 CApp::~CApp()
 {
+	CLog::MyLog(0, "CAppDestructor");
 }
 
 
@@ -41,13 +39,14 @@ void CApp::Destroy()
 	OpenGL.Delete();
 	Renderer.Destroy();
 	SDL_Quit();
+
 }
 
 void CApp::Loop()
 {
 	PreLoop();
 	float rot = 0;
-	std::vector<CObject2D*> ButtonList;
+	std::vector<std::shared_ptr<CObject2D>> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
 	while (Event.GetIsRunning())
@@ -55,9 +54,9 @@ void CApp::Loop()
 		PollEvents();
 
 		ButtonList = CurrentLayout->GetObjectByType(Object2DType::OBJECT2D_BUTTON);
-		for (CObject2D* o : ButtonList)
+		for (auto o : ButtonList)
 		{
-			CButton* butt = dynamic_cast<CButton*>(o);
+			auto butt = std::dynamic_pointer_cast<CButton>(o);
 			if (butt != NULL)
 			{
 				butt->IsClicked(Event.GetMouseData());
@@ -83,17 +82,14 @@ void CApp::Loop()
 		OpenGL.PreLoopOrtho(Renderer.GetWindow());
 
 	
-		/*CurrentLayout->Draw(&this->OpenGL);
-		CurrentScene->Draw(&this->OpenGL);*/
-
-
+		CurrentLayout->Draw(&this->OpenGL);
 
 		OpenGL.PreLoopPerspective();
 		CurrentScene->Draw(&this->OpenGL);
-
 		
 
 		OpenGL.ProLoop(Renderer.GetWindow());
+		//CLog::MyLog(0,std::to_string(CurrentScene->GetObjectByName("Test").use_count()));
 		rot++;
 
 
@@ -114,7 +110,6 @@ void CApp::PreLoop()
 	OpenGL.PrepareToLoop();
 	{
 
-		LayoutManager->AddNewLayout("Blank");
 		LayoutManager->AddNewLayout("Default");
 		LayoutManager->ChangeCurrentLayout("Default");
 		std::shared_ptr<CLayout> Layout = LayoutManager->GetLayoutByName("Default");
@@ -131,29 +126,39 @@ void CApp::PreLoop()
 		TempButton->BindTexture(TempButton->GetTexture());*/
 		//TempButton->AttachFunc(MouseClick);
 
-		CButton* TempButton2 = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton2"));
+		auto TempButton2 = std::dynamic_pointer_cast<CButton>(Layout->FindObjectByName("TestButton2"));
 		TempButton2->LoadTexture("Assets/Textures/TestTex.jpg");
 		TempButton2->BindTexture(TempButton2->GetTexture());
 		//TempButton2->AttachFunc([]() {});
 		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
 		TempButton2->Label->SetText("ASDF");
 
-		CLabel* TempLabel = dynamic_cast<CLabel*>(Layout->FindObjectByName("TestLabel"));
+		auto TempLabel = std::dynamic_pointer_cast<CLabel>(Layout->FindObjectByName("TestLabel"));
 		TempLabel->SetText("Text Test");
 	}
 
-	ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
+	//ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
+	ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga");
+	//std::thread t1(ModelManager, "Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga" );
+	ModelManager->ThreadJoin();
 	SceneManager->AddNewScene("Default");
 	SceneManager->SetCurrentScene("Default");
-	auto tempScene = SceneManager->GetSceneByName("Default");
+	auto tempScene(SceneManager->GetSceneByName("Default"));
 	tempScene->AddObjectToScene("Test");
 	auto tempObject3D = tempScene->GetObjectByName("Test");
-	tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
-	tempObject3D->SetPosition(vec3(0.f,0.f,-5.f));
-	auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
-	tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Cube.obj"));
-	tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 
+	tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+
+	tempObject3D->SetPosition(vec3(0.f,0.f,-20.f));
+	auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+
+	tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+	tempStaticMeshComponent->SetPosition(vec3(0.f));
+	tempStaticMeshComponent->SetRotation(vec3(0.f,0.f,0.f));
+	tempStaticMeshComponent->GetForwardVector();
+
+	tempStaticMeshComponent->GetRightVector();
+	tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 
 
 }

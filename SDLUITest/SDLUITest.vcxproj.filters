@@ -90,6 +90,9 @@
     <ClInclude Include="CSceneManager.h">
       <Filter>Header Files\Objects 3D</Filter>
     </ClInclude>
+    <ClInclude Include="CCameraComponent.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="CSceneManager.cpp">
       <Filter>Source Files\Objects 3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CCameraComponent.cpp">
+      <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

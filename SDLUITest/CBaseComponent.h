@@ -5,6 +5,8 @@
 #include "gtc/matrix_transform.hpp"
 #include "gtx/transform.hpp"
 
+#include <cmath>
+
 class CObject3D;
 
 class CBaseComponent
@@ -12,7 +14,6 @@ class CBaseComponent
 public:
 	CBaseComponent();
 	~CBaseComponent();
-	std::shared_ptr<CBaseComponent> GetPointer();
 	void SetName(std::string name);
 	std::string GetName();
 	void AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent);
@@ -21,6 +22,8 @@ public:
 	int GetType();
 
 	void CalculateMatrix();
+	glm::vec3 GetForwardVector();
+	glm::vec3 GetRightVector();
 	void SetPosition(glm::vec3 pos);
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
@@ -30,7 +33,6 @@ public:
 
 protected:
 
-	std::shared_ptr<CBaseComponent> _Pointer;
 	std::shared_ptr<CBaseComponent> _ParrentObject;
 	std::string _Name;
 	int _Type;

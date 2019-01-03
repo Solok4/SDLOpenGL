@@ -15,6 +15,7 @@ COpengl::COpengl()
 
 COpengl::~COpengl()
 {
+	CLog::MyLog(0, "OpenglDestructor");
 }
 
 bool COpengl::Create(SDL_Window* Window)
@@ -173,7 +174,7 @@ void COpengl::ProLoop(SDL_Window* Window)
 void COpengl::PreLoopPerspective()
 {
 	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f,0.f,0.f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(80.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+	glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 100.0f);
 	glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(this->Projection, 1, GL_FALSE, &Projection[0][0]);
 

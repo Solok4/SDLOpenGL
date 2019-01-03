@@ -6,14 +6,13 @@
 #include "COpengl.h"
 #include <vector>
 #include <array>
+#include <thread>
 #include "CObject3D.h"
 
 #include "CLayoutManager.h"
 #include "CModelManager.h"
 #include "CStaticMeshComponent.h"
 #include "CSceneManager.h"
-
-//#include "CLayout.h"
 
 
 class CApp
@@ -39,9 +38,9 @@ public:
 	int MouseY = 0;
 	bool MouseLock=false;
 
-	std::auto_ptr<CLayoutManager> LayoutManager;
-	std::auto_ptr<CModelManager> ModelManager;
-	std::auto_ptr<CSceneManager> SceneManager;
+	std::unique_ptr<CLayoutManager> LayoutManager;
+	std::unique_ptr<CModelManager> ModelManager;
+	std::unique_ptr<CSceneManager> SceneManager;
 
 };
 

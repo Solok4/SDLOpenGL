@@ -12,6 +12,7 @@ CObject3D::CObject3D()
 
 CObject3D::~CObject3D()
 {
+	CLog::MyLog(0, "3DObjectDestructor "+this->GetName());
 }
 
 void CObject3D::Prepare()
@@ -56,13 +57,14 @@ void CObject3D::AddComponent(int id, std::string name)
 		std::shared_ptr<CStaticMeshComponent> temp(new CStaticMeshComponent);
 		temp->SetName(name);
 		temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
+		temp->AttachParrentObject(this->GetRootComponent());
 		this->_Components.push_back(temp);
 	}
 }
 
 void CObject3D::RemoveComponent(std::string name)
 {
-	for(int i=0;i<this->_Components.size();i++)
+	for(unsigned int i=0;i<this->_Components.size();i++)
 	{
 		std::shared_ptr<CBaseComponent> temp(this->_Components[i]);
 		if (name == temp->GetName())
@@ -92,7 +94,6 @@ void CObject3D::BindRootComponent(std::string name)
 		if (o->GetName() == name)
 		{
 			this->_RootComponent = o;
-			break;
 		}
 	}
 }

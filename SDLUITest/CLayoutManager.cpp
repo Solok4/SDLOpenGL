@@ -4,27 +4,31 @@
 
 CLayoutManager::CLayoutManager()
 {
+	this->AddNewLayout("Blank");
+	this->ChangeCurrentLayout("Blank");
 }
 
 
 CLayoutManager::~CLayoutManager()
 {
+	CLog::MyLog(0, "LayoutManagerDestructor");
 }
 
 void CLayoutManager::AddNewLayout(std::string name)
 {
-	CLayout* temp = new CLayout();
+	std::shared_ptr<CLayout> temp(new CLayout);
+	temp->SetName(name);
 
-	this->Layouts.emplace(name, temp);
+	this->Layouts.push_back(temp);
 }
 
 std::shared_ptr<CLayout> CLayoutManager::GetLayoutByName(std::string name)
 {
-	for (std::map<std::string, std::shared_ptr<CLayout>>::iterator it = Layouts.begin(); it != Layouts.end(); ++it)
+	for (auto o : this->Layouts)
 	{
-		if (it->first == name)
+		if (o->GetName() == name)
 		{
-			return it->second;
+			return o;
 		}
 	}
 	return nullptr;
@@ -32,11 +36,11 @@ std::shared_ptr<CLayout> CLayoutManager::GetLayoutByName(std::string name)
 
 void CLayoutManager::ChangeCurrentLayout(std::string name)
 {
-	for (std::map<std::string, std::shared_ptr<CLayout>>::iterator it = Layouts.begin(); it != Layouts.end(); ++it)
+	for (auto o : this->Layouts)
 	{
-		if (it->first == name)
+		if (o->GetName()==name)
 		{
-			this->CurrentLayout = it->second;
+			this->CurrentLayout = o;
 		}
 	}
 }

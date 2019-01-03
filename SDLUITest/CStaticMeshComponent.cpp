@@ -31,7 +31,8 @@ void CStaticMeshComponent::Draw()
 		glActiveTexture(GL_TEXTURE0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
 		glBindTexture(GL_TEXTURE_2D, this->_Model->Tex);
-		glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
 		if (this->_Model->HasNormals)
 			glDisableVertexAttribArray(2);
 		if (this->_Model->HasTexcords)

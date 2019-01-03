@@ -17,11 +17,7 @@ public:
 	std::string GetName();
 	void Draw(COpengl* opengl);
 
-
-
-
-	std::vector < std::shared_ptr<CObject3D>> Objects3D;
-
+	std::vector <std::shared_ptr<CObject3D>> Objects3D;
 	std::string Name;
 };
 

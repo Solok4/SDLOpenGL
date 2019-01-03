@@ -22,6 +22,7 @@ CObject2D::CObject2D()
 
 CObject2D::~CObject2D()
 {
+	CLog::MyLog(0, "Object2DDestructor " + this->_Name);
 }
 
 void CObject2D::Prepare()

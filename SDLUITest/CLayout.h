@@ -9,6 +9,7 @@
 #include "CImage.h"
 #include "CLog.h"
 #include "COpengl.h"
+#include <Windows.h>
 class CLayout
 {
 public:
@@ -20,8 +21,11 @@ public:
 	void SetFont(const char* font);
 	TTF_Font* GetFont();
 	void AddItem(int id,std::string name,glm::vec2 pos,glm::vec2 size);
-	CObject2D* FindObjectByName(std::string name);
-	std::vector<CObject2D*> GetObjectByType(int type);
+	std::shared_ptr<CObject2D> FindObjectByName(std::string name);
+	std::vector<std::shared_ptr<CObject2D>> GetObjectByType(int type);
+
+	std::string GetName();
+	void SetName(std::string name);
 
 	void GetMousePosition(int x,int y);
 
@@ -33,10 +37,12 @@ public:
 	int MousePosX;
 	int MousePosY;
 
+	std::string Name;
+
 	GLuint* ShaderProgram;
 	TTF_Font* Font;
 
-	std::map<int,std::vector<CObject2D*>> Objects2D;
+	std::map<int,std::vector<std::shared_ptr<CObject2D>>> Objects2D;
 
 };
 

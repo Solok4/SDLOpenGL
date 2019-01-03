@@ -172,6 +172,7 @@
     <ClInclude Include="CApp.h" />
     <ClInclude Include="CBaseComponent.h" />
     <ClInclude Include="CButton.h" />
+    <ClInclude Include="CCameraComponent.h" />
     <ClInclude Include="CEvent.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CLabel.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="CApp.cpp" />
     <ClCompile Include="CBaseComponent.cpp" />
     <ClCompile Include="CButton.cpp" />
+    <ClCompile Include="CCameraComponent.cpp" />
     <ClCompile Include="CEvent.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CLabel.cpp" />
