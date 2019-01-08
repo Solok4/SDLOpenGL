@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "CLog.h"
 
-#include<iostream>
+#include <iostream>
+
 
 
 CLog::CLog()
@@ -13,9 +14,9 @@ CLog::~CLog()
 {
 }
 
-void CLog::MyLog(int key, const std::string& Message...)
+void CLog::MyLog(int key, std::string Message,...)
 {
-	const char* Prefix;
+	std::string Prefix;
 	switch (key)
 	{
 	case 1: {
@@ -29,6 +30,8 @@ void CLog::MyLog(int key, const std::string& Message...)
 		Prefix = "[Log]: ";
 		break;
 	}
+
+
 
 	std::cout << Prefix << Message << std::endl;
 }

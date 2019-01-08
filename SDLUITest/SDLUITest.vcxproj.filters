@@ -93,6 +93,9 @@
     <ClInclude Include="CCameraComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="CCameraComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

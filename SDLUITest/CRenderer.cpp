@@ -28,21 +28,20 @@ void CRenderer::Init()
 	{
 		CLog::MyLog(1, "Failed to initalize TTF: " + std::string(TTF_GetError()));
 	}
-	if (!IMG_Init(IMG_INIT_JPG))
-	{
-		CLog::MyLog(1, "Failed to initalize Image library: " + std::string(IMG_GetError()));
-	}
+	//if (!IMG_Init(IMG_INIT_JPG))
+	//{
+	//	CLog::MyLog(1, "Failed to initalize Image library: "+std::string(IMG_GetError()));
+	//}
 }
 
 void CRenderer::Destroy()
 {
-	//TTF_CloseFont(Font);
 	if (Window != nullptr)
 	{
 		SDL_DestroyWindow(Window);
 	}
 	TTF_Quit();
-	IMG_Quit();
+	//IMG_Quit();
 	
 }
 
@@ -53,19 +52,6 @@ void CRenderer::Resize(int w, int h)
 	ScreenHeight = h;
 }
 
-void CRenderer::OpenFont(const char* path)
-{
-	this->Font = TTF_OpenFont(path, 32);
-	if (!this->Font)
-	{
-		CLog::MyLog(1, "Failed to load font " + std::string(path));
-	}
-}
-
-TTF_Font* CRenderer::GetFont()
-{
-	return this->Font;
-}
 
 SDL_Window* CRenderer::GetWindow()
 {

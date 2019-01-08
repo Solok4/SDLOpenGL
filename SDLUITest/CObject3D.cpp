@@ -45,20 +45,34 @@ std::string CObject3D::GetName()
 
 void CObject3D::AddComponent(int id, std::string name)
 {
-	if (id == Object3DComponent::BASE_COMPONENT)
+	switch (id)
 	{
-		std::shared_ptr<CBaseComponent> temp(new CBaseComponent);
-		temp->SetName(name);
-		temp->SetType(Object3DComponent::BASE_COMPONENT);
-		this->_Components.push_back(temp);
-	}
-	else if (id == Object3DComponent::STATIC_MESH_COMPONENT)
-	{
-		std::shared_ptr<CStaticMeshComponent> temp(new CStaticMeshComponent);
-		temp->SetName(name);
-		temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
-		temp->AttachParrentObject(this->GetRootComponent());
-		this->_Components.push_back(temp);
+		case(Object3DComponent::BASE_COMPONENT):
+		{
+			std::shared_ptr<CBaseComponent> temp(new CBaseComponent);
+			temp->SetName(name);
+			temp->SetType(Object3DComponent::BASE_COMPONENT);
+			this->_Components.push_back(temp);
+			break;
+		}
+
+		case(Object3DComponent::STATIC_MESH_COMPONENT): 
+		{
+			std::shared_ptr<CStaticMeshComponent> temp(new CStaticMeshComponent);
+			temp->SetName(name);
+			temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
+			temp->AttachParrentObject(this->GetRootComponent());
+			this->_Components.push_back(temp);
+			break;
+		}
+		case(Object3DComponent::CAMERA_COMPONENT): {
+			std::shared_ptr<CCameraComponent> temp(new CCameraComponent);
+			temp->SetName(name);
+			temp->SetType(Object3DComponent::CAMERA_COMPONENT);
+			temp->AttachParrentObject(this->GetRootComponent());
+			this->_Components.push_back(temp);
+			break;
+		}
 	}
 }
 

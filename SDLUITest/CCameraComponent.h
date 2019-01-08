@@ -7,6 +7,12 @@ public:
 	CCameraComponent();
 	~CCameraComponent();
 
+	void SetFov(float fov);
+	float GetFov();
+	
 
+private:
+
+	float FOV;
 };
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "CObject3D.h"
+#include "CCameraComponent.h"
 
 class CScene
 {
@@ -17,7 +18,11 @@ public:
 	std::string GetName();
 	void Draw(COpengl* opengl);
 
+	void SetCamera(std::shared_ptr<CCameraComponent> Cam);
+	std::shared_ptr<CCameraComponent> GetCamera();
+
 	std::vector <std::shared_ptr<CObject3D>> Objects3D;
 	std::string Name;
+	std::shared_ptr<CCameraComponent> Camera;
 };
 

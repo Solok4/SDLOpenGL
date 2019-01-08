@@ -188,6 +188,7 @@
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="XmlParser.h" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +216,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SDLUITest.cpp" />
     <ClCompile Include="XmlParser.cpp" />
   </ItemGroup>

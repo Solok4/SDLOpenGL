@@ -16,8 +16,6 @@ public:
 	void Init();
 	void Destroy();
 	void Resize(int w, int h);
-	void OpenFont(const char* path);
-	TTF_Font* GetFont();
 	SDL_Window* GetWindow();
 
 

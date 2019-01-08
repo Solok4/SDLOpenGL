@@ -30,7 +30,6 @@ bool CApp::Init()
 	}
 	Renderer.Init();
 	OpenGL.Create(Renderer.GetWindow());
-	Renderer.OpenFont("Assets/Fonts/Raleway-Black.ttf");
 	return true;
 }
 
@@ -52,6 +51,8 @@ void CApp::Loop()
 	while (Event.GetIsRunning())
 	{
 		PollEvents();
+		CurrentLayout = LayoutManager->GetCurrentLayout();
+		CurrentScene = SceneManager->GetCurrentScene();
 
 		ButtonList = CurrentLayout->GetObjectByType(Object2DType::OBJECT2D_BUTTON);
 		for (auto o : ButtonList)
@@ -83,13 +84,13 @@ void CApp::Loop()
 
 	
 		CurrentLayout->Draw(&this->OpenGL);
+		CurrentScene->GetCamera()->SetRotation(glm::vec3(0.f, (rot + 1) / 2, 0.f));
 
-		OpenGL.PreLoopPerspective();
+		OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
 		CurrentScene->Draw(&this->OpenGL);
 		
 
 		OpenGL.ProLoop(Renderer.GetWindow());
-		//CLog::MyLog(0,std::to_string(CurrentScene->GetObjectByName("Test").use_count()));
 		rot++;
 
 
@@ -138,27 +139,68 @@ void CApp::PreLoop()
 	}
 
 	//ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
-	ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga");
+	//ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga");
+	ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/gingerbreadhouse_tex.png");
 	//std::thread t1(ModelManager, "Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga" );
 	ModelManager->ThreadJoin();
 	SceneManager->AddNewScene("Default");
 	SceneManager->SetCurrentScene("Default");
 	auto tempScene(SceneManager->GetSceneByName("Default"));
-	tempScene->AddObjectToScene("Test");
-	auto tempObject3D = tempScene->GetObjectByName("Test");
+	{
+		tempScene->AddObjectToScene("Test");
+		auto tempObject3D = tempScene->GetObjectByName("Test");
+		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+		tempObject3D->SetPosition(vec3(0.f, 0.f, 10.f));
+		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->SetPosition(vec3(0.f));
+		tempStaticMeshComponent->SetRotation(vec3(0.f, 0.f, 0.f));
+		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
+	}
+	{
+		tempScene->AddObjectToScene("Test1");
+		auto tempObject3D = tempScene->GetObjectByName("Test1");
+		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+		tempObject3D->SetPosition(vec3(0.f, 0.f, -10.f));
+		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->SetPosition(vec3(0.f));
+		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 180.f));
+		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
+	}
+	{
+		tempScene->AddObjectToScene("Test2");
+		auto tempObject3D = tempScene->GetObjectByName("Test2");
+		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+		tempObject3D->SetPosition(vec3(10.f, 0.f, 0.f));
+		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->SetPosition(vec3(0.f));
+		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 90.f));
+		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
+	}
+	{
+		tempScene->AddObjectToScene("Test3");
+		auto tempObject3D = tempScene->GetObjectByName("Test3");
+		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+		tempObject3D->SetPosition(vec3(-10.f, 0.f, 0.f));
+		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->SetPosition(vec3(0.f));
+		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 0.f));
+		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
+	}
+	
 
-	tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
+	tempScene->AddObjectToScene("CameraTest");
+	auto tempCamera = tempScene->GetObjectByName("CameraTest");
+	tempCamera->AddComponent(Object3DComponent::CAMERA_COMPONENT, "Camera");
+	tempCamera->SetPosition(vec3(0.f, 0.f, 0.f));
+	auto Camera = dynamic_pointer_cast<CCameraComponent>(tempCamera->GetComponentByName("Camera"));
 
-	tempObject3D->SetPosition(vec3(0.f,0.f,-20.f));
-	auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+	Camera->SetFov(65.f);
+	tempScene->SetCamera(Camera);
 
-	tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
-	tempStaticMeshComponent->SetPosition(vec3(0.f));
-	tempStaticMeshComponent->SetRotation(vec3(0.f,0.f,0.f));
-	tempStaticMeshComponent->GetForwardVector();
-
-	tempStaticMeshComponent->GetRightVector();
-	tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 
 
 }
@@ -178,11 +220,11 @@ void CApp::KeyEvents(array<bool, 322> keys)
 	}
 	if (keys[SDLK_w])
 	{
-		this->LayoutManager->ChangeCurrentLayout("Default");
+		LayoutManager->ChangeCurrentLayout("Default");
 	}
 	if (keys[SDLK_s])
 	{
-		this->LayoutManager->ChangeCurrentLayout("Blank");
+		LayoutManager->ChangeCurrentLayout("Blank");
 	}
 
 }

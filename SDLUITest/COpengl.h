@@ -7,6 +7,7 @@
 #include "glm.hpp"
 #include "gtx/transform.hpp"
 #include "gtc/matrix_transform.hpp"
+#include "CCameraComponent.h"
 
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glew32.lib")
@@ -32,10 +33,8 @@ public:
 	void SetModelMatrix(glm::mat4 matrix);
 
 	void ProLoop(SDL_Window* Window);
-	void PreLoopPerspective();
+	void PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera);
 	void PreLoopOrtho(SDL_Window* Window);
-
-	void SetCameraPosition(glm::vec3 Pos);
 
 	void SelectShaderProgram(int number);
 

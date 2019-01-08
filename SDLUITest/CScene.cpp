@@ -62,3 +62,13 @@ void CScene::Draw(COpengl * opengl)
 		o->Draw(opengl);
 	}
 }
+
+void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
+{
+	this->Camera = Cam;
+}
+
+std::shared_ptr<CCameraComponent> CScene::GetCamera()
+{
+	return this->Camera;
+}

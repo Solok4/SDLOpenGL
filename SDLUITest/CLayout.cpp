@@ -75,6 +75,7 @@ void CLayout::SetFont(const char* font)
 	if (!this->Font)
 	{
 		CLog::MyLog(1, "Failed to load font " + std::string(font));
+		return;
 	}
 }
 

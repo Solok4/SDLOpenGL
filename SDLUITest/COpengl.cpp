@@ -20,16 +20,15 @@ COpengl::~COpengl()
 
 bool COpengl::Create(SDL_Window* Window)
 {
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
 		CLog::MyLog(1, "Failed to create Context");
 		return false;
 	}
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
@@ -171,10 +170,10 @@ void COpengl::ProLoop(SDL_Window* Window)
 	SDL_GL_SwapWindow(Window);
 }
 
-void COpengl::PreLoopPerspective()
+void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 {
-	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f,0.f,0.f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+	glm::mat4 ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), 16.0f / 9.0f, 0.1f, 100.0f);
 	glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(this->Projection, 1, GL_FALSE, &Projection[0][0]);
 
@@ -193,14 +192,6 @@ void COpengl::PreLoopOrtho(SDL_Window* Window)
 
 
 }
-
-void COpengl::SetCameraPosition(glm::vec3 Pos)
-{
-	glm::mat4 ViewMatrix = glm::lookAt(Pos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	GLuint ViewID = glGetUniformLocation(CurrentShaderProgram, "View");
-	glUniformMatrix4fv(ViewID, 1, GL_FALSE, &ViewMatrix[0][0]);
-}
-
 
 void COpengl::SelectShaderProgram(int number)
 {

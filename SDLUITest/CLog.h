@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include<string>
 
 class CLog
 {
@@ -7,6 +7,6 @@ public:
 	CLog();
 	~CLog();
 
-	static void MyLog(int key, const std::string& Message...);
+	static void MyLog(int key, std::string Message,...);
 };
 

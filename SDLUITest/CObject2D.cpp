@@ -164,6 +164,7 @@ int CObject2D::GetObjectLayer()
 	return this->Layer;
 }
 
+
 void CObject2D::LoadTexture(const char * str,std::string name)
 {
 	std::string FileName(str);
@@ -175,16 +176,19 @@ void CObject2D::LoadTexture(const char * str,std::string name)
 	if (!Tex)
 	{
 		CLog::MyLog(1, "Failed to load a texture: " + FileName + " " + IMG_GetError());
+		return;
 	}
-
+	//FinishSurface(Tex);
 	GLint Format;
 	if (Tex->format->BitsPerPixel == 32)
 	{
 		Format = GL_RGBA;
+		Tex = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
 	}
 	else if (Tex->format->BitsPerPixel == 24)
 	{
 		Format = GL_RGB;
+		Tex = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGB24, 0);
 	}
 	GLuint TexID;
 	glGenTextures(1, &TexID);

@@ -15,6 +15,33 @@ CModelManager::~CModelManager()
 	CLog::MyLog(0, "ModelManagerDestructor");
 }
 
+void FinishSurface(SDL_Surface* Surface)
+{
+	SDL_LockSurface(Surface);
+
+	unsigned int* Pixels = (unsigned int*)Surface->pixels;
+	unsigned int* FinalPixels = (unsigned int*)malloc(Surface->pitch*Surface->h);
+	size_t PixLen = strlen((char*)Pixels);
+	size_t FPixLen = strlen((char*)FinalPixels);
+
+	for (int y = 0; y < Surface->h; y++)
+	{
+		for (int x = 0; x < Surface->w; x++)
+		{
+			FinalPixels[y*Surface->w + x] = Pixels[(Surface->h - y)*Surface->w + x];
+		}
+	}
+	for (int y = 0; y < Surface->h; y++)
+	{
+		for (int x = 0; x < Surface->w; x++)
+		{
+			Pixels[y*Surface->w + x] = FinalPixels[y*Surface->w + x];
+		}
+	}
+	SDL_UnlockSurface(Surface);
+	free(FinalPixels);
+}
+
 void CModelManager::LoadOBJ(const char * path, const char* tex)
 {
 	FILE* file;
@@ -22,7 +49,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 	if (file == NULL)
 	{
 		CLog::MyLog(1, "Failed to load a model from " + std::string(path));
-		assert(1 < 0);
+		return;
 	}
 	std::shared_ptr<Model> tempModel (new Model);
 	std::vector<glm::vec3> temp_Vertices;
@@ -69,7 +96,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 				if (matches != 9) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					assert(1 < 0);
+					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
 				VertexIndices.push_back(vertexIndex[1]);
@@ -87,7 +114,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					assert(1 < 0);
+					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
 				VertexIndices.push_back(vertexIndex[1]);
@@ -102,7 +129,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0],&vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					assert(1 < 0);
+					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
 				VertexIndices.push_back(vertexIndex[1]);
@@ -139,12 +166,6 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 	
 	tempModel->IndicesCount = VertexIndices.size();
 
-	auto ptr = &tempModel;
-
-	if (ptr == nullptr)
-	{
-		CLog::MyLog(0, "ABC");
-	}
 
 	glGenVertexArrays(1, &tempModel->VAO);
 	glBindVertexArray(tempModel->VAO);
@@ -193,14 +214,10 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 	else
 	{
 		GLint Format;
-		if (Tex->format->BitsPerPixel == 32)
-		{
-			Format = GL_RGBA;
-		}
-		else if (Tex->format->BitsPerPixel == 24)
-		{
-			Format = GL_RGB;
-		}
+		Format = GL_RGBA;
+		Tex = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
+		FinishSurface(Tex);
+
 		GLuint TexID;
 		glGenTextures(1, &TexID);
 		glBindTexture(GL_TEXTURE_2D, TexID);
@@ -220,20 +237,21 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 
 
 	std::string name(path);
-	int slash = name.find_last_of("/");
+	size_t slash = name.find_last_of("/");
 	this->Models.emplace(name.substr(slash+1, slash + 2), tempModel);
 }
+
 
 void CModelManager::Load(const char * path, const char * tex)
 {
 	std::string Extension(path);
 	std::string Name(path);
-	int slash = Name.find_last_of('/');
+	size_t slash = Name.find_last_of('/');
 	Name = Name.substr(slash + 1, slash + 2);
 	auto Model = CModelManager::GetModelByName(Name);
 	if (Model == nullptr)
 	{
-		int dot = Extension.find_last_of(".");
+		size_t dot = Extension.find_last_of(".");
 		Extension = Extension.substr(dot + 1, dot + 2);
 		std::transform(Extension.begin(), Extension.end(), Extension.begin(), ::tolower);
 		const char* Ex = Extension.c_str();
