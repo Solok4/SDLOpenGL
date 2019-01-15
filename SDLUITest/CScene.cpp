@@ -5,12 +5,14 @@
 
 CScene::CScene()
 {
+	this->Camera = nullptr;
+
 }
 
 
 CScene::~CScene()
 {
-	CLog::MyLog(0, "SceneDestructor "+this->GetName());
+	CLog::MyLog(0, "SceneDestructor %s",this->GetName().c_str());
 }
 
 void CScene::AddObjectToScene(std::string Name)
@@ -57,6 +59,7 @@ std::string CScene::GetName()
 
 void CScene::Draw(COpengl * opengl)
 {
+
 	for (auto o : Objects3D)
 	{
 		o->Draw(opengl);

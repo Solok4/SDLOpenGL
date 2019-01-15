@@ -10,7 +10,7 @@ public:
 	CLabel();
 	~CLabel();
 	void SetFont(TTF_Font* font);
-	void SetText(const char* Text);
+	void SetText(std::string Text);
 	virtual void Prepare() override;
 	TTF_Font* GetFont();
 	void SetColor(SDL_Color Col);

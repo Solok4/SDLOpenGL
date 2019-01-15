@@ -46,16 +46,11 @@ void CEvent::PollEvents()
 	}
 }
 
-int CEvent::GetMouseMotion(bool getX)
+void CEvent::GetMouseMotion(int &Mx, int &My)
 {
-	if (getX)
-	{
-		return _MouseX;
-	}
-	else
-	{
-		return _MouseY;
-	}
+	Mx = this->_MouseX;
+	My = this->_MouseY;
+
 }
 
 bool CEvent::GetIsRunning()

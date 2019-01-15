@@ -8,10 +8,18 @@
 #include "gtx/transform.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "CCameraComponent.h"
+#include "Shaders.h"
 
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glew32.lib")
 
+struct MyFrameBuffer
+{
+	std::string name;
+	GLuint FBO;
+	GLuint RBO;
+	GLuint CBuffer;
+};
 
 class COpengl
 {
@@ -22,12 +30,6 @@ public:
 	bool Create(SDL_Window* Window);
 	void Delete();
 
-	void CreateShader(const char* File,bool IsVertex);
-
-	std::string ReadShaderFromFile(const char* Filename);
-
-	void CreateShaderProgram(int VertexID, int FragmentID);
-
 	void PrepareToLoop();
 	void PreLoop();
 	void SetModelMatrix(glm::mat4 matrix);
@@ -36,26 +38,26 @@ public:
 	void PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera);
 	void PreLoopOrtho(SDL_Window* Window);
 
-	void SelectShaderProgram(int number);
+	void SetAspectRatio(SDL_Window* Window);
+	float GetAspectRatio() { return this->AspectRatio; };
 
-	GLuint* GetShaderProgram();
-	
+	void AddNewFramebuffer(std::string name);
+	void UseFramebuffer(std::string name);
+	MyFrameBuffer GetFramebuffer(std::string name);
+	void ClearFramebuffers();
+	void FinalDraw();
+
 
 private:
 	SDL_GLContext _Context;
+	Shaders Shaders;
+	int WindowW;
+	int WindowH;
+	float AspectRatio;
+	std::vector<MyFrameBuffer> Framebuffers;
 
-	GLuint CurrentShaderProgram;
-
-	std::vector<unsigned int> VertexShaders;
-	std::vector<unsigned int> FragmentShaders;
-	std::vector<unsigned int> ShaderProgram;
-
-	/*glm::mat4 Projection = glm::mat4(1.0f);
-	glm::mat4 ViewMatrix = glm::mat4(1.0f);*/
-
-	GLint Projection;
-	GLint ViewMatrix;
-	GLint ModelMatrix;
+	GLuint FinalVao;
+	GLuint FinalVbo;
 
 };
 

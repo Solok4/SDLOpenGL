@@ -1,7 +1,16 @@
 #pragma once
 
+
+#ifdef __EMSCRIPTEN__
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
+#else
 #include "SDL.h"
 #include "SDL_ttf.h"
+#include "SDL_image.h"
+#endif // __EMSCRIPTEN__
+
 #pragma comment(lib,"SDL2.lib")
 #pragma comment(lib,"SDL2_ttf.lib")
 #pragma comment(lib,"SDL2_image.lib")

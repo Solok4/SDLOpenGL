@@ -18,14 +18,16 @@ public:
 	void SetWindowData(SDL_Window* WND);
 	void PrepareToLoop();
 	void Draw(COpengl* opengl);
+
 	void SetFont(const char* font);
 	TTF_Font* GetFont();
-	void AddItem(int id,std::string name,glm::vec2 pos,glm::vec2 size);
-	std::shared_ptr<CObject2D> FindObjectByName(std::string name);
+
+	void AddItem(int id, const char* name,glm::vec2 pos,glm::vec2 size);
+	std::shared_ptr<CObject2D> FindObjectByName(const char* name);
 	std::vector<std::shared_ptr<CObject2D>> GetObjectByType(int type);
 
-	std::string GetName();
-	void SetName(std::string name);
+	const char* GetName();
+	void SetName(const char* name);
 
 	void GetMousePosition(int x,int y);
 
@@ -37,7 +39,7 @@ public:
 	int MousePosX;
 	int MousePosY;
 
-	std::string Name;
+	const char* Name;
 
 	GLuint* ShaderProgram;
 	TTF_Font* Font;

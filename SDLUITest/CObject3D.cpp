@@ -12,7 +12,7 @@ CObject3D::CObject3D()
 
 CObject3D::~CObject3D()
 {
-	CLog::MyLog(0, "3DObjectDestructor "+this->GetName());
+	CLog::MyLog(0, "3DObjectDestructor %s",this->GetName().c_str());
 }
 
 void CObject3D::Prepare()

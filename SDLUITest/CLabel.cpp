@@ -24,12 +24,12 @@ void CLabel::SetFont(TTF_Font* font)
 	this->Font = font;
 }
 
-void CLabel::SetText(const char * Text)
+void CLabel::SetText(std::string Text)
 {
 	SDL_Surface* TextSurface;
-	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text, this->Color)))
+	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text.c_str(), this->Color)))
 	{
-		CLog::MyLog(1, "Failed to create text surface: " + std::string(TTF_GetError()));
+		CLog::MyLog(1, "Failed to create text surface: %s",TTF_GetError());
 		return;
 	}
 	else

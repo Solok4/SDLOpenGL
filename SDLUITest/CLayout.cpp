@@ -11,7 +11,7 @@ CLayout::CLayout()
 
 CLayout::~CLayout()
 {
-	CLog::MyLog(0, "LayoutDestructor "+this->Name);
+	CLog::MyLog(0, "LayoutDestructor %s",this->Name);
 }
 
 void CLayout::SetWindowData(SDL_Window * WND)
@@ -74,7 +74,7 @@ void CLayout::SetFont(const char* font)
 	this->Font = TTF_OpenFont(font, 32);
 	if (!this->Font)
 	{
-		CLog::MyLog(1, "Failed to load font " + std::string(font));
+		CLog::MyLog(1, "Failed to load font %s",font);
 		return;
 	}
 }
@@ -84,7 +84,7 @@ TTF_Font* CLayout::GetFont()
 	return this->Font;
 }
 
-void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
+void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 {
 	std::map<int, std::vector<std::shared_ptr<CObject2D>>>::iterator it;
 	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
@@ -154,13 +154,13 @@ void CLayout::AddItem(int id,std::string name, glm::vec2 pos, glm::vec2 size)
 
 }
 
-std::shared_ptr<CObject2D> CLayout::FindObjectByName(std::string name)
+std::shared_ptr<CObject2D> CLayout::FindObjectByName(const char* name)
 {
 	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
 		for (auto o : it->second)
 		{
-			if (o->GetName() == name)
+			if (strcmp(o->GetName().c_str(), name) == 0)
 			{
 				return o;
 			}
@@ -171,7 +171,7 @@ std::shared_ptr<CObject2D> CLayout::FindObjectByName(std::string name)
 
 std::vector<std::shared_ptr<CObject2D>> CLayout::GetObjectByType(int type)
 {
-	std::vector<CObject2D*> List;
+	std::vector<CObject2D> List;
 	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
 		if (it->first == type)
@@ -182,12 +182,12 @@ std::vector<std::shared_ptr<CObject2D>> CLayout::GetObjectByType(int type)
 	return {};
 }
 
-std::string CLayout::GetName()
+const char* CLayout::GetName()
 {
 	return this->Name;
 }
 
-void CLayout::SetName(std::string name)
+void CLayout::SetName(const char* name)
 {
 	this->Name = name;
 }

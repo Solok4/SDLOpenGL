@@ -115,7 +115,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glm\glm;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -189,6 +189,7 @@
     <ClInclude Include="CModelManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Shaders.h" />
     <ClInclude Include="XmlParser.h" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +219,7 @@
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SDLUITest.cpp" />
+    <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="XmlParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -14,7 +14,7 @@ CObject2D::CObject2D()
 	this->_VAO = 0;
 	this->_VBO.clear();
 	this->Layer = 0;
-	this->SetPosition(glm::vec2(0.0f,0.0f));
+	this->SetPosition(glm::vec2(0.0f, 0.0f));
 	this->SetSize(glm::vec2(1.0f, 1.0f));
 	this->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 }
@@ -22,7 +22,7 @@ CObject2D::CObject2D()
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(0, "Object2DDestructor " + this->_Name);
+	CLog::MyLog(0, "Object2DDestructor %s",this->_Name.c_str());
 }
 
 void CObject2D::Prepare()
@@ -123,7 +123,7 @@ void CObject2D::PreDraw()
 void CObject2D::Draw()
 {
 	glBindTexture(GL_TEXTURE_2D, this->TextureID);
-	glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 }
 
@@ -165,7 +165,7 @@ int CObject2D::GetObjectLayer()
 }
 
 
-void CObject2D::LoadTexture(const char * str,std::string name)
+void CObject2D::LoadTexture(const char * str, std::string name)
 {
 	std::string FileName(str);
 	int lastSlash = FileName.find_last_of("/");
@@ -175,7 +175,7 @@ void CObject2D::LoadTexture(const char * str,std::string name)
 	Tex = IMG_Load(str);
 	if (!Tex)
 	{
-		CLog::MyLog(1, "Failed to load a texture: " + FileName + " " + IMG_GetError());
+		CLog::MyLog(1, "Failed to load a texture: %s %d",FileName,IMG_GetError());
 		return;
 	}
 	//FinishSurface(Tex);
@@ -195,10 +195,10 @@ void CObject2D::LoadTexture(const char * str,std::string name)
 	glBindTexture(GL_TEXTURE_2D, TexID);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, Format, Tex->w, Tex->h, 0, Format, GL_UNSIGNED_BYTE, Tex->pixels);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	this->Textures.emplace(name, TexID);
@@ -207,9 +207,8 @@ void CObject2D::LoadTexture(const char * str,std::string name)
 
 GLuint CObject2D::GetTexture(std::string name)
 {
-	std::map<std::string, GLuint>::iterator it;
-	it = this->Textures.find(name);
-	if (it !=this->Textures.end())
+	auto it = this->Textures.find(name);
+	if (it != this->Textures.end())
 	{
 		return this->Textures.at(it->first);
 	}

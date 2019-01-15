@@ -12,7 +12,7 @@ public:
 	CEvent();
 	~CEvent();
 	void PollEvents();
-	int GetMouseMotion(bool getX);
+	void GetMouseMotion(int &Mx, int &My);
 	bool GetIsRunning();
 	SDL_MouseButtonEvent GetMouseData();
 	array<bool,322> GetKeyboardData();

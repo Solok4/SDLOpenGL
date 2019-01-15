@@ -7,6 +7,6 @@ public:
 	CLog();
 	~CLog();
 
-	static void MyLog(int key, std::string Message,...);
+	static void MyLog(int key, const char* Message,...);
 };
 

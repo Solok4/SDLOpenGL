@@ -8,14 +8,15 @@ public:
 	CLayoutManager();
 	~CLayoutManager();
 
-	void AddNewLayout(std::string name);
-	std::shared_ptr<CLayout> GetLayoutByName(std::string name);
+	void AddNewLayout(const char* name);
+	std::shared_ptr<CLayout> GetLayoutByName(const char* name);
 
-	void ChangeCurrentLayout(std::string name);
+	void ChangeCurrentLayout(const char* name);
 
 	std::shared_ptr<CLayout> GetCurrentLayout();
 
 	void SetMousePosition(int mX, int mY);
+	void SetWindowData(SDL_Window* Window);
 
 private:
 

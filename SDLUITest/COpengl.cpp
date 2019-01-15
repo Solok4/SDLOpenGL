@@ -36,111 +36,54 @@ bool COpengl::Create(SDL_Window* Window)
 		CLog::MyLog(1, "Failed to init GLEW");
 		return false;
 	}
+	this->SetAspectRatio(Window);
 	return true;
 }
 
 void COpengl::Delete()
 {
+	this->ClearFramebuffers();
 	if (_Context !=NULL)
 	{
 		SDL_GL_DeleteContext(_Context);
 	}
 }
 
-void COpengl::CreateShader(const char * File, bool IsVertex)
-{
-	std::string ShaderText = ReadShaderFromFile(File);
-	if (!ShaderText.empty())
-	{
-		char logBuff[512];
-		const char* ShaderAsChar = ShaderText.c_str();
-		CLog::MyLog(0, ShaderAsChar);
-		GLint Result = GL_FALSE;
-		if (IsVertex)
-		{
-			GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(VertexShaderID, 1, &ShaderAsChar, NULL);
-			glCompileShader(VertexShaderID);
-
-			glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(0, "Vertex Shader compile status: " + std::to_string((int)Result));
-			glGetShaderInfoLog(VertexShaderID, 512, NULL, logBuff);
-			CLog::MyLog(0, logBuff);
-			VertexShaders.push_back(VertexShaderID);
-		}
-		else
-		{
-			GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(FragmentShaderID, 1, &ShaderAsChar, NULL);
-			glCompileShader(FragmentShaderID);
-
-			glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(0, "Fragment Shader compile status: " + std::to_string((int)Result));
-			glGetShaderInfoLog(FragmentShaderID, 512, NULL, logBuff);
-			CLog::MyLog(0, logBuff);
-			FragmentShaders.push_back(FragmentShaderID);
-		}
-	}
-
-}
-
-std::string COpengl::ReadShaderFromFile(const char *Filename)
-{
-	std::fstream ShaderFileHandle;
-	std::string ShaderName(Filename);
-	ShaderFileHandle.open(Filename, std::ios::in);
-	if(ShaderFileHandle.good() == false)
-	{
-		CLog::MyLog(1, "Failed to read shader from file: " + ShaderName);
-		return "";
-	}
-
-	char NextLine[256];
-	std::string FileContent;
-	while (!ShaderFileHandle.eof())
-	{
-		ShaderFileHandle.getline(NextLine, 256);
-		FileContent.append(NextLine);
-		FileContent.append("\n");
-	}
-	ShaderFileHandle.close();
-	return FileContent;
-}
-
-void COpengl::CreateShaderProgram(int VertexID, int FragmentID)
-{
-	if (VertexShaders.empty() && FragmentShaders.empty())
-	{
-	}
-	else if(VertexShaders.size() < VertexID || FragmentShaders.size() < FragmentID)
-	{
-	}
-	else
-	{
-		GLuint ProgramID = glCreateProgram();
-		glAttachShader(ProgramID, VertexShaders[VertexID]);
-		glAttachShader(ProgramID, FragmentShaders[FragmentID]);
-		glLinkProgram(ProgramID);
-		
-		GLint result = GL_FALSE;
-		glGetProgramiv(ProgramID, GL_LINK_STATUS, &result);
-		CLog::MyLog(0, "Shader Program link status: " + std::to_string(result));
-		glDetachShader(ProgramID, VertexShaders[VertexID]);
-		glDetachShader(ProgramID, FragmentShaders[FragmentID]);
-
-		glDeleteShader(FragmentShaders[FragmentID]);
-		glDeleteShader(VertexShaders[VertexID]);
-		ShaderProgram.push_back(ProgramID);
-	}
-}
 
 void COpengl::PrepareToLoop()
 {
-	CreateShader("Assets/Shaders/vs.vs", true);
-	CreateShader("Assets/Shaders/fs.fs", false);
-	CreateShaderProgram(0, 0);
+	Shaders.CreateShader("Assets/Shaders/vs.vs", true);
+	Shaders.CreateShader("Assets/Shaders/fs.fs", false);
+	Shaders.CreateShader("Assets/Shaders/final.vs",true);
+	Shaders.CreateShader("Assets/shaders/final.fs", false);
+	Shaders.CreateShaderProgram(0, 0,"Default");
+	Shaders.CreateShaderProgram(1, 1, "Final");
 	glClearColor(0, 0, 0, 1);
 
+	// Panel vertices
+	GLfloat panelVertices[] = {
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		-1.0f,  1.0f,  0.0f, 1.0f
+	};
+
+	glGenVertexArrays(1, &this->FinalVao);
+	glBindVertexArray(this->FinalVao);
+	glGenBuffers(1, &this->FinalVbo);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, this->FinalVbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(panelVertices), panelVertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2*sizeof(GLfloat)));
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void COpengl::PreLoop()
@@ -149,18 +92,20 @@ void COpengl::PreLoop()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	SelectShaderProgram(0);
-	glUseProgram(CurrentShaderProgram);
+
+	Shaders.SetCurrentShaderProgram("Default");
+	Shaders.AddUniformToShaderStruct("Default","View");
+	Shaders.AddUniformToShaderStruct("Default","Projection");
+	Shaders.AddUniformToShaderStruct("Default","Model");
+
+	Shaders.AddUniformToShaderStruct("Final", "Tex");
 	
-	this->ViewMatrix = glGetUniformLocation(CurrentShaderProgram, "View");
-	this->Projection = glGetUniformLocation(CurrentShaderProgram, "Projection");
-	this->ModelMatrix = glGetUniformLocation(CurrentShaderProgram, "Model");
 
 }
 
 void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
-	glUniformMatrix4fv(this->ModelMatrix, 1, GL_FALSE, &matrix[0][0]);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default","Model"), 1, GL_FALSE, &matrix[0][0]);
 }
 
 void COpengl::ProLoop(SDL_Window* Window)
@@ -173,9 +118,9 @@ void COpengl::ProLoop(SDL_Window* Window)
 void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 {
 	glm::mat4 ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), 16.0f / 9.0f, 0.1f, 100.0f);
-	glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(this->Projection, 1, GL_FALSE, &Projection[0][0]);
+	glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->AspectRatio, 0.1f, 100.0f);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 
 
 }
@@ -183,28 +128,103 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 void COpengl::PreLoopOrtho(SDL_Window* Window)
 {
 	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	int w = 0;
-	int h = 0;
-	SDL_GL_GetDrawableSize(Window, &w, &h);
-	glm::mat4 Projection = glm::ortho(0.0f, (float)w, (float)h, 0.0f, -0.1f, 1000.0f);
-	glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(this->Projection, 1, GL_FALSE, &Projection[0][0]);
+	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WindowW, (float)this->WindowH, 0.0f, -0.1f, 1000.0f);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 
 
 }
 
-void COpengl::SelectShaderProgram(int number)
+void COpengl::SetAspectRatio(SDL_Window * Window)
 {
-	if (!ShaderProgram.empty()) 
-	{
-		CurrentShaderProgram = ShaderProgram[number];
+	int w, h;
+	SDL_GetWindowSize(Window, &w, &h);
+	this->WindowW = w;
+	this->WindowH = h;
+	this->AspectRatio = w / h;
+}
 
+void COpengl::AddNewFramebuffer(std::string name)
+{
+	MyFrameBuffer FboStruct;
+	FboStruct.name = name;
+	glGenFramebuffers(1, &FboStruct.FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FboStruct.FBO);
+
+	glGenTextures(1, &FboStruct.CBuffer);
+	glBindTexture(GL_TEXTURE_2D, FboStruct.CBuffer);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->WindowW, this->WindowH, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FboStruct.CBuffer, 0);
+
+	glGenRenderbuffers(1, &FboStruct.RBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, FboStruct.RBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, FboStruct.RBO);
+	this->Framebuffers.push_back(FboStruct);
+}
+
+void COpengl::UseFramebuffer(std::string name)
+{
+	if (name == "0")
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		return;
+	}
+	for (auto o : this->Framebuffers)
+	{
+		if (name == o.name)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
+			glClearColor(0.f, 0.f, 0.f, 1.f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			return;
+		}
+	}
+	CLog::MyLog(1, "Framebuffer named %s not found", name.c_str());
+}
+
+MyFrameBuffer COpengl::GetFramebuffer(std::string name)
+{
+	for (auto o : this->Framebuffers)
+	{
+		if (o.name == name)
+			return o;
+	}
+	CLog::MyLog(1, "Framebuffer named %s not found", name.c_str());
+	return {};
+}
+
+void COpengl::ClearFramebuffers()
+{
+	for (auto o : this->Framebuffers)
+	{
+		glDeleteRenderbuffers(1,&o.RBO);
+		glDeleteTextures(1, &o.CBuffer);
+		glDeleteFramebuffers(1,&o.FBO);
 	}
 }
 
-GLuint* COpengl::GetShaderProgram()
+void COpengl::FinalDraw()
 {
-	return &this->CurrentShaderProgram;
+	glBindVertexArray(this->FinalVao);
+	Shaders.SetCurrentShaderProgram("Final");
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("Default").CBuffer);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("GUI").CBuffer);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+	glBindVertexArray(0);
 }
 
 

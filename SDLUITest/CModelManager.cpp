@@ -48,7 +48,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 	fopen_s(&file,path, "r");
 	if (file == NULL)
 	{
-		CLog::MyLog(1, "Failed to load a model from " + std::string(path));
+		CLog::MyLog(1, "Failed to load a model from %s",path);
 		return;
 	}
 	std::shared_ptr<Model> tempModel (new Model);
@@ -223,10 +223,10 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 		glBindTexture(GL_TEXTURE_2D, TexID);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, Format, Tex->w, Tex->h, 0, Format, GL_UNSIGNED_BYTE, Tex->pixels);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		tempModel->Tex = TexID;
@@ -274,7 +274,7 @@ void CModelManager::ThreadJoin()
 
 std::shared_ptr<Model> CModelManager::GetModelByName(std::string name)
 {
-	for (std::map<std::string, std::shared_ptr<Model>>::iterator it = this->Models.begin(); it != this->Models.end(); ++it)
+	for (auto it = this->Models.begin(); it != this->Models.end(); ++it)
 	{
 		if (it->first == name)
 		{

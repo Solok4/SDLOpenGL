@@ -5,6 +5,7 @@
 #include "CObject3D.h"
 #include "CCameraComponent.h"
 
+
 class CScene
 {
 public:
@@ -24,5 +25,6 @@ public:
 	std::vector <std::shared_ptr<CObject3D>> Objects3D;
 	std::string Name;
 	std::shared_ptr<CCameraComponent> Camera;
+
 };
 

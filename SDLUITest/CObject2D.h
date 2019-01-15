@@ -27,8 +27,8 @@ public:
 	void SetObjectLayer(int Layer);
 	int GetObjectLayer();
 
-	void LoadTexture(const char* str, std::string name="Default");
-	GLuint GetTexture(std::string name="Default");
+	void LoadTexture(const char* str, std::string name = "Default");
+	GLuint GetTexture(std::string name = "Default");
 	void BindTexture(GLuint Tex);
 
 	void SetName(std::string name);
@@ -61,4 +61,3 @@ protected:
 	GLuint _VAO;
 	std::vector<GLuint> _VBO;
 };
-

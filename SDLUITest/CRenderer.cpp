@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "CLog.h"
 #include "CRenderer.h"
-#include "SDL_ttf.h"
-#include "SDL_image.h"
+
 
 
 
@@ -21,17 +20,14 @@ void CRenderer::Init()
 	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenWidth, ScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 	if (Window == nullptr)
 	{
-		CLog::MyLog(1, "Failed to create window: " + std::string(SDL_GetError()));
+		CLog::MyLog(1, "Failed to create window: %s",SDL_GetError());
 
 	}
 	if (TTF_Init() != 0)
 	{
-		CLog::MyLog(1, "Failed to initalize TTF: " + std::string(TTF_GetError()));
+		CLog::MyLog(1, "Failed to initalize TTF: %s",TTF_GetError());
 	}
-	//if (!IMG_Init(IMG_INIT_JPG))
-	//{
-	//	CLog::MyLog(1, "Failed to initalize Image library: "+std::string(IMG_GetError()));
-	//}
+
 }
 
 void CRenderer::Destroy()
@@ -41,7 +37,6 @@ void CRenderer::Destroy()
 		SDL_DestroyWindow(Window);
 	}
 	TTF_Quit();
-	//IMG_Quit();
 	
 }
 
