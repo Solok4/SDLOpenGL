@@ -2,7 +2,7 @@
 #include "CModelManager.h"
 #include <fstream>
 #include "CLog.h"
-#include "glm.hpp"
+#include "glm/glm.hpp"
 
 
 CModelManager::CModelManager()
@@ -45,12 +45,23 @@ void FinishSurface(SDL_Surface* Surface)
 void CModelManager::LoadOBJ(const char * path, const char* tex)
 {
 	FILE* file;
-	fopen_s(&file,path, "r");
+#ifdef __EMSCRIPTEN__
+	file = fopen(path, "r");
 	if (file == NULL)
 	{
-		CLog::MyLog(1, "Failed to load a model from %s",path);
+		CLog::MyLog(1, "Failed to load a model from %s", path);
 		return;
 	}
+#else
+	fopen_s(&file, path, "r");
+	if (file == NULL)
+	{
+		CLog::MyLog(1, "Failed to load a model from %s", path);
+		return;
+	}
+#endif // __EMSCRIPTEN__
+
+	
 	std::shared_ptr<Model> tempModel (new Model);
 	std::vector<glm::vec3> temp_Vertices;
 	std::vector<glm::vec2> temp_Texcords;
@@ -63,8 +74,88 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 
 	while (1)
 	{
+#ifdef __EMSCRIPTEN__
 		char LineHeader[128];
-		int res = fscanf_s(file, "%s", LineHeader,sizeof(LineHeader));
+		int res = fscanf(file, "%s", LineHeader);
+		if (res == EOF)
+			break;
+
+		if (strcmp(LineHeader, "v") == 0)
+		{
+			glm::vec3 Vertex;
+			fscanf(file, "%f %f %f", &Vertex.x, &Vertex.y, &Vertex.z);
+			temp_Vertices.push_back(Vertex);
+		}
+		else if (strcmp(LineHeader, "vt") == 0)
+		{
+			tempModel->HasTexcords = true;
+			glm::vec2 Texcord;
+			fscanf(file, "%f %f", &Texcord.x, &Texcord.y);
+			temp_Texcords.push_back(Texcord);
+		}
+		else if (strcmp(LineHeader, "vn") == 0)
+		{
+			tempModel->HasNormals = true;
+			glm::vec3 Normal;
+			fscanf(file, "%f %f %f", &Normal.x, &Normal.y, &Normal.z);
+			temp_Normals.push_back(Normal);
+		}
+		else if (strcmp(LineHeader, "f") == 0)
+		{
+			if (tempModel->HasNormals && tempModel->HasTexcords)
+			{
+				unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+				if (matches != 9) {
+					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					return;
+				}
+				VertexIndices.push_back(vertexIndex[0]);
+				VertexIndices.push_back(vertexIndex[1]);
+				VertexIndices.push_back(vertexIndex[2]);
+				TexcordIndices.push_back(uvIndex[0]);
+				TexcordIndices.push_back(uvIndex[1]);
+				TexcordIndices.push_back(uvIndex[2]);
+				NormalIndices.push_back(normalIndex[0]);
+				NormalIndices.push_back(normalIndex[1]);
+				NormalIndices.push_back(normalIndex[2]);
+			}
+			else if (tempModel->HasNormals && !tempModel->HasTexcords)
+			{
+				unsigned int vertexIndex[3], normalIndex[3];
+				int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+				if (matches != 6) {
+					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					return;
+				}
+				VertexIndices.push_back(vertexIndex[0]);
+				VertexIndices.push_back(vertexIndex[1]);
+				VertexIndices.push_back(vertexIndex[2]);
+				NormalIndices.push_back(normalIndex[0]);
+				NormalIndices.push_back(normalIndex[1]);
+				NormalIndices.push_back(normalIndex[2]);
+			}
+			else if (!tempModel->HasNormals && tempModel->HasTexcords)
+			{
+				unsigned int vertexIndex[3], uvIndex[3];
+				int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
+				if (matches != 6) {
+					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					return;
+				}
+				VertexIndices.push_back(vertexIndex[0]);
+				VertexIndices.push_back(vertexIndex[1]);
+				VertexIndices.push_back(vertexIndex[2]);
+				TexcordIndices.push_back(uvIndex[0]);
+				TexcordIndices.push_back(uvIndex[1]);
+				TexcordIndices.push_back(uvIndex[2]);
+			}
+
+
+		}
+#else
+		char LineHeader[128];
+		int res = fscanf_s(file, "%s", LineHeader, sizeof(LineHeader));
 		if (res == EOF)
 			break;
 
@@ -126,7 +217,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 			else if (!tempModel->HasNormals && tempModel->HasTexcords)
 			{
 				unsigned int vertexIndex[3], uvIndex[3];
-				int matches = fscanf_s(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0],&vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
+				int matches = fscanf_s(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					return;
@@ -141,6 +232,10 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 
 
 		}
+
+#endif // !__EMSCRIPTEN__
+
+		
 	}
 	fclose(file);
 

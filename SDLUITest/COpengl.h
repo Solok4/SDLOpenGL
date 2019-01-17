@@ -4,9 +4,9 @@
 #include "SDL.h"
 #include <vector>
 #include "GL/glew.h"
-#include "glm.hpp"
-#include "gtx/transform.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "CCameraComponent.h"
 #include "Shaders.h"
 

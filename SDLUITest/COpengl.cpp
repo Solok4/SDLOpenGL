@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "GL/glew.h"
-#include "glm.hpp"
+#include "glm/glm.hpp"
+#ifndef __EMSCRIPTEN__
 #include <GL/GL.h>
 #include <GL/GLU.h>
+#endif // !__EMSCRIPTEN__
 #include "CLog.h"
 #include "COpengl.h"
 #include <fstream>
@@ -20,9 +22,19 @@ COpengl::~COpengl()
 
 bool COpengl::Create(SDL_Window* Window)
 {
+#ifdef __EMSCRIPTEN__
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetSwapInterval(0);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+#else
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif // __EMSCRIPTEN__
+
+
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
@@ -52,10 +64,17 @@ void COpengl::Delete()
 
 void COpengl::PrepareToLoop()
 {
+#ifdef __EMSCRIPTEN__
+	Shaders.CreateShader("Assets/Shaders/vs.vse", true);
+	Shaders.CreateShader("Assets/Shaders/fs.fse", false);
+	Shaders.CreateShader("Assets/Shaders/final.vse", true);
+	Shaders.CreateShader("Assets/Shaders/final.fse", false);
+#else
 	Shaders.CreateShader("Assets/Shaders/vs.vs", true);
 	Shaders.CreateShader("Assets/Shaders/fs.fs", false);
-	Shaders.CreateShader("Assets/Shaders/final.vs",true);
+	Shaders.CreateShader("Assets/Shaders/final.vs", true);
 	Shaders.CreateShader("Assets/shaders/final.fs", false);
+#endif // __EMSCRIPTEN__
 	Shaders.CreateShaderProgram(0, 0,"Default");
 	Shaders.CreateShaderProgram(1, 1, "Final");
 	glClearColor(0, 0, 0, 1);

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CObject3D.h"
-#include "gtx/transform.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 CObject3D::CObject3D()
 {

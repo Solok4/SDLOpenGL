@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CLabel.h"
-#include "gtx/transform.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 
 CLabel::CLabel()
@@ -38,10 +38,10 @@ void CLabel::SetText(std::string Text)
 		this->SetSize(glm::vec2(TextSurface->w,TextSurface->h));
 		glBindTexture(GL_TEXTURE_2D, this->TextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TextSurface->w, TextSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, TextSurface->pixels);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		SDL_FreeSurface(TextSurface);
 	}

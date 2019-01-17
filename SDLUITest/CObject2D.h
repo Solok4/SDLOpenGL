@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <map>
-#include "glm.hpp"
+#include "glm/glm.hpp"
 #include "GL/glew.h"
 using namespace glm;
 
@@ -27,12 +27,12 @@ public:
 	void SetObjectLayer(int Layer);
 	int GetObjectLayer();
 
-	void LoadTexture(const char* str, std::string name = "Default");
-	GLuint GetTexture(std::string name = "Default");
+	void LoadTexture(const char* str, const char* name = "Default");
+	GLuint GetTexture(const char* name = "Default");
 	void BindTexture(GLuint Tex);
 
-	void SetName(std::string name);
-	std::string GetName();
+	void SetName(const char* name);
+	const char* GetName();
 	void SetID(int id);
 	int GetID();
 
@@ -51,11 +51,11 @@ protected:
 	bool _IsActive = true;
 	bool _IsVisible = true;
 
-	std::string _Name;
+	const char* _Name;
 
 	mat4 ModelMatrix;
 
-	std::map<std::string, GLuint> Textures;
+	std::map<const char*, GLuint> Textures;
 	GLuint TextureID;
 
 	GLuint _VAO;

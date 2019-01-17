@@ -40,7 +40,7 @@ void CLayout::PrepareToLoop()
 				TryLabel->SetText("Test");
 				continue;
 			}
-			o->LoadTexture("Assets/Textures/TestTex.jpg");
+			o->LoadTexture("Assets/Textures/TestTex.bmp");
 			o->BindTexture(o->GetTexture());
 		}
 	}
@@ -160,7 +160,7 @@ std::shared_ptr<CObject2D> CLayout::FindObjectByName(const char* name)
 	{
 		for (auto o : it->second)
 		{
-			if (strcmp(o->GetName().c_str(), name) == 0)
+			if (strcmp(o->GetName(), name) == 0)
 			{
 				return o;
 			}

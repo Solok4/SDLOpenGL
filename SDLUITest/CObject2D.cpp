@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "CObject2D.h"
-#include "glm.hpp"
-#include "gtx/transform.hpp"
-#include "gtc/matrix_transform.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include <fstream>
 #include "SDL_image.h"
 #include "CLog.h"
@@ -22,7 +22,7 @@ CObject2D::CObject2D()
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(0, "Object2DDestructor %s",this->_Name.c_str());
+	CLog::MyLog(0, "Object2DDestructor %s",this->_Name);
 }
 
 void CObject2D::Prepare()
@@ -165,11 +165,16 @@ int CObject2D::GetObjectLayer()
 }
 
 
-void CObject2D::LoadTexture(const char * str, std::string name)
+void CObject2D::LoadTexture(const char * str, const char* name)
 {
-	std::string FileName(str);
+	
+	/*std::string FileName(str);
 	int lastSlash = FileName.find_last_of("/");
-	std::string JustFile(FileName.substr(lastSlash + 1));
+	std::string JustFile(FileName.substr(lastSlash + 1));*/
+
+	const char* FileName(str);
+	const char* lastSlash = strrchr(FileName, '/');
+	const char* JustFile(lastSlash+1);
 
 	SDL_Surface* Tex;
 	Tex = IMG_Load(str);
@@ -205,7 +210,7 @@ void CObject2D::LoadTexture(const char * str, std::string name)
 
 }
 
-GLuint CObject2D::GetTexture(std::string name)
+GLuint CObject2D::GetTexture(const char* name)
 {
 	auto it = this->Textures.find(name);
 	if (it != this->Textures.end())
@@ -220,12 +225,12 @@ void CObject2D::BindTexture(GLuint Tex)
 	this->TextureID = Tex;
 }
 
-void CObject2D::SetName(std::string name)
+void CObject2D::SetName(const char* name)
 {
 	this->_Name = name;
 }
 
-std::string CObject2D::GetName()
+const char* CObject2D::GetName()
 {
 	return this->_Name;
 }
@@ -239,8 +244,6 @@ int CObject2D::GetID()
 {
 	return this->_ID;
 }
-
-
 
 mat4 CObject2D::GetModelMatrix()
 {

@@ -52,6 +52,9 @@ public:
 	int WindowW;
 	int WindowH;
 
+	uint32_t Start;
+	uint32_t End;
+
 	std::unique_ptr<CLayoutManager> LayoutManager;
 	std::unique_ptr<CModelManager> ModelManager;
 	std::unique_ptr<CSceneManager> SceneManager;

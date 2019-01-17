@@ -9,7 +9,6 @@
 #include "CImage.h"
 #include "CLog.h"
 #include "COpengl.h"
-#include <Windows.h>
 class CLayout
 {
 public:

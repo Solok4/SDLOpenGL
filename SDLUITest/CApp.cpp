@@ -51,17 +51,15 @@ void CApp::Loop()
 #ifdef __EMSCRIPTEN__
 	return;
 #endif // __EMSCRIPTEN__
-	float rot = 0;
+	int rot = 0;
 	std::vector<std::shared_ptr<CObject2D>> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
-	uint32_t start = SDL_GetTicks();
-	uint32_t end = SDL_GetTicks();
 	while (Event.GetIsRunning())
 	{
-		this->FrameTime = end - start;
+		this->FrameTime = this->End - this->Start;
 		//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
-		start = SDL_GetTicks();
+		this->Start = SDL_GetTicks();
 		PollEvents();
 		CurrentLayout = LayoutManager->GetCurrentLayout();
 		CurrentScene = SceneManager->GetCurrentScene();
@@ -85,7 +83,7 @@ void CApp::Loop()
 			SDL_GetWindowSize(Renderer.GetWindow(), &w, &h);
 			this->WindowW = w;
 			this->WindowH = h;
-#ifdef __EMSCRIPTEN__
+#ifndef __EMSCRIPTEN__
 			SetCursorPos(xpos + (w / 2), ypos + (h / 2));
 #endif // __EMSCRIPTEN__
 		}
@@ -99,7 +97,6 @@ void CApp::Loop()
 		OpenGL.UseFramebuffer("Default");
 		OpenGL.PreLoopOrtho(Renderer.GetWindow());
 
-	
 		CurrentLayout->Draw(&this->OpenGL);
 		CurrentScene->GetCamera()->SetRotation(glm::vec3(0.f, (rot + 1) / 2, 0.f));
 
@@ -112,8 +109,8 @@ void CApp::Loop()
 		
 
 		OpenGL.ProLoop(Renderer.GetWindow());
+		this->End = SDL_GetTicks();
 		rot++;
-		end = SDL_GetTicks();
 
 	}
 }
@@ -121,11 +118,15 @@ void CApp::Loop()
 #ifdef __EMSCRIPTEN__
 void CApp::EmscriptenLoop()
 {
-	float rot = 0;
 	std::vector<std::shared_ptr<CObject2D>> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
+	this->FrameTime = this->End - this->Start;
+	//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
+	this->Start = SDL_GetTicks();
 	PollEvents();
+	CurrentLayout = LayoutManager->GetCurrentLayout();
+	CurrentScene = SceneManager->GetCurrentScene();
 
 	ButtonList = CurrentLayout->GetObjectByType(Object2DType::OBJECT2D_BUTTON);
 	for (auto o : ButtonList)
@@ -144,25 +145,34 @@ void CApp::EmscriptenLoop()
 		int xpos = 0; int ypos = 0;
 		SDL_GetWindowPosition(Renderer.GetWindow(), &xpos, &ypos);
 		SDL_GetWindowSize(Renderer.GetWindow(), &w, &h);
+		this->WindowW = w;
+		this->WindowH = h;
+#ifndef __EMSCRIPTEN__
 		SetCursorPos(xpos + (w / 2), ypos + (h / 2));
+#endif // __EMSCRIPTEN__
 	}
 	else
 	{
 		SDL_ShowCursor(true);
 	}
-	OpenGL.PreLoop();
-	OpenGL.PreLoopOrtho(Renderer.GetWindow());
-	
-	CurrentLayout->Draw(&this->OpenGL);
-	CurrentScene->GetCamera()->SetRotation(glm::vec3(0.f, (rot + 1) / 2, 0.f));
 
+	OpenGL.PreLoop();
+	//OpenGL.UseFramebuffer("GUI");
+	OpenGL.UseFramebuffer("0");
+	OpenGL.PreLoopOrtho(Renderer.GetWindow());
+
+	CurrentLayout->Draw(&this->OpenGL);
+
+	//OpenGL.UseFramebuffer("Default");
 	OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
 	CurrentScene->Draw(&this->OpenGL);
 
+	//OpenGL.UseFramebuffer("0");
+	//OpenGL.FinalDraw();
+
 
 	OpenGL.ProLoop(Renderer.GetWindow());
-	rot++;
-
+	this->End = SDL_GetTicks();
 
 }
 #endif // __EMSCRIPTEN__
@@ -197,7 +207,7 @@ void CApp::PreLoop()
 		//TempButton->AttachFunc(MouseClick);
 
 		auto TempButton2 = std::dynamic_pointer_cast<CButton>(Layout->FindObjectByName("TestButton2"));
-		TempButton2->LoadTexture("Assets/Textures/TestTex.jpg");
+		TempButton2->LoadTexture("Assets/Textures/TestTex.bmp");
 		TempButton2->BindTexture(TempButton2->GetTexture());
 		//TempButton2->AttachFunc([]() {});
 		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
