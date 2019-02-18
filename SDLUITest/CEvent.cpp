@@ -24,14 +24,24 @@ void CEvent::PollEvents()
 		{
 			_MouseX = this->_Event.motion.x;
 			_MouseY = this->_Event.motion.y;
+			MouseEvent = this->_Event.button;
+		}
+
+		if (this->_Event.type == SDL_MOUSEBUTTONDOWN)
+		{
+			MouseEvent = this->_Event.button;
+		}
+
+		if (this->_Event.type == SDL_MOUSEBUTTONUP)
+		{
+			MouseEvent = this->_Event.button;
 		}
 
 		if (this->_Event.type == SDL_QUIT)
 		{
 			_IsRunning = false;
 		}
-
-		MouseEvent = this->_Event.button;
+			
 		switch(this->_Event.type)
 		{
 		case SDL_KEYDOWN:

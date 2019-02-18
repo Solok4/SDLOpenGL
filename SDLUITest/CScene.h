@@ -3,8 +3,6 @@
 #include <vector>
 #include <memory>
 #include "CObject3D.h"
-#include "CCameraComponent.h"
-
 
 class CScene
 {
@@ -18,6 +16,9 @@ public:
 	void SetName(std::string Name);
 	std::string GetName();
 	void Draw(COpengl* opengl);
+	void Tick(uint32_t delta);
+
+	void Prepare();
 
 	void SetCamera(std::shared_ptr<CCameraComponent> Cam);
 	std::shared_ptr<CCameraComponent> GetCamera();

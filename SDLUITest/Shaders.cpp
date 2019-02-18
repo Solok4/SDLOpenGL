@@ -5,6 +5,8 @@
 
 Shaders::Shaders()
 {
+	this->VertexShader = -1;
+	this->FragmentShader = -1;
 }
 
 
@@ -31,7 +33,7 @@ void Shaders::CreateShader(const char * File, bool IsVertex)
 			CLog::MyLog(0, "Vertex Shader compile status: %d", Result);
 			glGetShaderInfoLog(VertexShaderID, 512, NULL, logBuff);
 			CLog::MyLog(0, logBuff);
-			VertexShader.push_back(VertexShaderID);
+			this->VertexShader = VertexShaderID;
 		}
 		else
 		{
@@ -43,7 +45,7 @@ void Shaders::CreateShader(const char * File, bool IsVertex)
 			CLog::MyLog(0, "Fragment Shader compile status: %d", Result);
 			glGetShaderInfoLog(FragmentShaderID, 512, NULL, logBuff);
 			CLog::MyLog(0, "%s", logBuff);
-			FragmentShader.push_back(FragmentShaderID);
+			this->FragmentShader = FragmentShaderID;
 		}
 	}
 
@@ -72,31 +74,39 @@ std::string Shaders::ReadShaderFromFile(const char * Filename)
 	return FileContent;
 }
 
-void Shaders::CreateShaderProgram(int VertexID, int FragmentID, std::string name)
+void Shaders::CreateShaderProgram(std::string name)
 {
-	if (VertexShader.empty() && FragmentShader.empty())
+	if (this->VertexShader == -1 || this->FragmentShader ==-1)
 	{
-	}
-	else if (VertexShader.size() < VertexID || FragmentShader.size() < FragmentID)
-	{
+		if (this->VertexShader == -1)
+		{
+			CLog::MyLog(1, "You need to load Vertex Shader first\n");
+		}
+		if (this->FragmentShader == -1)
+		{
+			CLog::MyLog(1, "You need to load Fragment Shader first\n");
+		}
+		return;
 	}
 	else
 	{
 		ShadProgram Prog;
 		Prog.name = name;
 		Prog.Program = glCreateProgram();
-		glAttachShader(Prog.Program, VertexShader[VertexID]);
-		glAttachShader(Prog.Program, FragmentShader[FragmentID]);
+		glAttachShader(Prog.Program, this->VertexShader);
+		glAttachShader(Prog.Program, this->FragmentShader);
 		glLinkProgram(Prog.Program);
 
 		GLint result = GL_FALSE;
 		glGetProgramiv(Prog.Program, GL_LINK_STATUS, &result);
 		CLog::MyLog(0, "Shader Program link status: %d", result);
-		glDetachShader(Prog.Program, VertexShader[VertexID]);
-		glDetachShader(Prog.Program, FragmentShader[FragmentID]);
+		glDetachShader(Prog.Program, this->VertexShader);
+		glDetachShader(Prog.Program, this->FragmentShader);
 
-		glDeleteShader(FragmentShader[FragmentID]);
-		glDeleteShader(VertexShader[VertexID]);
+		glDeleteShader(this->VertexShader);
+		glDeleteShader(this->FragmentShader);
+		this->VertexShader = -1;
+		this->FragmentShader = -1;
 		ShaderProgram.push_back(std::make_shared<ShadProgram>(Prog));
 	}
 }
@@ -109,12 +119,13 @@ void Shaders::SetCurrentShaderProgram(std::string name)
 		{
 			this->CurrentShaderProgram = o;
 			glUseProgram(o->Program);
-			for (auto a : o->Uniforms)
-			{
-				a->Uni = glGetUniformLocation(o->Program, a->name.c_str());
-			}
 		}
 	}
+}
+
+GLuint Shaders::GetCurrentShaderProgram()
+{
+	return this->CurrentShaderProgram->Program;
 }
 
 std::shared_ptr<ShadProgram> Shaders::GetShaderStruct(std::string name)
@@ -139,18 +150,26 @@ GLuint Shaders::GetShaderProgram(std::string name)
 			return o->Program;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
 
 
 void Shaders::AddUniformToShaderStruct(std::string ProgramName,std::string UnifromName)
 {
-	Uniform temp;
-	auto Program = this->GetShaderStruct(ProgramName);
-	temp.Uni = glGetUniformLocation(Program->Program, UnifromName.c_str());
-	temp.name = UnifromName;
-	Program->Uniforms.push_back(std::make_shared<Uniform>(temp));
+	if (Shaders::GetUniformByNameStruct(ProgramName, UnifromName) == -1)
+	{
+		Uniform temp;
+		auto Program = this->GetShaderStruct(ProgramName);
+		int CurrentProgram = this->GetCurrentShaderProgram();
+		glUseProgram(this->GetShaderProgram(ProgramName));
+		temp.Uni = glGetUniformLocation(Program->Program, UnifromName.c_str());
+		temp.name = UnifromName;
+		glUseProgram(CurrentProgram);
+		Program->Uniforms.push_back(std::make_shared<Uniform>(temp));
+		return;
+	}
+	CLog::MyLog(1, "That uniform %s already exists in %s program \n", UnifromName.c_str(), ProgramName.c_str());
 
 }
 
@@ -164,7 +183,6 @@ GLuint Shaders::GetUniformByNameStruct(std::string ProgramName, std::string Unif
 			return o->Uni;
 		}
 	}
-	CLog::MyLog(1, "Can't find uniform named %s in % program", UniformName.c_str(), ProgramName.c_str());
-	return NULL;
+	return -1;
 }
 

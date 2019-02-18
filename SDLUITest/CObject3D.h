@@ -26,6 +26,8 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
 
+	void Tick(uint32_t delta);
+
 
 protected:
 

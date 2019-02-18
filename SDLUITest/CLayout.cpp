@@ -197,3 +197,14 @@ void CLayout::GetMousePosition(int x, int y)
 	this->MousePosX = x;
 	this->MousePosY = y;
 }
+
+void CLayout::Tick(uint32_t delta)
+{
+	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+	{
+		for (auto o : it->second)
+		{
+			o->Tick(delta);
+		}
+	}
+}

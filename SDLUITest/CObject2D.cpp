@@ -17,6 +17,7 @@ CObject2D::CObject2D()
 	this->SetPosition(glm::vec2(0.0f, 0.0f));
 	this->SetSize(glm::vec2(1.0f, 1.0f));
 	this->SetRotation(glm::vec3(0.f, 0.f, 0.f));
+	this->RootObject = nullptr;
 }
 
 
@@ -94,15 +95,30 @@ void CObject2D::RefreshModelMatrix()
 
 void CObject2D::SetPosition(vec2 vec)
 {
-	this->_Position = vec;
+	if (this->RootObject == nullptr)
+	{
+		this->_Position = vec;
+		
+	}
+	else
+	{
+		this->_Position = this->RootObject->_Position + vec;
+	}
 	this->RefreshModelMatrix();
 }
 
 void CObject2D::SetRotation(vec3 vec)
 {
-	this->_Rotation = vec;
-	this->RefreshModelMatrix();
+	if (this->RootObject == nullptr)
+	{
+		this->_Rotation = vec;
 
+	}
+	else
+	{
+		this->_Rotation = this->RootObject->_Rotation + vec;
+	}
+	this->RefreshModelMatrix();
 }
 
 void CObject2D::SetSize(vec2 vec)
@@ -134,6 +150,20 @@ void CObject2D::PostDraw()
 	glBindVertexArray(0);
 }
 
+void CObject2D::BindRootObject(std::shared_ptr<CObject2D> obj)
+{
+	this->RootObject = obj;
+}
+
+vec3 CObject2D::GetForwardVector()
+{
+	glm::vec3 FV;
+	FV.x = this->_Position.x + (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
+	FV.y = this->_Position.y + sin(glm::radians(this->_Rotation.x));
+	FV.z = this->Layer + (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y)));
+	return FV;
+}
+
 void CObject2D::MoveObjectLayerDown()
 {
 	if (this->Layer <= 0)
@@ -162,6 +192,10 @@ void CObject2D::SetObjectLayer(int Layer)
 int CObject2D::GetObjectLayer()
 {
 	return this->Layer;
+}
+
+void CObject2D::Tick(uint32_t delta)
+{
 }
 
 

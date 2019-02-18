@@ -177,6 +177,7 @@
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CLabel.h" />
     <ClInclude Include="CLayout.h" />
+    <ClInclude Include="CLightComponent.h" />
     <ClInclude Include="CLog.h" />
     <ClInclude Include="CObject2D.h" />
     <ClInclude Include="CObject3D.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CLabel.cpp" />
     <ClCompile Include="CLayout.cpp" />
+    <ClCompile Include="CLightComponent.cpp" />
     <ClCompile Include="CLog.cpp" />
     <ClCompile Include="CObject2D.cpp" />
     <ClCompile Include="CObject3D.cpp" />

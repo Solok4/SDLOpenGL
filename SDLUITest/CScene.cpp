@@ -66,9 +66,26 @@ void CScene::Draw(COpengl * opengl)
 	}
 }
 
+void CScene::Tick(uint32_t delta)
+{
+	for (auto o : this->Objects3D)
+	{
+		o->Tick(delta);
+	}
+}
+
+void CScene::Prepare()
+{
+}
+
 void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
 {
-	this->Camera = Cam;
+	if (Cam != nullptr)
+	{
+		this->Camera = Cam;
+		return;
+	}
+	CLog::MyLog(1, "Camera not bound to scene: %s ", this->Name.c_str());
 }
 
 std::shared_ptr<CCameraComponent> CScene::GetCamera()

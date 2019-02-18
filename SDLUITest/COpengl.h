@@ -19,6 +19,7 @@ struct MyFrameBuffer
 	GLuint FBO;
 	GLuint RBO;
 	GLuint CBuffer;
+	const char* ShaderName;
 };
 
 class COpengl
@@ -41,11 +42,13 @@ public:
 	void SetAspectRatio(SDL_Window* Window);
 	float GetAspectRatio() { return this->AspectRatio; };
 
-	void AddNewFramebuffer(std::string name);
+	void AddNewFramebuffer(std::string FBName, const char* ShaderName);
 	void UseFramebuffer(std::string name);
 	MyFrameBuffer GetFramebuffer(std::string name);
 	void ClearFramebuffers();
 	void FinalDraw();
+
+	Shaders GetShadersClass();
 
 
 private:

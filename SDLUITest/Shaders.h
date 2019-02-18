@@ -25,8 +25,9 @@ public:
 
 	void CreateShader(const char* File, bool IsVertex);
 	std::string ReadShaderFromFile(const char* Filename);
-	void CreateShaderProgram(int VertexID, int FragmentID,std::string name);
+	void CreateShaderProgram(std::string name);
 	void SetCurrentShaderProgram(std::string name);
+	GLuint GetCurrentShaderProgram();
 	std::shared_ptr<ShadProgram> GetShaderStruct(std::string name);
 	GLuint GetShaderProgram(std::string name);
 	void AddUniformToShaderStruct(std::string ProgramName, std::string UnifromName);
@@ -36,8 +37,8 @@ public:
 
 private:
 
-	std::vector<unsigned int> VertexShader;
-	std::vector<unsigned int> FragmentShader;
+	unsigned int VertexShader;
+	unsigned int FragmentShader;
 	std::vector< std::shared_ptr<ShadProgram>> ShaderProgram;
 
 	std::shared_ptr<ShadProgram> CurrentShaderProgram;

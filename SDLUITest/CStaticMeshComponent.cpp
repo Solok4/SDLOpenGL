@@ -29,8 +29,14 @@ void CStaticMeshComponent::Draw()
 		if (this->_Model->HasNormals)
 			glEnableVertexAttribArray(2);
 		glActiveTexture(GL_TEXTURE0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
-		glBindTexture(GL_TEXTURE_2D, this->_Model->Tex);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
+		glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->BaseTexIndex]);
+		if (this->_Model->Mat->NormalMapIndex != 255)
+		{
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->NormalMapIndex]);
+			
+		}
 		//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
 		glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
 		if (this->_Model->HasNormals)

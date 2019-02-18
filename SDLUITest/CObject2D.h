@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 using namespace glm;
@@ -22,10 +23,15 @@ public:
 	virtual void Draw();
 	virtual void PostDraw();
 
+	void BindRootObject(std::shared_ptr<CObject2D> obj);
+	vec3 GetForwardVector();
+
 	void MoveObjectLayerDown();
 	void MoveObjectLayerUp();
 	void SetObjectLayer(int Layer);
 	int GetObjectLayer();
+
+	void Tick(uint32_t delta);
 
 	void LoadTexture(const char* str, const char* name = "Default");
 	GLuint GetTexture(const char* name = "Default");
@@ -46,6 +52,8 @@ protected:
 	vec2 _Size;
 	vec3 _Rotation;
 	vec2 _Margin;
+
+	std::shared_ptr<CObject2D> RootObject;
 
 	int Layer;
 	bool _IsActive = true;

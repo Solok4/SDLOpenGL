@@ -72,11 +72,13 @@ void COpengl::PrepareToLoop()
 #else
 	Shaders.CreateShader("Assets/Shaders/vs.vs", true);
 	Shaders.CreateShader("Assets/Shaders/fs.fs", false);
+	Shaders.CreateShaderProgram("Default");
 	Shaders.CreateShader("Assets/Shaders/final.vs", true);
 	Shaders.CreateShader("Assets/shaders/final.fs", false);
+	Shaders.CreateShaderProgram("Final");
 #endif // __EMSCRIPTEN__
-	Shaders.CreateShaderProgram(0, 0,"Default");
-	Shaders.CreateShaderProgram(1, 1, "Final");
+
+
 	glClearColor(0, 0, 0, 1);
 
 	// Panel vertices
@@ -103,21 +105,22 @@ void COpengl::PrepareToLoop()
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	Shaders.SetCurrentShaderProgram("Default");
+	Shaders.AddUniformToShaderStruct("Default", "View");
+	Shaders.AddUniformToShaderStruct("Default", "Projection");
+	Shaders.AddUniformToShaderStruct("Default", "Model");
 }
 
 void COpengl::PreLoop()
 {
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	Shaders.SetCurrentShaderProgram("Default");
-	Shaders.AddUniformToShaderStruct("Default","View");
-	Shaders.AddUniformToShaderStruct("Default","Projection");
-	Shaders.AddUniformToShaderStruct("Default","Model");
-
-	Shaders.AddUniformToShaderStruct("Final", "Tex");
 	
 
 }
@@ -130,7 +133,7 @@ void COpengl::SetModelMatrix(glm::mat4 matrix)
 void COpengl::ProLoop(SDL_Window* Window)
 {
 	glUseProgram(0);
-	SDL_GL_SetSwapInterval(1);
+	//SDL_GL_SetSwapInterval(1);
 	SDL_GL_SwapWindow(Window);
 }
 
@@ -160,13 +163,13 @@ void COpengl::SetAspectRatio(SDL_Window * Window)
 	SDL_GetWindowSize(Window, &w, &h);
 	this->WindowW = w;
 	this->WindowH = h;
-	this->AspectRatio = w / h;
+	this->AspectRatio = (float)w / (float)h;
 }
 
-void COpengl::AddNewFramebuffer(std::string name)
+void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 {
 	MyFrameBuffer FboStruct;
-	FboStruct.name = name;
+	FboStruct.name = FBName;
 	glGenFramebuffers(1, &FboStruct.FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, FboStruct.FBO);
 
@@ -183,6 +186,7 @@ void COpengl::AddNewFramebuffer(std::string name)
 	glBindRenderbuffer(GL_RENDERBUFFER, FboStruct.RBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, FboStruct.RBO);
+	FboStruct.ShaderName = ShaderName;
 	this->Framebuffers.push_back(FboStruct);
 }
 
@@ -191,6 +195,7 @@ void COpengl::UseFramebuffer(std::string name)
 	if (name == "0")
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		Shaders.SetCurrentShaderProgram("Final");
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		return;
@@ -200,6 +205,7 @@ void COpengl::UseFramebuffer(std::string name)
 		if (name == o.name)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
+			Shaders.SetCurrentShaderProgram(o.ShaderName);
 			glClearColor(0.f, 0.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			return;
@@ -244,6 +250,11 @@ void COpengl::FinalDraw()
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
+}
+
+Shaders COpengl::GetShadersClass()
+{
+	return this->Shaders;
 }
 
 

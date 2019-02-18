@@ -108,6 +108,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 				if (matches != 9) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					fclose(file);
 					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
@@ -126,6 +127,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					fclose(file);
 					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
@@ -141,6 +143,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					fclose(file);
 					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
@@ -187,6 +190,7 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 				if (matches != 9) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					fclose(file);
 					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
@@ -199,27 +203,29 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 				NormalIndices.push_back(normalIndex[1]);
 				NormalIndices.push_back(normalIndex[2]);
 			}
-			else if (tempModel->HasNormals && !tempModel->HasTexcords)
-			{
-				unsigned int vertexIndex[3], normalIndex[3];
-				int matches = fscanf_s(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
-				if (matches != 6) {
-					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					return;
-				}
-				VertexIndices.push_back(vertexIndex[0]);
-				VertexIndices.push_back(vertexIndex[1]);
-				VertexIndices.push_back(vertexIndex[2]);
-				NormalIndices.push_back(normalIndex[0]);
-				NormalIndices.push_back(normalIndex[1]);
-				NormalIndices.push_back(normalIndex[2]);
-			}
+			//else if (tempModel->HasNormals && !tempModel->HasTexcords)
+			//{
+			//	unsigned int vertexIndex[3], normalIndex[3];
+			//	int matches = fscanf_s(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+			//	if (matches != 6) {
+			//		printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+			//		fclose(file);
+			//		return;
+			//	}
+			//	VertexIndices.push_back(vertexIndex[0]);
+			//	VertexIndices.push_back(vertexIndex[1]);
+			//	VertexIndices.push_back(vertexIndex[2]);
+			//	NormalIndices.push_back(normalIndex[0]);
+			//	NormalIndices.push_back(normalIndex[1]);
+			//	NormalIndices.push_back(normalIndex[2]);
+			//}
 			else if (!tempModel->HasNormals && tempModel->HasTexcords)
 			{
 				unsigned int vertexIndex[3], uvIndex[3];
 				int matches = fscanf_s(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
 				if (matches != 6) {
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+					fclose(file);
 					return;
 				}
 				VertexIndices.push_back(vertexIndex[0]);
@@ -264,11 +270,11 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 
 	glGenVertexArrays(1, &tempModel->VAO);
 	glBindVertexArray(tempModel->VAO);
-	glGenBuffers(3, tempModel->VBOs);
-	glGenBuffers(1, &tempModel->EBO);
+	glGenBuffers(2, tempModel->VBOs);
+	/*glGenBuffers(1, &tempModel->EBO);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempModel->EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, VertexIndices.size() * sizeof(unsigned int), &VertexIndices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, VertexIndices.size() * sizeof(unsigned int), &VertexIndices[0], GL_STATIC_DRAW);*/
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
@@ -284,16 +290,14 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 		glDisableVertexAttribArray(1);
 	}
 
-	if (tempModel->HasNormals)
-	{
-		glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
-		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glDisableVertexAttribArray(2);
-	}
-
-
+	//if (tempModel->HasNormals)
+	//{
+	//	glEnableVertexAttribArray(2);
+	//	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
+	//	glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
+	//	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	//	glDisableVertexAttribArray(2);
+	//}
 
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -310,14 +314,14 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 	{
 		GLint Format;
 		Format = GL_RGBA;
-		Tex = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
-		FinishSurface(Tex);
+		SDL_Surface* Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
+		FinishSurface(Finish);
 
 		GLuint TexID;
 		glGenTextures(1, &TexID);
 		glBindTexture(GL_TEXTURE_2D, TexID);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, Format, Tex->w, Tex->h, 0, Format, GL_UNSIGNED_BYTE, Tex->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, Format, Finish->w, Finish->h, 0, Format, GL_UNSIGNED_BYTE, Finish->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -325,15 +329,16 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		tempModel->Tex = TexID;
+		SDL_FreeSurface(Finish);
 	}
 
 	SDL_FreeSurface(Tex);
 
-
-
-	std::string name(path);
-	size_t slash = name.find_last_of("/");
-	this->Models.emplace(name.substr(slash+1, slash + 2), tempModel);
+	const char* name(path);
+	const char* slash = strrchr(name, '/');
+	const char* JustName(slash + 1);
+	tempModel->Name = JustName;
+	this->Models.push_back(tempModel);
 }
 
 
@@ -358,22 +363,114 @@ void CModelManager::Load(const char * path, const char * tex)
 	}
 }
 
-void CModelManager::ThreadJoin()
+void CModelManager::LoadTexture(const char * path)
 {
-	for (auto& o : Threads)
+	SDL_Surface* Tex = IMG_Load(path);
+	std::shared_ptr<Texture> tempTex(new Texture);
+	if (!Tex)
 	{
-		o.join();
+		CLog::MyLog(1, "Failed to load a texture");
+	}
+	else
+	{
+		GLint Format;
+		Format = GL_RGBA;
+		SDL_Surface* Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
+		FinishSurface(Finish);
+
+		GLuint TexID;
+		glGenTextures(1, &TexID);
+		glBindTexture(GL_TEXTURE_2D, TexID);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, Format, Finish->w, Finish->h, 0, Format, GL_UNSIGNED_BYTE, Finish->pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		tempTex->Texture = TexID;
+		SDL_FreeSurface(Finish);
+	}
+
+	SDL_FreeSurface(Tex);
+
+	const char* name(path);
+	const char* slash = strrchr(name, '/');
+	const char* JustName(slash + 1);
+	tempTex->Name = JustName;
+	this->Textures.push_back(tempTex);
+}
+
+GLuint CModelManager::GetImageByName(const char * name)
+{
+	for (auto o : this->Textures)
+	{
+		if (strcmp(name, o->Name) == 0)
+		{
+			return o->Texture;
+		}
+	}
+	return -1;
+}
+
+void CModelManager::CreateMaterial(const char * name)
+{
+	std::shared_ptr<Material> temp(new Material);
+	temp->Name = name;
+	this->Materials.push_back(temp);
+}
+
+std::shared_ptr<Material> CModelManager::GetMaterialByName(const char * name)
+{
+	for (auto o : this->Materials)
+	{
+		if (strcmp(name, o->Name) == 0)
+		{
+			return o;
+		}
+	}
+	return nullptr;
+}
+
+void CModelManager::BindTextureToMaterial(const char * MaterialName, const char * TextureName, TextureTypes TextureType)
+{
+	std::shared_ptr<Material> temp = this->GetMaterialByName(MaterialName);
+	if (temp == nullptr)
+	{
+		CLog::MyLog(1, "Material named %s don't exist\n", MaterialName);
+		return;
+	}
+	GLuint tempTex = this->GetImageByName(TextureName);
+	if (tempTex == -1)
+	{
+		CLog::MyLog(1, "Texture named %s don't exist\n", TextureName);
+		return;
+	}
+	GLubyte index = temp->Tex.size();
+	temp->Tex.push_back(tempTex);
+	switch (TextureType)
+	{
+	case BaseTex:
+		temp->BaseTexIndex = index;
+		break;
+	case NormalMap:
+		temp->NormalMapIndex = index;
+		break;
+	case SpecularMap:
+		temp->SpecularMapIndex = index;
+		break;
 	}
 }
 
 
 std::shared_ptr<Model> CModelManager::GetModelByName(std::string name)
 {
-	for (auto it = this->Models.begin(); it != this->Models.end(); ++it)
+	for (auto o : this->Models)
 	{
-		if (it->first == name)
+		if (strcmp(o->Name, name.c_str()) == 0)
 		{
-			return it->second;
+			return o;
 		}
 	}
 	return {};

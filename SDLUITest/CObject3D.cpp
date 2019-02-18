@@ -131,3 +131,7 @@ void CObject3D::SetScale(glm::vec3 scale)
 {
 	this->_RootComponent->SetScale(scale);
 }
+
+void CObject3D::Tick(uint32_t delta)
+{
+}

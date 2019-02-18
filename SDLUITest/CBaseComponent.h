@@ -28,7 +28,10 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
 
+
 	glm::vec3 GetPosition();
+	glm::vec3 GetRotation();
+	glm::vec3 GetScale();
 	glm::mat4 GetModelMatrix();
 
 	virtual void Draw();

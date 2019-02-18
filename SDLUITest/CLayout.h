@@ -30,6 +30,8 @@ public:
 
 	void GetMousePosition(int x,int y);
 
+	void Tick(uint32_t delta);
+
 	int WindowWidth;
 	int WindowHeight;
 	int WindowPosX;

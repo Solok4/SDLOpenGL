@@ -32,8 +32,6 @@ bool CApp::Init()
 	}
 	Renderer.Init();
 	OpenGL.Create(Renderer.GetWindow());
-	OpenGL.AddNewFramebuffer("Default");
-	OpenGL.AddNewFramebuffer("GUI");
 	return true;
 }
 
@@ -51,7 +49,6 @@ void CApp::Loop()
 #ifdef __EMSCRIPTEN__
 	return;
 #endif // __EMSCRIPTEN__
-	int rot = 0;
 	std::vector<std::shared_ptr<CObject2D>> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
@@ -77,32 +74,26 @@ void CApp::Loop()
 		if (MouseLock)
 		{
 			SDL_ShowCursor(false);
-			int w = 0; int h = 0;
-			int xpos = 0; int ypos = 0;
-			SDL_GetWindowPosition(Renderer.GetWindow(), &xpos, &ypos);
-			SDL_GetWindowSize(Renderer.GetWindow(), &w, &h);
-			this->WindowW = w;
-			this->WindowH = h;
-#ifndef __EMSCRIPTEN__
-			SetCursorPos(xpos + (w / 2), ypos + (h / 2));
-#endif // __EMSCRIPTEN__
+			SceneManager->GetCamera()->SetIsFree(true);
+			SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(),Renderer.GetWindow());
 		}
 		else
 		{
+			SceneManager->GetCamera()->SetIsFree(false);
 			SDL_ShowCursor(true);
 		}
 
 		OpenGL.PreLoop();
-		//OpenGL.UseFramebuffer("GUI");
+		CurrentLayout->Tick(this->FrameTime);
+		CurrentScene->Tick(this->FrameTime);
+
 		OpenGL.UseFramebuffer("Default");
-		OpenGL.PreLoopOrtho(Renderer.GetWindow());
-
-		CurrentLayout->Draw(&this->OpenGL);
-		CurrentScene->GetCamera()->SetRotation(glm::vec3(0.f, (rot + 1) / 2, 0.f));
-
-		//OpenGL.UseFramebuffer("Default");
 		OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
 		CurrentScene->Draw(&this->OpenGL);
+
+		//OpenGL.UseFramebuffer("GUI");
+		OpenGL.PreLoopOrtho(Renderer.GetWindow());
+		CurrentLayout->Draw(&this->OpenGL);
 
 		OpenGL.UseFramebuffer("0");
 		OpenGL.FinalDraw();
@@ -110,7 +101,6 @@ void CApp::Loop()
 
 		OpenGL.ProLoop(Renderer.GetWindow());
 		this->End = SDL_GetTicks();
-		rot++;
 
 	}
 }
@@ -189,6 +179,10 @@ void CApp::PreLoop()
 {
 	OpenGL.PrepareToLoop();
 	{
+		OpenGL.AddNewFramebuffer("Default","Default");
+		OpenGL.AddNewFramebuffer("GUI","Default");
+	}
+	{
 
 		LayoutManager->AddNewLayout("Default");
 		LayoutManager->ChangeCurrentLayout("Default");
@@ -218,18 +212,25 @@ void CApp::PreLoop()
 	}
 
 	//ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
-	//ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga");
 	ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/gingerbreadhouse_tex.png");
-	//std::thread t1(ModelManager, "Assets/Models/Piernik.obj", "Assets/Textures/PiernikTex.tga" );
-	ModelManager->ThreadJoin();
+	ModelManager->CreateMaterial("Piernik");
+	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
+	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_NM.png");
+	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_Spec.png");
+	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_tex.png", TextureTypes::BaseTex);
+	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_NM.png", TextureTypes::NormalMap);
+	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);
+	ModelManager->GetModelByName("Piernik.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
+
+
+
 	SceneManager->AddNewScene("Default");
-	SceneManager->SetCurrentScene("Default");
 	auto tempScene(SceneManager->GetSceneByName("Default"));
 	{
 		tempScene->AddObjectToScene("Test");
 		auto tempObject3D = tempScene->GetObjectByName("Test");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
-		tempObject3D->SetPosition(vec3(0.f, 0.f, 10.f));
+		tempObject3D->SetPosition(vec3(0.f, 0.f, 5.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
@@ -240,7 +241,7 @@ void CApp::PreLoop()
 		tempScene->AddObjectToScene("Test1");
 		auto tempObject3D = tempScene->GetObjectByName("Test1");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
-		tempObject3D->SetPosition(vec3(0.f, 0.f, -10.f));
+		tempObject3D->SetPosition(vec3(0.f, 0.f, -5.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
@@ -251,7 +252,7 @@ void CApp::PreLoop()
 		tempScene->AddObjectToScene("Test2");
 		auto tempObject3D = tempScene->GetObjectByName("Test2");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
-		tempObject3D->SetPosition(vec3(10.f, 0.f, 0.f));
+		tempObject3D->SetPosition(vec3(5.f, 0.f, 0.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
@@ -262,7 +263,7 @@ void CApp::PreLoop()
 		tempScene->AddObjectToScene("Test3");
 		auto tempObject3D = tempScene->GetObjectByName("Test3");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
-		tempObject3D->SetPosition(vec3(-10.f, 0.f, 0.f));
+		tempObject3D->SetPosition(vec3(-5.f, 0.f, 0.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
@@ -279,6 +280,8 @@ void CApp::PreLoop()
 
 	Camera->SetFov(65.f);
 	tempScene->SetCamera(Camera);
+
+	SceneManager->SetCurrentScene("Default");
 
 
 

@@ -99,6 +99,9 @@
     <ClInclude Include="Shaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CLightComponent.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -169,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLightComponent.cpp">
+      <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
