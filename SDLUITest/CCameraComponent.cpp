@@ -77,13 +77,13 @@ void CCameraComponent::SetIsFree(bool used)
 
 void CCameraComponent::ClipCamera()
 {
-	if (this->_Rotation.x > 90)
+	if (this->_Rotation.x > 89)
 	{
-		this->_Rotation.x = 90;
+		this->_Rotation.x = 89;
 	}
-	else if (this->_Rotation.x < -90)
+	else if (this->_Rotation.x < -89)
 	{
-		this->_Rotation.x = -90;
+		this->_Rotation.x = -89;
 	}
 
 	if (this->_Rotation.y > 180)

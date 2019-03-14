@@ -1,8 +1,13 @@
 #version 330 core
 
-in vec2 UV;
+#ifdef GL_ES
 
-out vec4 FragColor;
+	varying vec2 UV;
+	varying vec4 FragColor;
+#else
+	in vec2 UV;
+	out vec4 FragColor;
+#endif
 
 uniform sampler2D Tex;
 

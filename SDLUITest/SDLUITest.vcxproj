@@ -175,6 +175,7 @@
     <ClInclude Include="CCameraComponent.h" />
     <ClInclude Include="CEvent.h" />
     <ClInclude Include="CImage.h" />
+    <ClInclude Include="CKeyboardConf.h" />
     <ClInclude Include="CLabel.h" />
     <ClInclude Include="CLayout.h" />
     <ClInclude Include="CLightComponent.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="CCameraComponent.cpp" />
     <ClCompile Include="CEvent.cpp" />
     <ClCompile Include="CImage.cpp" />
+    <ClCompile Include="CKeyboardConf.cpp" />
     <ClCompile Include="CLabel.cpp" />
     <ClCompile Include="CLayout.cpp" />
     <ClCompile Include="CLightComponent.cpp" />

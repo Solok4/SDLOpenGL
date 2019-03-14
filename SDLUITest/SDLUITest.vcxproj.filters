@@ -102,6 +102,9 @@
     <ClInclude Include="CLightComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
+    <ClInclude Include="CKeyboardConf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -175,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="CLightComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyboardConf.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

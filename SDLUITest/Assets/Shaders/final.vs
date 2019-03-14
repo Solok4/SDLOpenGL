@@ -1,7 +1,13 @@
 #version 330 core
-in vec2 position;
-in vec2 texcoord;
-out vec2 Texcoord;
+#ifdef GL_ES
+	varying vec2 position;
+	varying vec2 texcoord;
+	varying vec2 Texcoord;
+#else
+	in vec2 position;
+	in vec2 texcoord;
+	out vec2 Texcoord;
+#endif
 void main()
 {
     Texcoord = texcoord;

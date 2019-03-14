@@ -64,19 +64,15 @@ void COpengl::Delete()
 
 void COpengl::PrepareToLoop()
 {
-#ifdef __EMSCRIPTEN__
-	Shaders.CreateShader("Assets/Shaders/vs.vse", true);
-	Shaders.CreateShader("Assets/Shaders/fs.fse", false);
-	Shaders.CreateShader("Assets/Shaders/final.vse", true);
-	Shaders.CreateShader("Assets/Shaders/final.fse", false);
-#else
-	Shaders.CreateShader("Assets/Shaders/vs.vs", true);
-	Shaders.CreateShader("Assets/Shaders/fs.fs", false);
+	Shaders.CreateShader("Assets/Shaders/Gui.vs", true);
+	Shaders.CreateShader("Assets/Shaders/Gui.fs", false);
+	Shaders.CreateShaderProgram("Gui");
+	Shaders.CreateShader("Assets/Shaders/Scene.vs", true);
+	Shaders.CreateShader("Assets/Shaders/Scene.fs", false);
 	Shaders.CreateShaderProgram("Default");
 	Shaders.CreateShader("Assets/Shaders/final.vs", true);
 	Shaders.CreateShader("Assets/shaders/final.fs", false);
 	Shaders.CreateShaderProgram("Final");
-#endif // __EMSCRIPTEN__
 
 
 	glClearColor(0, 0, 0, 1);
@@ -110,6 +106,12 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Default", "View");
 	Shaders.AddUniformToShaderStruct("Default", "Projection");
 	Shaders.AddUniformToShaderStruct("Default", "Model");
+	Shaders.AddUniformToShaderStruct("Default", "CameraPos");
+
+	Shaders.AddUniformToShaderStruct("Gui", "View");
+	Shaders.AddUniformToShaderStruct("Gui", "Projection");
+	Shaders.AddUniformToShaderStruct("Gui", "Model");
+	
 }
 
 void COpengl::PreLoop()
@@ -119,8 +121,6 @@ void COpengl::PreLoop()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	Shaders.SetCurrentShaderProgram("Default");
 	
 
 }
@@ -128,6 +128,12 @@ void COpengl::PreLoop()
 void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default","Model"), 1, GL_FALSE, &matrix[0][0]);
+	
+}
+
+void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
+{
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Model"), 1, GL_FALSE, &matrix[0][0]);
 }
 
 void COpengl::ProLoop(SDL_Window* Window)
@@ -151,8 +157,10 @@ void COpengl::PreLoopOrtho(SDL_Window* Window)
 {
 	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WindowW, (float)this->WindowH, 0.0f, -0.1f, 1000.0f);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+	//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 
 
 }
@@ -243,8 +251,6 @@ void COpengl::FinalDraw()
 	glEnableVertexAttribArray(1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("Default").CBuffer);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("GUI").CBuffer);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(1);

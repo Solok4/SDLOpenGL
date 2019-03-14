@@ -25,6 +25,9 @@ public:
 	std::shared_ptr<CObject2D> FindObjectByName(const char* name);
 	std::vector<std::shared_ptr<CObject2D>> GetObjectByType(int type);
 
+	std::vector<std::shared_ptr<CObject2D>> GetButtons();
+	void AddButtonToList(std::shared_ptr<CObject2D> btn);
+
 	const char* GetName();
 	void SetName(const char* name);
 
@@ -46,6 +49,7 @@ public:
 	TTF_Font* Font;
 
 	std::map<int,std::vector<std::shared_ptr<CObject2D>>> Objects2D;
+	std::vector<std::shared_ptr<CObject2D>> Buttons;
 
 };
 

@@ -1,9 +1,14 @@
 #version 330 core
-in vec2 Texcoord;
-out vec4 outColor;
+#ifdef GL_ES
+	attribute uniform sampler2D defaultTex;
+	varying vec2 Texcoord;
+	varying vec4 outColor;
+#else
+	layout(binding=0) uniform sampler2D defaultTex;
+	in vec2 Texcoord;
+	out vec4 outColor;
+#endif
 
-uniform sampler2D defaultTex;
-uniform sampler2D guiTex;
 void main()
 {
     outColor = texture(defaultTex, Texcoord);

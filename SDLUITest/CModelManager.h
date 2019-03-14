@@ -38,8 +38,6 @@ struct Model
 	unsigned int IndicesCount = 0;
 	GLuint VAO;
 	GLuint VBOs[2];
-	//GLuint EBO;
-	GLuint Tex;
 	std::shared_ptr<Material> Mat = nullptr;
 	const char* Name;
 };
@@ -64,7 +62,7 @@ public:
 	CModelManager();
 	~CModelManager();
 
-	void LoadOBJ(const char* path, const char* tex);
+	void LoadOBJ(const char* path);
 	void Load(const char* path, const char* tex);
 	void LoadTexture(const char* path);
 	GLuint GetImageByName(const char* name);

@@ -42,7 +42,7 @@ void FinishSurface(SDL_Surface* Surface)
 	free(FinalPixels);
 }
 
-void CModelManager::LoadOBJ(const char * path, const char* tex)
+void CModelManager::LoadOBJ(const char * path)
 {
 	FILE* file;
 #ifdef __EMSCRIPTEN__
@@ -304,36 +304,6 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 
 	glBindVertexArray(0);
 
-	
-	SDL_Surface* Tex = IMG_Load(tex);
-	if (!Tex)
-	{
-		CLog::MyLog(1, "Failed to load a texture");
-	}
-	else
-	{
-		GLint Format;
-		Format = GL_RGBA;
-		SDL_Surface* Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
-		FinishSurface(Finish);
-
-		GLuint TexID;
-		glGenTextures(1, &TexID);
-		glBindTexture(GL_TEXTURE_2D, TexID);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, Format, Finish->w, Finish->h, 0, Format, GL_UNSIGNED_BYTE, Finish->pixels);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		tempModel->Tex = TexID;
-		SDL_FreeSurface(Finish);
-	}
-
-	SDL_FreeSurface(Tex);
-
 	const char* name(path);
 	const char* slash = strrchr(name, '/');
 	const char* JustName(slash + 1);
@@ -344,23 +314,6 @@ void CModelManager::LoadOBJ(const char * path, const char* tex)
 
 void CModelManager::Load(const char * path, const char * tex)
 {
-	std::string Extension(path);
-	std::string Name(path);
-	size_t slash = Name.find_last_of('/');
-	Name = Name.substr(slash + 1, slash + 2);
-	auto Model = CModelManager::GetModelByName(Name);
-	if (Model == nullptr)
-	{
-		size_t dot = Extension.find_last_of(".");
-		Extension = Extension.substr(dot + 1, dot + 2);
-		std::transform(Extension.begin(), Extension.end(), Extension.begin(), ::tolower);
-		const char* Ex = Extension.c_str();
-		if (strcmp(Ex, "obj") == 0)
-		{
-			std::thread t1([=] {this->LoadOBJ(path, tex); });
-			this->Threads.push_back(std::move(t1));
-		}
-	}
 }
 
 void CModelManager::LoadTexture(const char * path)

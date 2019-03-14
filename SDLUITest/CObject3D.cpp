@@ -52,6 +52,7 @@ void CObject3D::AddComponent(int id, std::string name)
 			std::shared_ptr<CBaseComponent> temp(new CBaseComponent);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::BASE_COMPONENT);
+			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
 			this->_Components.push_back(temp);
 			break;
 		}
@@ -62,6 +63,7 @@ void CObject3D::AddComponent(int id, std::string name)
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
+			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
 			this->_Components.push_back(temp);
 			break;
 		}
@@ -70,6 +72,16 @@ void CObject3D::AddComponent(int id, std::string name)
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::CAMERA_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
+			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
+			this->_Components.push_back(temp);
+			break;
+		}
+		case(Object3DComponent::LIGHT_COMPONENT): {
+			std::shared_ptr<CLightComponent> temp(new CLightComponent);
+			temp->SetName(name);
+			temp->SetType(Object3DComponent::LIGHT_COMPONENT);
+			temp->AttachParrentObject(this->GetRootComponent());
+			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
 			this->_Components.push_back(temp);
 			break;
 		}
@@ -134,4 +146,8 @@ void CObject3D::SetScale(glm::vec3 scale)
 
 void CObject3D::Tick(uint32_t delta)
 {
+	for (auto o : this->_Components)
+	{
+		o->UpdateLocation();
+	}
 }

@@ -32,8 +32,8 @@ private:
 
 	SDL_Window* Window;
 	Uint32 Flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
-	int ScreenWidth = 800;
-	int ScreenHeight = 600;
+	int ScreenWidth = 1280;
+	int ScreenHeight = 720;
 	TTF_Font* Font;
 
 };

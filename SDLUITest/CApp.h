@@ -18,6 +18,7 @@
 #include "CModelManager.h"
 #include "CStaticMeshComponent.h"
 #include "CSceneManager.h"
+#include "CKeyboardConf.h"
 
 
 class CApp
@@ -58,6 +59,7 @@ public:
 	std::unique_ptr<CLayoutManager> LayoutManager;
 	std::unique_ptr<CModelManager> ModelManager;
 	std::unique_ptr<CSceneManager> SceneManager;
+	std::unique_ptr<CKeyboardConf> KeyboardConf;
 
 };
 

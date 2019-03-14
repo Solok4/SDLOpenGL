@@ -34,6 +34,7 @@ public:
 	void PrepareToLoop();
 	void PreLoop();
 	void SetModelMatrix(glm::mat4 matrix);
+	void SetModelMatrixLayout(glm::mat4 matrix);
 
 	void ProLoop(SDL_Window* Window);
 	void PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera);

@@ -13,6 +13,7 @@ CApp::CApp()
 	LayoutManager = std::unique_ptr<CLayoutManager>(new CLayoutManager);
 	ModelManager = std::unique_ptr<CModelManager>(new CModelManager);
 	SceneManager = std::unique_ptr<CSceneManager>(new CSceneManager);
+	KeyboardConf = std::unique_ptr<CKeyboardConf>(new CKeyboardConf);
 }
 
 
@@ -61,7 +62,7 @@ void CApp::Loop()
 		CurrentLayout = LayoutManager->GetCurrentLayout();
 		CurrentScene = SceneManager->GetCurrentScene();
 
-		ButtonList = CurrentLayout->GetObjectByType(Object2DType::OBJECT2D_BUTTON);
+		ButtonList = CurrentLayout->GetButtons();
 		for (auto o : ButtonList)
 		{
 			auto butt = std::dynamic_pointer_cast<CButton>(o);
@@ -76,6 +77,8 @@ void CApp::Loop()
 			SDL_ShowCursor(false);
 			SceneManager->GetCamera()->SetIsFree(true);
 			SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(),Renderer.GetWindow());
+			glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
+				SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
 		}
 		else
 		{
@@ -91,12 +94,12 @@ void CApp::Loop()
 		OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
 		CurrentScene->Draw(&this->OpenGL);
 
-		//OpenGL.UseFramebuffer("GUI");
-		OpenGL.PreLoopOrtho(Renderer.GetWindow());
-		CurrentLayout->Draw(&this->OpenGL);
-
 		OpenGL.UseFramebuffer("0");
 		OpenGL.FinalDraw();
+
+		OpenGL.GetShadersClass().SetCurrentShaderProgram("Gui");
+		OpenGL.PreLoopOrtho(Renderer.GetWindow());
+		CurrentLayout->Draw(&this->OpenGL);
 		
 
 		OpenGL.ProLoop(Renderer.GetWindow());
@@ -118,7 +121,7 @@ void CApp::EmscriptenLoop()
 	CurrentLayout = LayoutManager->GetCurrentLayout();
 	CurrentScene = SceneManager->GetCurrentScene();
 
-	ButtonList = CurrentLayout->GetObjectByType(Object2DType::OBJECT2D_BUTTON);
+	ButtonList = CurrentLayout->GetButtons();
 	for (auto o : ButtonList)
 	{
 		auto butt = std::dynamic_pointer_cast<CButton>(o);
@@ -131,34 +134,31 @@ void CApp::EmscriptenLoop()
 	if (MouseLock)
 	{
 		SDL_ShowCursor(false);
-		int w = 0; int h = 0;
-		int xpos = 0; int ypos = 0;
-		SDL_GetWindowPosition(Renderer.GetWindow(), &xpos, &ypos);
-		SDL_GetWindowSize(Renderer.GetWindow(), &w, &h);
-		this->WindowW = w;
-		this->WindowH = h;
-#ifndef __EMSCRIPTEN__
-		SetCursorPos(xpos + (w / 2), ypos + (h / 2));
-#endif // __EMSCRIPTEN__
+		SceneManager->GetCamera()->SetIsFree(true);
+		SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
+		glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
+			SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
 	}
 	else
 	{
+		SceneManager->GetCamera()->SetIsFree(false);
 		SDL_ShowCursor(true);
 	}
 
 	OpenGL.PreLoop();
-	//OpenGL.UseFramebuffer("GUI");
-	OpenGL.UseFramebuffer("0");
-	OpenGL.PreLoopOrtho(Renderer.GetWindow());
+	CurrentLayout->Tick(this->FrameTime);
+	CurrentScene->Tick(this->FrameTime);
 
-	CurrentLayout->Draw(&this->OpenGL);
-
-	//OpenGL.UseFramebuffer("Default");
+	OpenGL.UseFramebuffer("Default");
 	OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
 	CurrentScene->Draw(&this->OpenGL);
 
-	//OpenGL.UseFramebuffer("0");
-	//OpenGL.FinalDraw();
+	OpenGL.UseFramebuffer("0");
+	OpenGL.FinalDraw();
+
+	OpenGL.GetShadersClass().SetCurrentShaderProgram("Gui");
+	OpenGL.PreLoopOrtho(Renderer.GetWindow());
+	CurrentLayout->Draw(&this->OpenGL);
 
 
 	OpenGL.ProLoop(Renderer.GetWindow());
@@ -170,7 +170,10 @@ void CApp::EmscriptenLoop()
 void CApp::PollEvents()
 {
 	Event.PollEvents();
-	this->KeyEvents(this->Event.GetKeyboardData());
+	this->KeyboardConf->ProcessButtons(this->Event.GetKeyboardData());
+	this->KeyEvents(this->KeyboardConf->GetKeyButtons());
+
+	//this->KeyEvents(this->Event.GetKeyboardData());
 	Event.GetMouseMotion(this->MouseX,this->MouseY);
 	LayoutManager->SetMousePosition(MouseX, MouseY);
 }
@@ -180,7 +183,7 @@ void CApp::PreLoop()
 	OpenGL.PrepareToLoop();
 	{
 		OpenGL.AddNewFramebuffer("Default","Default");
-		OpenGL.AddNewFramebuffer("GUI","Default");
+		//OpenGL.AddNewFramebuffer("GUI","Default");
 	}
 	{
 
@@ -212,7 +215,7 @@ void CApp::PreLoop()
 	}
 
 	//ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
-	ModelManager->LoadOBJ("Assets/Models/Piernik.obj", "Assets/Textures/gingerbreadhouse_tex.png");
+	ModelManager->LoadOBJ("Assets/Models/Piernik.obj");
 	ModelManager->CreateMaterial("Piernik");
 	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
 	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_NM.png");
@@ -274,8 +277,8 @@ void CApp::PreLoop()
 
 	tempScene->AddObjectToScene("CameraTest");
 	auto tempCamera = tempScene->GetObjectByName("CameraTest");
-	tempCamera->AddComponent(Object3DComponent::CAMERA_COMPONENT, "Camera");
 	tempCamera->SetPosition(vec3(0.f, 0.f, 0.f));
+	tempCamera->AddComponent(Object3DComponent::CAMERA_COMPONENT, "Camera");
 	auto Camera = dynamic_pointer_cast<CCameraComponent>(tempCamera->GetComponentByName("Camera"));
 
 	Camera->SetFov(65.f);
@@ -284,7 +287,7 @@ void CApp::PreLoop()
 	SceneManager->SetCurrentScene("Default");
 
 
-
+	this->KeyboardConf->SetKeyTriggerStatus(SDLK_1, true);
 }
 
 void CApp::SetMouseLock(bool lock)

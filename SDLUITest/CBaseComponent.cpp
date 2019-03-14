@@ -29,7 +29,21 @@ std::string CBaseComponent::GetName()
 void CBaseComponent::AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent)
 {
 	this->_ParrentObject = Parrent;
+	this->SetPosition(glm::vec3(0.0f));
 	this->CalculateMatrix();
+}
+
+void CBaseComponent::SetPossesingObject(std::shared_ptr<CObject3D> obj)
+{
+	if (obj != nullptr)
+	{
+		this->PossesingObject = obj;
+	}
+}
+
+std::shared_ptr<CObject3D> CBaseComponent::GetPossesingObject()
+{
+	return this->PossesingObject;
 }
 
 void CBaseComponent::SetType(int type)
@@ -84,7 +98,8 @@ void CBaseComponent::SetPosition(glm::vec3 pos)
 	}
 	else
 	{
-		this->_Position = this->_ParrentObject->_Position + pos;
+		this->_PosOffset = pos;
+		this->_Position = this->_ParrentObject->_Position + this->_PosOffset;
 	}
 	this->CalculateMatrix();
 }
@@ -102,7 +117,8 @@ void CBaseComponent::SetRotation(glm::vec3 rot)
 	}
 	else
 	{
-		this->_Rotation = this->_ParrentObject->_Rotation + rot;
+		this->_RotOffset = rot;
+		this->_Rotation = this->_ParrentObject->_Rotation + this->_RotOffset;
 	}
 	this->CalculateMatrix();
 }
@@ -116,6 +132,15 @@ void CBaseComponent::SetScale(glm::vec3 scale)
 {
 	this->_Scale = scale;
 	this->CalculateMatrix();
+}
+
+void CBaseComponent::UpdateLocation()
+{
+	if (this->PossesingObject != nullptr)
+	{
+		this->_Position = this->_ParrentObject->_Position + this->_PosOffset;
+		this->_Rotation = this->_ParrentObject->_Rotation + this->_RotOffset;
+	}
 }
 
 glm::vec3 CBaseComponent::GetScale()

@@ -53,7 +53,7 @@ void CLayout::Draw(COpengl* opengl)
 		for (auto o : it->second)
 		{
 			o->PreDraw();
-			opengl->SetModelMatrix(o->GetModelMatrix());
+			opengl->SetModelMatrixLayout(o->GetModelMatrix());
 			o->Draw();
 			o->PostDraw();
 			if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
@@ -61,7 +61,7 @@ void CLayout::Draw(COpengl* opengl)
 				auto temp = std::dynamic_pointer_cast<CButton>(o);
 				
 				temp->GetLabel()->PreDraw();
-				opengl->SetModelMatrix(temp->GetLabel()->GetModelMatrix());
+				opengl->SetModelMatrixLayout(temp->GetLabel()->GetModelMatrix());
 				temp->GetLabel()->Draw();
 				temp->GetLabel()->PostDraw();
 			}
@@ -131,6 +131,7 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_BUTTON);
+		CLayout::AddButtonToList(temp);
 		it = Objects2D.find(Object2DType::OBJECT2D_BUTTON);
 		if (it != Objects2D.end())
 		{
@@ -180,6 +181,16 @@ std::vector<std::shared_ptr<CObject2D>> CLayout::GetObjectByType(int type)
 		}
 	}
 	return {};
+}
+
+std::vector<std::shared_ptr<CObject2D>> CLayout::GetButtons()
+{
+	return this->Buttons;
+}
+
+void CLayout::AddButtonToList(std::shared_ptr<CObject2D> btn)
+{
+	this->Buttons.push_back(btn);
 }
 
 const char* CLayout::GetName()
