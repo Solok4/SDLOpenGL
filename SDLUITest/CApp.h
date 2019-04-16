@@ -35,6 +35,7 @@ public:
 	void SetMouseLock(bool lock);
 	void GetWindowSize(int &w, int &h) { w = this->WindowH; h = this->WindowH; };
 	void ResizeWindow(int w, int h);
+	void SetFPSLock(int FPS);
 	uint32_t GetFrameTime() { return this->FrameTime; };
 #ifdef __EMSCRIPTEN__
 	void EmscriptenLoop();
@@ -52,6 +53,8 @@ public:
 	uint32_t FrameTime;
 	int WindowW;
 	int WindowH;
+
+	int FPSLock;
 
 	uint32_t Start;
 	uint32_t End;

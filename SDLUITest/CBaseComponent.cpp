@@ -134,9 +134,9 @@ void CBaseComponent::SetScale(glm::vec3 scale)
 	this->CalculateMatrix();
 }
 
-void CBaseComponent::UpdateLocation()
+void CBaseComponent::Tick(uint32_t delta)
 {
-	if (this->PossesingObject != nullptr)
+	if (this->_ParrentObject != nullptr)
 	{
 		this->_Position = this->_ParrentObject->_Position + this->_PosOffset;
 		this->_Rotation = this->_ParrentObject->_Rotation + this->_RotOffset;

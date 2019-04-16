@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<scene name="">
+  <textureloader>
+    <load path="" />
+  </textureloader>
+  <material>
+    <mat name="" base="" nm="" spec=""></mat>
+  </material>
+  <modelloader>
+    <load path="" material="" />
+  </modelloader>
+  <objects>
+    <obj name="" position="" rotation="" scale="">
+      <components>
+        <comp type="" name="" position="" rotation="" scale="" />
+      </components>
+    </obj>
+  </objects>
+</scene>

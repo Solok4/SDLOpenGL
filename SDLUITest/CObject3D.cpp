@@ -28,6 +28,15 @@ void CObject3D::Draw(COpengl * opengl)
 			std::shared_ptr<CStaticMeshComponent> temp = std::dynamic_pointer_cast<CStaticMeshComponent>(o);
 			temp->CalculateMatrix();
 			opengl->SetModelMatrix(temp->GetModelMatrix());
+			opengl->SetNormalMatrix(temp->GetModelMatrix());
+			glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
+				temp->GetModel()->Mat->LM.Ambient.x, temp->GetModel()->Mat->LM.Ambient.y, temp->GetModel()->Mat->LM.Ambient.z);
+			glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
+				temp->GetModel()->Mat->LM.Diffuse.x, temp->GetModel()->Mat->LM.Diffuse.y, temp->GetModel()->Mat->LM.Diffuse.z);
+			glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
+				temp->GetModel()->Mat->LM.Specular.x, temp->GetModel()->Mat->LM.Specular.y, temp->GetModel()->Mat->LM.Specular.z);
+			glUniform1f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
+				temp->GetModel()->Mat->LM.Shininess);
 			temp->Draw();
 		}
 	}
@@ -144,10 +153,22 @@ void CObject3D::SetScale(glm::vec3 scale)
 	this->_RootComponent->SetScale(scale);
 }
 
+std::shared_ptr<CBaseComponent> CObject3D::GetComponentByType(int type)
+{
+	for (auto o : this->_Components)
+	{
+		if (o->GetType() == type)
+		{
+			return o;
+		}
+	}
+	return nullptr;
+}
+
 void CObject3D::Tick(uint32_t delta)
 {
 	for (auto o : this->_Components)
 	{
-		o->UpdateLocation();
+		o->Tick(delta);
 	}
 }

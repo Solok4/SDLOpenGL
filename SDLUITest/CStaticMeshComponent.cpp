@@ -18,6 +18,11 @@ void CStaticMeshComponent::BindModel(std::shared_ptr<Model> model)
 	this->_Model = model;
 }
 
+std::shared_ptr<Model> CStaticMeshComponent::GetModel()
+{
+	return this->_Model;
+}
+
 void CStaticMeshComponent::Draw()
 {
 	if (this->_Model != nullptr)

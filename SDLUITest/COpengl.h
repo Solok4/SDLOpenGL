@@ -9,6 +9,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "CCameraComponent.h"
 #include "Shaders.h"
+#include "CLightComponent.h"
 
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glew32.lib")
@@ -21,6 +22,8 @@ struct MyFrameBuffer
 	GLuint CBuffer;
 	const char* ShaderName;
 };
+
+
 
 class COpengl
 {
@@ -35,6 +38,7 @@ public:
 	void PreLoop();
 	void SetModelMatrix(glm::mat4 matrix);
 	void SetModelMatrixLayout(glm::mat4 matrix);
+	void SetNormalMatrix(glm::mat4 matrix);
 
 	void ProLoop(SDL_Window* Window);
 	void PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera);
@@ -49,6 +53,8 @@ public:
 	void ClearFramebuffers();
 	void FinalDraw();
 
+	void ProcessLight(std::vector<std::shared_ptr<CLightComponent>> lights);
+
 	Shaders GetShadersClass();
 
 
@@ -62,6 +68,9 @@ private:
 
 	GLuint FinalVao;
 	GLuint FinalVbo;
+
+	glm::mat4 ViewMatrix;
+
 
 };
 

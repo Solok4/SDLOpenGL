@@ -104,3 +104,7 @@ void CCameraComponent::ClipCamera()
 		this->_Rotation.z = 180;
 	}
 }
+
+void CCameraComponent::Tick(uint32_t delta)
+{
+}

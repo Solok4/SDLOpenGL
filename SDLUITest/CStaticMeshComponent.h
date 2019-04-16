@@ -10,13 +10,12 @@ public:
 	~CStaticMeshComponent();
 
 	void BindModel(std::shared_ptr<Model> model);
+	std::shared_ptr<Model> GetModel();
 	void Draw() override;
 
 
 private:
 
 	std::shared_ptr<Model> _Model;
-	
-
 };
 

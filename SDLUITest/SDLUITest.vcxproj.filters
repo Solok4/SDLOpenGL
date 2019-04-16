@@ -66,9 +66,6 @@
     <ClInclude Include="CStaticMeshComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
-    <ClInclude Include="XmlParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CLabel.h">
       <Filter>Header Files\Objects 2D</Filter>
     </ClInclude>
@@ -93,9 +90,6 @@
     <ClInclude Include="CCameraComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Shaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -104,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="CKeyboardConf.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CMovementComponent.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +140,6 @@
     <ClCompile Include="CStaticMeshComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
-    <ClCompile Include="XmlParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CLabel.cpp">
       <Filter>Source Files\Objects 2D</Filter>
     </ClCompile>
@@ -170,9 +164,6 @@
     <ClCompile Include="CCameraComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -181,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="CKeyboardConf.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CMovementComponent.cpp">
+      <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

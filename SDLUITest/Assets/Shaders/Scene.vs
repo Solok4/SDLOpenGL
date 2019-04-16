@@ -1,27 +1,21 @@
 #version 330 core
-#ifdef GL_ES
-	attribute vec3 vertexPosition_modelspace;
-	attribute vec2 vertexUV;
-#else
-	layout(location = 0) in vec3 vertexPosition_modelspace;
-	layout(location = 1) in vec2 vertexUV;
-#endif
+layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 1) in vec2 vertexUV;
 
 // Values that stay constant for the whole mesh.
 uniform mat4 Projection;
 uniform mat4 View;
 uniform mat4 Model;
 uniform vec3 CameraPos;
+uniform mat4 NormalMatrix;
 
-#ifdef GL_ES
-	varying vec2 UV;
-	varying vec3 FragPos;
-	varying vec3 CameraP;
-#else
-	out vec2 UV;
-	out vec3 FragPos;
-	out vec3 CameraP;
-#endif
+out vec2 UV;
+out vec3 FragPos;
+out vec3 CameraP;
+//out mat4 NMatrix;
+out vec3 NMatrix;
+
+
   
 void main(){
   // Output position of the vertex, in clip space : MVP * position
@@ -30,5 +24,7 @@ void main(){
   
   UV = vertexUV;
   FragPos = vec3(Model * vec4(vertexPosition_modelspace,1.0));
+  NMatrix = vec3(NormalMatrix * vec4(vertexPosition_modelspace,1.0));
+  //NMatrix = NormalMatrix;
   CameraP = CameraPos;
 }

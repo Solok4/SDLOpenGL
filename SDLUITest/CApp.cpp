@@ -14,6 +14,7 @@ CApp::CApp()
 	ModelManager = std::unique_ptr<CModelManager>(new CModelManager);
 	SceneManager = std::unique_ptr<CSceneManager>(new CSceneManager);
 	KeyboardConf = std::unique_ptr<CKeyboardConf>(new CKeyboardConf);
+	this->SetFPSLock(0);
 }
 
 
@@ -55,43 +56,50 @@ void CApp::Loop()
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
 	while (Event.GetIsRunning())
 	{
-		this->FrameTime = this->End - this->Start;
 		//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
 		this->Start = SDL_GetTicks();
-		PollEvents();
 		CurrentLayout = LayoutManager->GetCurrentLayout();
-		CurrentScene = SceneManager->GetCurrentScene();
-
-		ButtonList = CurrentLayout->GetButtons();
-		for (auto o : ButtonList)
+		PollEvents();
+		if (CurrentLayout != nullptr)
 		{
-			auto butt = std::dynamic_pointer_cast<CButton>(o);
-			if (butt != NULL)
+			ButtonList = CurrentLayout->GetButtons();
+			for (auto o : ButtonList)
 			{
-				butt->IsClicked(Event.GetMouseData());
+				auto butt = std::dynamic_pointer_cast<CButton>(o);
+				if (butt != NULL)
+				{
+					butt->IsClicked(Event.GetMouseData());
+				}
 			}
 		}
 
-		if (MouseLock)
+		CurrentScene = SceneManager->GetCurrentScene();
+		if (SceneManager->GetCamera() != nullptr)
 		{
-			SDL_ShowCursor(false);
-			SceneManager->GetCamera()->SetIsFree(true);
-			SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(),Renderer.GetWindow());
-			glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
-				SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
-		}
-		else
-		{
-			SceneManager->GetCamera()->SetIsFree(false);
-			SDL_ShowCursor(true);
+			if (MouseLock)
+			{
+				SDL_ShowCursor(false);
+
+				SceneManager->GetCamera()->SetIsFree(true);
+				SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
+				glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
+					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+			}
+			else
+			{
+				SceneManager->GetCamera()->SetIsFree(false);
+				SDL_ShowCursor(true);
+			}
 		}
 
 		OpenGL.PreLoop();
+
 		CurrentLayout->Tick(this->FrameTime);
 		CurrentScene->Tick(this->FrameTime);
 
 		OpenGL.UseFramebuffer("Default");
 		OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
+		OpenGL.ProcessLight(CurrentScene->GetLightObjects());
 		CurrentScene->Draw(&this->OpenGL);
 
 		OpenGL.UseFramebuffer("0");
@@ -104,6 +112,19 @@ void CApp::Loop()
 
 		OpenGL.ProLoop(Renderer.GetWindow());
 		this->End = SDL_GetTicks();
+		this->FrameTime = this->End - this->Start;
+
+		
+
+		if (this->FPSLock != 0)
+		{
+			if (this->FrameTime < (1000/this->FPSLock))
+			{
+				SDL_Delay((1000/this->FPSLock) - this->FrameTime);
+			}
+		}
+
+
 
 	}
 }
@@ -183,7 +204,6 @@ void CApp::PreLoop()
 	OpenGL.PrepareToLoop();
 	{
 		OpenGL.AddNewFramebuffer("Default","Default");
-		//OpenGL.AddNewFramebuffer("GUI","Default");
 	}
 	{
 
@@ -193,28 +213,30 @@ void CApp::PreLoop()
 		Layout->SetWindowData(Renderer.GetWindow());
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(700.f, 40.f), vec2(100.f));
-		//Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300, 300.f), vec2(128.f, 64.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
 		Layout->PrepareToLoop();
 
-		/*CButton* TempButton = dynamic_cast<CButton*>(Layout->FindObjectByName("TestButton"));
+		auto TempButton = std::dynamic_pointer_cast<CButton>(Layout->FindObjectByName("TestButton"));
 		TempButton->LoadTexture("Assets/Textures/Tex.tga");
-		TempButton->BindTexture(TempButton->GetTexture());*/
+		TempButton->BindTexture(TempButton->GetTexture());
+		TempButton->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->Label->SetText("First Button");
 		//TempButton->AttachFunc(MouseClick);
 
 		auto TempButton2 = std::dynamic_pointer_cast<CButton>(Layout->FindObjectByName("TestButton2"));
 		TempButton2->LoadTexture("Assets/Textures/TestTex.bmp");
 		TempButton2->BindTexture(TempButton2->GetTexture());
-		//TempButton2->AttachFunc([]() {});
+		TempButton2->AttachFunc([]() {CLog::MyLog(0, "TempButton2 Press"); });
 		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
 		TempButton2->Label->SetText("ASDF");
 
-		//auto TempLabel = std::dynamic_pointer_cast<CLabel>(Layout->FindObjectByName("TestLabel"));
-		//TempLabel->SetText("Text Test");
+		auto TempLabel = std::dynamic_pointer_cast<CLabel>(Layout->FindObjectByName("TestLabel"));
+		TempLabel->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 24));
+		TempLabel->SetText("Text Test");
 	}
 
-	//ModelManager->LoadOBJ("Assets/Models/Cube.obj","Assets/Textures/CubeBase.tga");
 	ModelManager->LoadOBJ("Assets/Models/Piernik.obj");
 	ModelManager->CreateMaterial("Piernik");
 	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
@@ -273,6 +295,15 @@ void CApp::PreLoop()
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 0.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 	}
+	{
+		tempScene->AddObjectToScene("Light1");
+		auto tempLight = tempScene->GetObjectByName("Light1");
+		tempLight->SetPosition(glm::vec3(5.0f));
+		tempLight->SetRotation(glm::vec3(60.f));
+		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "Light");
+		
+		tempScene->AddLightToScene(tempLight);
+	}
 	
 
 	tempScene->AddObjectToScene("CameraTest");
@@ -286,7 +317,7 @@ void CApp::PreLoop()
 
 	SceneManager->SetCurrentScene("Default");
 
-
+	this->SetFPSLock(90);
 	this->KeyboardConf->SetKeyTriggerStatus(SDLK_1, true);
 }
 
@@ -299,6 +330,11 @@ void CApp::ResizeWindow(int w, int h)
 {
 	Renderer.Resize(w, h);
 	LayoutManager->SetWindowData(Renderer.GetWindow());
+}
+
+void CApp::SetFPSLock(int FPS)
+{
+	this->FPSLock = FPS;
 }
 
 

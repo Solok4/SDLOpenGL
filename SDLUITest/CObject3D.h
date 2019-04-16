@@ -26,6 +26,7 @@ public:
 	void SetPosition(glm::vec3 pos);
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
+	std::shared_ptr<CBaseComponent> GetComponentByType(int type);
 
 	void Tick(uint32_t delta);
 

@@ -9,6 +9,8 @@
 #include "COpengl.h"
 #include <fstream>
 
+#define MAX_LIGHTS 32
+
 
 COpengl::COpengl()
 {
@@ -71,7 +73,7 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/Scene.fs", false);
 	Shaders.CreateShaderProgram("Default");
 	Shaders.CreateShader("Assets/Shaders/final.vs", true);
-	Shaders.CreateShader("Assets/shaders/final.fs", false);
+	Shaders.CreateShader("Assets/Shaders/final.fs", false);
 	Shaders.CreateShaderProgram("Final");
 
 
@@ -107,6 +109,43 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Default", "Projection");
 	Shaders.AddUniformToShaderStruct("Default", "Model");
 	Shaders.AddUniformToShaderStruct("Default", "CameraPos");
+	Shaders.AddUniformToShaderStruct("Default", "NormalMatrix");
+	{
+		std::string LightNumber;
+		std::string Uniform;
+		for (int i = 0; i < MAX_LIGHTS; i++)
+		{
+			LightNumber = "Lights[";
+			LightNumber += std::to_string(i);
+			LightNumber += "]";
+			Uniform = LightNumber + ".Position";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Rotation";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Ambient";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Diffuse";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Specular";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Color";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Constant";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Linear";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".Quadratic";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".CutoutDist";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+			Uniform = LightNumber + ".LightType";
+			Shaders.AddUniformToShaderStruct("Default", Uniform);
+		}
+	}
+	Shaders.AddUniformToShaderStruct("Default", "Mat.Ambient");
+	Shaders.AddUniformToShaderStruct("Default", "Mat.Diffuse");
+	Shaders.AddUniformToShaderStruct("Default", "Mat.Specular");
+	Shaders.AddUniformToShaderStruct("Default", "Mat.Shininess");
 
 	Shaders.AddUniformToShaderStruct("Gui", "View");
 	Shaders.AddUniformToShaderStruct("Gui", "Projection");
@@ -128,12 +167,18 @@ void COpengl::PreLoop()
 void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default","Model"), 1, GL_FALSE, &matrix[0][0]);
-	
 }
 
 void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
 {
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Model"), 1, GL_FALSE, &matrix[0][0]);
+}
+
+void COpengl::SetNormalMatrix(glm::mat4 matrix)
+{
+	glm::mat4 ViewModel = this->ViewMatrix*matrix ;
+	glm::mat4 NormalMatrix =glm::transpose(glm::inverse(ViewModel));
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "NormalMatrix"), 1, GL_FALSE, &NormalMatrix[0][0]);
 }
 
 void COpengl::ProLoop(SDL_Window* Window)
@@ -145,22 +190,23 @@ void COpengl::ProLoop(SDL_Window* Window)
 
 void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 {
-	glm::mat4 ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->AspectRatio, 0.1f, 100.0f);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+	if (Camera != nullptr)
+	{
+		ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->AspectRatio, 0.1f, 100.0f);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+	}
 
 
 }
 
 void COpengl::PreLoopOrtho(SDL_Window* Window)
 {
-	glm::mat4 ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WindowW, (float)this->WindowH, 0.0f, -0.1f, 1000.0f);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Projection"), 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 
 
 }
@@ -256,6 +302,42 @@ void COpengl::FinalDraw()
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
+}
+
+void COpengl::ProcessLight(std::vector<std::shared_ptr<CLightComponent>> lights)
+{
+	Light LightStruct;
+	std::string LightNumber;
+	std::string Uniform;
+	for (int i=0;i<lights.size();i++)
+	{
+		LightStruct = lights[i]->GetLightStruct();
+		LightNumber = "Lights[";
+		LightNumber+= std::to_string(i);
+		LightNumber += "]";
+		Uniform = LightNumber + ".Position";
+		glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Position.x, LightStruct.Position.y, LightStruct.Position.z);
+		Uniform = LightNumber + ".Rotation";
+		glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Rotation.x, LightStruct.Rotation.y, LightStruct.Rotation.z);
+		Uniform = LightNumber + ".Ambient";
+		glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Ambient.x, LightStruct.Ambient.y, LightStruct.Ambient.z);
+		Uniform = LightNumber + ".Diffuse";
+		glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Diffuse.x, LightStruct.Diffuse.y, LightStruct.Diffuse.z);
+		Uniform = LightNumber + ".Specular";
+		glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Specular.x, LightStruct.Specular.y, LightStruct.Specular.z);
+		Uniform = LightNumber + ".Color";
+		glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Color.x, LightStruct.Color.y, LightStruct.Color.z);
+		Uniform = LightNumber + ".Constant";
+		glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Constant);
+		Uniform = LightNumber + ".Linear";
+		glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Linear);
+		Uniform = LightNumber + ".Quadratic";
+		glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Quadratic);
+		Uniform = LightNumber + ".CutoutDist";
+		glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.CutoutDist);
+		Uniform = LightNumber + ".LightType";
+		glUniform1i(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.LightType);
+	}
 }
 
 Shaders COpengl::GetShadersClass()

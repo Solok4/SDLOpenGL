@@ -180,6 +180,7 @@
     <ClInclude Include="CLayout.h" />
     <ClInclude Include="CLightComponent.h" />
     <ClInclude Include="CLog.h" />
+    <ClInclude Include="CMovementComponent.h" />
     <ClInclude Include="CObject2D.h" />
     <ClInclude Include="CObject3D.h" />
     <ClInclude Include="COpengl.h" />
@@ -190,9 +191,7 @@
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Shaders.h" />
-    <ClInclude Include="XmlParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CApp.cpp" />
@@ -206,6 +205,7 @@
     <ClCompile Include="CLayout.cpp" />
     <ClCompile Include="CLightComponent.cpp" />
     <ClCompile Include="CLog.cpp" />
+    <ClCompile Include="CMovementComponent.cpp" />
     <ClCompile Include="CObject2D.cpp" />
     <ClCompile Include="CObject3D.cpp" />
     <ClCompile Include="COpengl.cpp" />
@@ -221,10 +221,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SDLUITest.cpp" />
     <ClCompile Include="Shaders.cpp" />
-    <ClCompile Include="XmlParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

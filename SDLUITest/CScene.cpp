@@ -41,10 +41,70 @@ void CScene::RemoveObjectFromScene(std::string Name)
 	{
 		if (this->Objects3D[i]->GetName() == Name)
 		{
-			this->Objects3D.emplace(this->Objects3D.begin()+i);
+			this->Objects3D.erase(this->Objects3D.begin()+i);
 			break;
 		}
 	}
+}
+
+void CScene::AddLightToScene(std::shared_ptr<CObject3D> light)
+{
+	if (light != nullptr)
+	{
+		if(light->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
+			this->Lights.push_back(std::dynamic_pointer_cast<CLightComponent>(light->GetComponentByType(Object3DComponent::LIGHT_COMPONENT)));
+	}
+}
+
+void CScene::AddLightToScene(std::string Name)
+{
+	for (auto o : this->Objects3D)
+	{
+		if (o->GetName() == Name)
+		{
+			if (o->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
+			{
+				this->Lights.push_back(std::dynamic_pointer_cast<CLightComponent>(o->GetComponentByType(Object3DComponent::LIGHT_COMPONENT)));
+			}
+		}
+	}
+}
+
+void CScene::RemoveLightFromScene(std::shared_ptr<CObject3D> light)
+{
+	if (light != nullptr)
+	{
+		if (light->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
+		{
+			for (unsigned int i = 0; i < this->Lights.size(); i++)
+			{
+				if (this->Lights[i]->GetName() == light->GetName())
+				{
+					this->Lights.erase(this->Lights.begin() + i);
+					break;
+				}
+			}
+		}
+	}
+	CScene::RemoveObjectFromScene(light->GetName());
+}
+
+void CScene::RemoveLightFromScene(std::string Name)
+{
+	for (unsigned int i = 0; i < this->Lights.size(); i++)
+	{
+		if (this->Lights[i]->GetName() == Name)
+		{
+			this->Lights.erase(this->Lights.begin() + i);
+			break;
+		}
+	}
+	CScene::RemoveObjectFromScene(Name);
+}
+
+std::vector<std::shared_ptr<CLightComponent>> CScene::GetLightObjects()
+{
+	return this->Lights;
 }
 
 void CScene::SetName(std::string Name)

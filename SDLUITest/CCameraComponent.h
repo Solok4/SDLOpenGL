@@ -13,6 +13,7 @@ public:
 	void ProcessMouseMovements(SDL_MouseButtonEvent e, SDL_Window* Wnd);
 	void SetIsFree(bool used);
 	void ClipCamera();
+	void Tick(uint32_t delta) override;
 
 
 	

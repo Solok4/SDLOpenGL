@@ -29,7 +29,7 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
 
-	void UpdateLocation();
+	virtual void Tick(uint32_t delta);
 
 
 	glm::vec3 GetPosition();

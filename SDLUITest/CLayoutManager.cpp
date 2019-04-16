@@ -26,7 +26,7 @@ std::shared_ptr<CLayout> CLayoutManager::GetLayoutByName(const char* name)
 {
 	for (auto o : this->Layouts)
 	{
-		if (strcmp(o->GetName(),name))
+		if (strcmp(o->GetName(),name) == 0)
 		{
 			return o;
 		}
@@ -38,7 +38,7 @@ void CLayoutManager::ChangeCurrentLayout(const char* name)
 {
 	for (auto o : this->Layouts)
 	{
-		if (strcmp(o->GetName(), name))
+		if (strcmp(o->GetName(), name) == 0)
 		{
 			this->CurrentLayout = o;
 		}
@@ -52,7 +52,8 @@ std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
 
 void CLayoutManager::SetMousePosition(int mX, int mY)
 {
-	this->CurrentLayout->GetMousePosition(mX, mY);
+	if(this->CurrentLayout !=nullptr)
+		this->CurrentLayout->GetMousePosition(mX, mY);
 }
 
 void CLayoutManager::SetWindowData(SDL_Window * Window)
