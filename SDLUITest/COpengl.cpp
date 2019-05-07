@@ -177,7 +177,7 @@ void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
 void COpengl::SetNormalMatrix(glm::mat4 matrix)
 {
 	glm::mat4 ViewModel = this->ViewMatrix*matrix ;
-	glm::mat4 NormalMatrix =glm::transpose(glm::inverse(ViewModel));
+	glm::mat4 NormalMatrix =glm::transpose(glm::inverse(matrix));
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "NormalMatrix"), 1, GL_FALSE, &NormalMatrix[0][0]);
 }
 

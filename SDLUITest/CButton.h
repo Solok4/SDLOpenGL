@@ -2,6 +2,14 @@
 #include "CObject2D.h"
 #include "CLabel.h"
 #include <SDL.h>
+#include <functional>
+
+extern "C"
+{
+#include "Lua/lua.h"
+#include "Lua/lualib.h"
+#include "Lua/lauxlib.h"
+}
 
 class CButton :
 	public CObject2D
@@ -20,7 +28,7 @@ public:
 
 	CLabel* GetLabel();
 
-	void (*Function)();
+	std::function<void()> Func;
 
 	bool Pressed = false;
 

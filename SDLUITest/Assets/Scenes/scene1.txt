@@ -8,18 +8,18 @@
 	"Assets/Textures/gingerbreadhouse_Spec.png"
 	]
 	"Materials" : [
-		"Piernik" : [
+		"Piernik" : {
 			"Name" : "Piernik",
 			"BaseTex" : "gingerbreadhouse_tex",
 			"NormalMap" : "gingerbreadhouse_NM",
 			"SpecularMap" : "gingerbreadhouse_Spec"
- 		]
-	]
+ 			    }
+		      ]
 	"Models" : [
-		"Piernik" : [
-			"Load" : "Piernik.obj",
+		"Piernik" : {
+			"Model" : "Piernik.obj",
 			"Material" : "Piernik"
-		]
+		}
 	]
 	
 }

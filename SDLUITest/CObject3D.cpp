@@ -61,7 +61,7 @@ void CObject3D::AddComponent(int id, std::string name)
 			std::shared_ptr<CBaseComponent> temp(new CBaseComponent);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::BASE_COMPONENT);
-			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
+			//temp->SetPossesingObject(std::make_shared<CObject3D>(*this));
 			this->_Components.push_back(temp);
 			break;
 		}
@@ -89,6 +89,15 @@ void CObject3D::AddComponent(int id, std::string name)
 			std::shared_ptr<CLightComponent> temp(new CLightComponent);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::LIGHT_COMPONENT);
+			temp->AttachParrentObject(this->GetRootComponent());
+			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
+			this->_Components.push_back(temp);
+			break;
+		}
+		case(Object3DComponent::MOVEMENT_COMPONENT): {
+			std::shared_ptr<CMovementComponent> temp(new CMovementComponent);
+			temp->SetName(name);
+			temp->SetType(Object3DComponent::MOVEMENT_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
 			//temp->SetPossesingObject(std::make_shared<CObject3D>(this));
 			this->_Components.push_back(temp);

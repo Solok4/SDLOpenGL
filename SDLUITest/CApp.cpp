@@ -237,7 +237,7 @@ void CApp::PreLoop()
 		TempLabel->SetText("Text Test");
 	}
 
-	ModelManager->LoadOBJ("Assets/Models/Piernik.obj");
+	ModelManager->LoadOBJ("Assets/Models/PiernikNorm.obj");
 	ModelManager->CreateMaterial("Piernik");
 	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
 	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_NM.png");
@@ -245,7 +245,7 @@ void CApp::PreLoop()
 	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_tex.png", TextureTypes::BaseTex);
 	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_NM.png", TextureTypes::NormalMap);
 	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);
-	ModelManager->GetModelByName("Piernik.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
+	ModelManager->GetModelByName("PiernikNorm.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
 
 
 
@@ -257,7 +257,7 @@ void CApp::PreLoop()
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(0.f, 0.f, 5.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
-		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 0.f, 0.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
@@ -268,7 +268,7 @@ void CApp::PreLoop()
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(0.f, 0.f, -5.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
-		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 180.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
@@ -279,7 +279,7 @@ void CApp::PreLoop()
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(5.f, 0.f, 0.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
-		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 90.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
@@ -290,7 +290,7 @@ void CApp::PreLoop()
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(-5.f, 0.f, 0.f));
 		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
-		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("Piernik.obj"));
+		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 0.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
@@ -298,10 +298,25 @@ void CApp::PreLoop()
 	{
 		tempScene->AddObjectToScene("Light1");
 		auto tempLight = tempScene->GetObjectByName("Light1");
-		tempLight->SetPosition(glm::vec3(5.0f));
-		tempLight->SetRotation(glm::vec3(60.f));
 		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "Light");
-		
+		tempLight->SetPosition(glm::vec3(0.f, 5.0f, 0.f));
+		tempLight->SetRotation(glm::vec3(0.f, 90.f, 0.f));
+		auto light = dynamic_pointer_cast<CLightComponent>(tempLight->GetComponentByName("Light"));
+		light->SetLightType(LightType::Directional);
+		light->SetLightBaseData(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f));
+		light->SetLightColor(vec3(1.0f,1.f,0.f));
+		tempScene->AddLightToScene(tempLight);
+	}
+	{
+		tempScene->AddObjectToScene("Light2");
+		auto tempLight = tempScene->GetObjectByName("Light2");
+		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "Light");
+		tempLight->SetPosition(glm::vec3(0.f, 5.0f, 0.f));
+		tempLight->SetRotation(glm::vec3(45.f, 0.f, 0.f));
+		auto light = dynamic_pointer_cast<CLightComponent>(tempLight->GetComponentByName("Light"));
+		light->SetLightType(LightType::Directional);
+		light->SetLightBaseData(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f));
+		light->SetLightColor(vec3(0.0f, 1.f, 0.f));
 		tempScene->AddLightToScene(tempLight);
 	}
 	
@@ -311,6 +326,9 @@ void CApp::PreLoop()
 	tempCamera->SetPosition(vec3(0.f, 0.f, 0.f));
 	tempCamera->AddComponent(Object3DComponent::CAMERA_COMPONENT, "Camera");
 	auto Camera = dynamic_pointer_cast<CCameraComponent>(tempCamera->GetComponentByName("Camera"));
+	tempCamera->AddComponent(Object3DComponent::MOVEMENT_COMPONENT, "Movement");
+	auto Movement = dynamic_pointer_cast<CMovementComponent>(tempCamera->GetComponentByName("Movement"));
+	tempScene->SetMovementObject(Movement);
 
 	Camera->SetFov(65.f);
 	tempScene->SetCamera(Camera);
@@ -345,11 +363,47 @@ void CApp::KeyEvents(array<bool, 322> keys)
 		CLog::MyLog(0, "Pressed 1");
 		this->MouseLock = !this->MouseLock;
 	}
-	if (keys[SDLK_w])
+	if (keys[SDLK_t])
 	{
 		LayoutManager->ChangeCurrentLayout("Default");
 	}
+	if (keys[SDLK_y])
+	{
+		LayoutManager->ChangeCurrentLayout("Blank");
+	}
+	if (keys[SDLK_w])
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(true);
+	}
+	else
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(false);
+	}
 	if (keys[SDLK_s])
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(true);
+	}
+	else
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(false);
+	}
+	if (keys[SDLK_a])
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(true);
+	}
+	else
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(false);
+	}
+	if (keys[SDLK_d])
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(true);
+	}
+	else
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(false);
+	}
+	if (keys[SDLK_y])
 	{
 		LayoutManager->ChangeCurrentLayout("Blank");
 	}

@@ -29,7 +29,7 @@ void CButton::IsClicked(SDL_MouseButtonEvent MouseData)
 		{
 			if (!this->Pressed)
 			{
-				this->Function();
+				this->Func();
 				this->Pressed = true;
 			}
 		}
@@ -43,7 +43,7 @@ void CButton::IsClicked(SDL_MouseButtonEvent MouseData)
 
 void CButton::AttachFunc(void(*fun)())
 {
-	this->Function = fun;
+	this->Func = fun;
 }
 
 void CButton::OnHover()

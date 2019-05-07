@@ -6,6 +6,7 @@
 #include "CStaticMeshComponent.h"
 #include "CCameraComponent.h"
 #include "CLightComponent.h"
+#include "CMovementComponent.h"
 #include "COpengl.h"
 
 class CObject3D
@@ -45,4 +46,5 @@ enum Object3DComponent
 	STATIC_MESH_COMPONENT,
 	CAMERA_COMPONENT,
 	LIGHT_COMPONENT,
+	MOVEMENT_COMPONENT,
 };

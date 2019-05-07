@@ -83,10 +83,10 @@ glm::vec3 CBaseComponent::GetForwardVector()
 glm::vec3 CBaseComponent::GetRightVector()
 {
 	glm::vec3 RV;
-	RV.x = this->_Position.x + (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y+90.f)));
-	RV.y = this->_Position.y + sin(glm::radians(this->_Rotation.x));
-	RV.z = this->_Position.z + (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y+90.f)));
-	//CLog::MyLog(0, "x=%f y=%f z=%f",std::to_string(RV.x),std::to_string(RV.y),std::to_string(RV.z));
+	RV.x = this->_Position.x + (cos(glm::radians(this->_Rotation.z))*cos(glm::radians(this->_Rotation.y+90.f)));
+	RV.y = this->_Position.y + sin(glm::radians(this->_Rotation.z));
+	RV.z = this->_Position.z + (cos(glm::radians(this->_Rotation.z))*sin(glm::radians(this->_Rotation.y+90.f)));
+	//CLog::MyLog(0, "RVector x=%f y=%f z=%f",RV.x,RV.y,RV.z);
 	return RV;
 }
 

@@ -6,7 +6,7 @@
 CScene::CScene()
 {
 	this->Camera = nullptr;
-
+	this->MovementObject = nullptr;
 }
 
 
@@ -107,6 +107,7 @@ std::vector<std::shared_ptr<CLightComponent>> CScene::GetLightObjects()
 	return this->Lights;
 }
 
+
 void CScene::SetName(std::string Name)
 {
 	this->Name = Name;
@@ -151,4 +152,17 @@ void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
 std::shared_ptr<CCameraComponent> CScene::GetCamera()
 {
 	return this->Camera;
+}
+
+void CScene::SetMovementObject(std::shared_ptr<CMovementComponent> Movement)
+{
+	if (Movement != nullptr)
+	{
+		this->MovementObject = Movement;
+	}
+}
+
+std::shared_ptr<CMovementComponent> CScene::GetMovementObject()
+{
+	return this->MovementObject;
 }

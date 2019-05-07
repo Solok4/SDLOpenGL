@@ -52,7 +52,7 @@ void CLightComponent::SetLightDistanceCutOff(float CutOffDistance)
 	this->Light.CutoutDist = CutOffDistance;
 }
 
-void CLightComponent::SetLightType(int type)
+void CLightComponent::SetLightType(LightType type)
 {
 	this->Light.LightType = type;
 }

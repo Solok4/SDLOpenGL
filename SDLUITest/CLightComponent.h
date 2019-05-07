@@ -39,7 +39,7 @@ public:
 	void SetLightBaseData(glm::vec3 Ambient, glm::vec3 Diffuse, glm::vec3 Specular);
 	void SetLightPointLightData(float constant, float linear, float quadriatic);
 	void SetLightDistanceCutOff(float CutOffDistance);
-	void SetLightType(int type);
+	void SetLightType(LightType type);
 	Light GetLightStruct();
 
 	Light Light;

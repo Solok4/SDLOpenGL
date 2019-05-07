@@ -107,4 +107,6 @@ void CCameraComponent::ClipCamera()
 
 void CCameraComponent::Tick(uint32_t delta)
 {
+	this->_ParrentObject->SetRotation(this->_Rotation);
+	CBaseComponent::Tick(delta);
 }
