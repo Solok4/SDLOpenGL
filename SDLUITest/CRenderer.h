@@ -2,7 +2,7 @@
 
 
 #ifdef __EMSCRIPTEN__
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 #else

@@ -1,7 +1,11 @@
 #pragma once
 
 
+#ifdef __EMSCRIPTEN__
+#include <SDL2/SDL.h>
+#else
 #include "SDL.h"
+#endif // __EMSCRIPTEN__
 #include <vector>
 #include "GL/glew.h"
 #include "glm/glm.hpp"
@@ -17,9 +21,9 @@
 struct MyFrameBuffer
 {
 	std::string name;
-	GLuint FBO;
-	GLuint RBO;
-	GLuint CBuffer;
+	GLuint FBO=0;
+	GLuint RBO=0;
+	GLuint CBuffer=0;
 	const char* ShaderName;
 };
 

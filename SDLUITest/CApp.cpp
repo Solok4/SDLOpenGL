@@ -10,6 +10,12 @@
 
 CApp::CApp()
 {
+	this->End = 0;
+	this->FPSLock = 0;
+	this->FrameTime = 0;
+	this->MouseX = 0;
+	this->MouseY = 0;
+	this->MouseLock = false;
 	LayoutManager = std::unique_ptr<CLayoutManager>(new CLayoutManager);
 	ModelManager = std::unique_ptr<CModelManager>(new CModelManager);
 	SceneManager = std::unique_ptr<CSceneManager>(new CSceneManager);
@@ -84,6 +90,7 @@ void CApp::Loop()
 				SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
 				glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
 					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+				CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
 			}
 			else
 			{
@@ -135,43 +142,50 @@ void CApp::EmscriptenLoop()
 	std::vector<std::shared_ptr<CObject2D>> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
-	this->FrameTime = this->End - this->Start;
-	//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
 	this->Start = SDL_GetTicks();
-	PollEvents();
 	CurrentLayout = LayoutManager->GetCurrentLayout();
-	CurrentScene = SceneManager->GetCurrentScene();
-
-	ButtonList = CurrentLayout->GetButtons();
-	for (auto o : ButtonList)
+	PollEvents();
+	if (CurrentLayout != nullptr)
 	{
-		auto butt = std::dynamic_pointer_cast<CButton>(o);
-		if (butt != NULL)
+		ButtonList = CurrentLayout->GetButtons();
+		for (auto o : ButtonList)
 		{
-			butt->IsClicked(Event.GetMouseData());
+			auto butt = std::dynamic_pointer_cast<CButton>(o);
+			if (butt != NULL)
+			{
+				butt->IsClicked(Event.GetMouseData());
+			}
 		}
 	}
 
-	if (MouseLock)
+	CurrentScene = SceneManager->GetCurrentScene();
+	if (SceneManager->GetCamera() != nullptr)
 	{
-		SDL_ShowCursor(false);
-		SceneManager->GetCamera()->SetIsFree(true);
-		SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
-		glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
-			SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
-	}
-	else
-	{
-		SceneManager->GetCamera()->SetIsFree(false);
-		SDL_ShowCursor(true);
+		if (MouseLock)
+		{
+			SDL_ShowCursor(false);
+
+			SceneManager->GetCamera()->SetIsFree(true);
+			SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
+			glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
+				SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+			CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+		}
+		else
+		{
+			SceneManager->GetCamera()->SetIsFree(false);
+			SDL_ShowCursor(true);
+		}
 	}
 
 	OpenGL.PreLoop();
+
 	CurrentLayout->Tick(this->FrameTime);
 	CurrentScene->Tick(this->FrameTime);
 
 	OpenGL.UseFramebuffer("Default");
 	OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
+	OpenGL.ProcessLight(CurrentScene->GetLightObjects());
 	CurrentScene->Draw(&this->OpenGL);
 
 	OpenGL.UseFramebuffer("0");
@@ -184,6 +198,17 @@ void CApp::EmscriptenLoop()
 
 	OpenGL.ProLoop(Renderer.GetWindow());
 	this->End = SDL_GetTicks();
+	this->FrameTime = this->End - this->Start;
+
+
+
+	if (this->FPSLock != 0)
+	{
+		if (this->FrameTime < (1000 / this->FPSLock))
+		{
+			SDL_Delay((1000 / this->FPSLock) - this->FrameTime);
+		}
+	}
 
 }
 #endif // __EMSCRIPTEN__

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CCameraComponent.h"
+#ifndef __EMSCRIPTEN__
 #include <Windows.h>
+#endif
 
 
 CCameraComponent::CCameraComponent() 
@@ -37,9 +39,9 @@ void CCameraComponent::ProcessMouseMovements(SDL_MouseButtonEvent e, SDL_Window*
 		int xpos = 0; int ypos = 0;
 		SDL_GetWindowPosition(Wnd, &xpos, &ypos);
 		SDL_GetWindowSize(Wnd, &w, &h);
-
+#ifndef __EMSCRIPTEN__
 		SetCursorPos(xpos + (w / 2), ypos + (h / 2));
-
+#endif
 		int DeltaX = 0;
 		DeltaX = e.x - (w / 2);
 		int DeltaY = 0;

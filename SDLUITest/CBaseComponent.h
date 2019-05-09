@@ -37,7 +37,7 @@ public:
 	glm::vec3 GetScale();
 	glm::mat4 GetModelMatrix();
 
-	virtual void Draw();
+	virtual void Draw(int program);
 
 protected:
 

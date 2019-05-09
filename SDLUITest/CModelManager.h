@@ -4,9 +4,11 @@
 #include <vector>
 #include <memory>
 #include "SDL_image.h"
+#ifdef __EMSCRIPTEN__
+#include <SDL2/SDL.h>
+#else
 #include "SDL.h"
-#include <algorithm>
-#include <thread>
+#endif // __EMSCRIPTEN__
 #include "glm/glm.hpp"
 
 
@@ -37,7 +39,7 @@ struct Model
 	bool HasNormals = false;
 	unsigned int IndicesCount = 0;
 	GLuint VAO;
-	GLuint VBOs[2];
+	GLuint VBOs[3];
 	std::shared_ptr<Material> Mat = nullptr;
 	const char* Name;
 };
@@ -76,7 +78,6 @@ private:
 	std::vector<std::shared_ptr<Model>> Models;
 	std::vector<std::shared_ptr<Material>> Materials;
 	std::vector<std::shared_ptr<Texture>> Textures;
-	std::vector<std::thread> Threads;
 };
 
 

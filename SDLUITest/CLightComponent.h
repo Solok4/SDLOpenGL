@@ -19,11 +19,11 @@ struct Light
 
 	int LightType;
 
-	float Constant;
-	float Linear;
-	float Quadratic;
+	float Constant =0;
+	float Linear =0;
+	float Quadratic=0;
 
-	float CutoutDist;
+	float CutoutDist=0;
 };
 
 

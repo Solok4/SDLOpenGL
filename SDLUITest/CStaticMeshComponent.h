@@ -11,7 +11,7 @@ public:
 
 	void BindModel(std::shared_ptr<Model> model);
 	std::shared_ptr<Model> GetModel();
-	void Draw() override;
+	void Draw(int program) override;
 
 
 private:

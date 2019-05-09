@@ -4,16 +4,6 @@
 #include <memory>
 #include "CObject3D.h"
 
-extern "C"
-{
-#include "Lua/lua.h"
-#include "Lua/lualib.h"
-#include "Lua/lauxlib.h"
-}
-
-#pragma comment(lib,"lua5.1.lib")
-
-
 class CScene
 {
 public:

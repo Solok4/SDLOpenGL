@@ -14,6 +14,11 @@
 
 COpengl::COpengl()
 {
+	this->AspectRatio = 0;
+	this->FinalVao = 0;
+	this->FinalVbo = 0;
+	this->WindowH = 0;
+	this->WindowW = 0;
 }
 
 
@@ -66,6 +71,17 @@ void COpengl::Delete()
 
 void COpengl::PrepareToLoop()
 {
+#ifdef __EMSCRIPTEN__
+	Shaders.CreateShader("Assets/Shaders/Gui.vse", true);
+	Shaders.CreateShader("Assets/Shaders/Gui.fse", false);
+	Shaders.CreateShaderProgram("Gui");
+	Shaders.CreateShader("Assets/Shaders/Scene.vse", true);
+	Shaders.CreateShader("Assets/Shaders/Scene.fse", false);
+	Shaders.CreateShaderProgram("Default");
+	Shaders.CreateShader("Assets/Shaders/final.vse", true);
+	Shaders.CreateShader("Assets/Shaders/final.fse", false);
+	Shaders.CreateShaderProgram("Final");
+#else
 	Shaders.CreateShader("Assets/Shaders/Gui.vs", true);
 	Shaders.CreateShader("Assets/Shaders/Gui.fs", false);
 	Shaders.CreateShaderProgram("Gui");
@@ -75,7 +91,7 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/final.vs", true);
 	Shaders.CreateShader("Assets/Shaders/final.fs", false);
 	Shaders.CreateShaderProgram("Final");
-
+#endif // __EMSCRIPTEN__
 
 	glClearColor(0, 0, 0, 1);
 
@@ -110,6 +126,9 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Default", "Model");
 	Shaders.AddUniformToShaderStruct("Default", "CameraPos");
 	Shaders.AddUniformToShaderStruct("Default", "NormalMatrix");
+	Shaders.AddUniformToShaderStruct("Default", "Base");
+	Shaders.AddUniformToShaderStruct("Default", "Normal");
+	Shaders.AddUniformToShaderStruct("Default", "Specular");
 	{
 		std::string LightNumber;
 		std::string Uniform;
@@ -297,6 +316,7 @@ void COpengl::FinalDraw()
 	glEnableVertexAttribArray(1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("Default").CBuffer);
+	glUniform1i(glGetUniformLocation(Shaders.GetCurrentShaderProgram(), "Base"),0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(1);

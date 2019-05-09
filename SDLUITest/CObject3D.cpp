@@ -37,7 +37,7 @@ void CObject3D::Draw(COpengl * opengl)
 				temp->GetModel()->Mat->LM.Specular.x, temp->GetModel()->Mat->LM.Specular.y, temp->GetModel()->Mat->LM.Specular.z);
 			glUniform1f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
 				temp->GetModel()->Mat->LM.Shininess);
-			temp->Draw();
+			temp->Draw(opengl->GetShadersClass().GetCurrentShaderProgram());
 		}
 	}
 }

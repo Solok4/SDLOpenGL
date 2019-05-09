@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef __EMSCRIPTEN__
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #else
 #include "SDL.h"
 #endif // __EMSCRIPTEN__
@@ -47,9 +47,9 @@ public:
 	CRenderer Renderer;
 	CEvent Event;
 
-	int MouseX = 0;
-	int MouseY = 0;
-	bool MouseLock=false;
+	int MouseX;
+	int MouseY;
+	bool MouseLock;
 	uint32_t FrameTime;
 	int WindowW;
 	int WindowH;

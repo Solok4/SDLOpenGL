@@ -51,7 +51,7 @@ void CMovementComponent::Tick(uint32_t delta)
 	{
 		if (this->CurrentXAccel > 0)
 			this->CurrentXAccel = 0;
-		if (this->CurrentXAccel < this->MaxAccel)
+		if (abs(this->CurrentXAccel) < this->MaxAccel)
 			this->CurrentXAccel -= (this->MaxAccel  * delta / this->AccelTime);
 	}
 	if (isMoveRight)
@@ -65,7 +65,7 @@ void CMovementComponent::Tick(uint32_t delta)
 	{
 		if (this->CurrentYAccel > 0)
 			this->CurrentYAccel = 0;
-		if (this->CurrentYAccel < this->MaxAccel)
+		if (abs(this->CurrentYAccel) < this->MaxAccel)
 			this->CurrentYAccel -= (this->MaxAccel  * delta / this->AccelTime);
 		
 	}
@@ -115,5 +115,5 @@ void CMovementComponent::Tick(uint32_t delta)
 	}
 
 	this->_ParrentObject->SetPosition(this->_ParrentObject->GetPosition()+ResultVector);
-	CLog::MyLog(0, "Movement %f, %f, %f - Accels: %f,%f - Speed: %f - Tick: %d", this->ResultVector.x, this->ResultVector.y,this->ResultVector.z,this->CurrentXAccel,this->CurrentYAccel,this->CurrentSpeed,delta);
+	//CLog::MyLog(0, "Movement %f, %f, %f - Accels: %f,%f - Speed: %f - Tick: %d", this->ResultVector.x, this->ResultVector.y,this->ResultVector.z,this->CurrentXAccel,this->CurrentYAccel,this->CurrentSpeed,delta);
 }

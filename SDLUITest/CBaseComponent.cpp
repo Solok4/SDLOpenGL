@@ -4,6 +4,7 @@
 
 CBaseComponent::CBaseComponent()
 {
+	this->_Type = 0;
 	this->_Position = glm::vec3(0.f, 0.f, 0.f);
 	this->_Rotation = glm::vec3(0.f);
 	this->_Scale = glm::vec3(1.f);
@@ -153,6 +154,6 @@ glm::mat4 CBaseComponent::GetModelMatrix()
 	return this->ModelMatrix;
 }
 
-void CBaseComponent::Draw()
+void CBaseComponent::Draw(int program)
 {
 }

@@ -104,54 +104,123 @@ void CModelManager::LoadOBJ(const char * path)
 		{
 			if (tempModel->HasNormals && tempModel->HasTexcords)
 			{
-				unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-				if (matches != 9) {
-					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					fclose(file);
-					return;
+				unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
+				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2], &vertexIndex[3], &uvIndex[3], &normalIndex[3]);
+				if (matches != 12) {
+					if (matches != 9) {
+						printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+						fclose(file);
+						return;
+					}
+					else
+					{
+						VertexIndices.push_back(vertexIndex[0]);
+						VertexIndices.push_back(vertexIndex[1]);
+						VertexIndices.push_back(vertexIndex[2]);
+						TexcordIndices.push_back(uvIndex[0]);
+						TexcordIndices.push_back(uvIndex[1]);
+						TexcordIndices.push_back(uvIndex[2]);
+						NormalIndices.push_back(normalIndex[0]);
+						NormalIndices.push_back(normalIndex[1]);
+						NormalIndices.push_back(normalIndex[2]);
+					}
 				}
-				VertexIndices.push_back(vertexIndex[0]);
-				VertexIndices.push_back(vertexIndex[1]);
-				VertexIndices.push_back(vertexIndex[2]);
-				TexcordIndices.push_back(uvIndex[0]);
-				TexcordIndices.push_back(uvIndex[1]);
-				TexcordIndices.push_back(uvIndex[2]);
-				NormalIndices.push_back(normalIndex[0]);
-				NormalIndices.push_back(normalIndex[1]);
-				NormalIndices.push_back(normalIndex[2]);
+				else
+				{
+					VertexIndices.push_back(vertexIndex[0]);
+					VertexIndices.push_back(vertexIndex[1]);
+					VertexIndices.push_back(vertexIndex[2]);
+					VertexIndices.push_back(vertexIndex[0]);
+					VertexIndices.push_back(vertexIndex[2]);
+					VertexIndices.push_back(vertexIndex[3]);
+					TexcordIndices.push_back(uvIndex[0]);
+					TexcordIndices.push_back(uvIndex[1]);
+					TexcordIndices.push_back(uvIndex[2]);
+					TexcordIndices.push_back(uvIndex[0]);
+					TexcordIndices.push_back(uvIndex[2]);
+					TexcordIndices.push_back(uvIndex[3]);
+					NormalIndices.push_back(normalIndex[0]);
+					NormalIndices.push_back(normalIndex[1]);
+					NormalIndices.push_back(normalIndex[2]);
+					NormalIndices.push_back(normalIndex[0]);
+					NormalIndices.push_back(normalIndex[2]);
+					NormalIndices.push_back(normalIndex[3]);
+				}	
+				
 			}
 			else if (tempModel->HasNormals && !tempModel->HasTexcords)
 			{
-				unsigned int vertexIndex[3], normalIndex[3];
-				int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
-				if (matches != 6) {
-					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					fclose(file);
-					return;
+				unsigned int vertexIndex[4], normalIndex[4];
+				int matches = fscanf(file, "%d//%d %d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2], &vertexIndex[3], &normalIndex[3]);
+				if (matches != 8) {
+					if (matches != 6) {
+						printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+						fclose(file);
+						return;
+					}
+					else
+					{
+						VertexIndices.push_back(vertexIndex[0]);
+						VertexIndices.push_back(vertexIndex[1]);
+						VertexIndices.push_back(vertexIndex[2]);
+						NormalIndices.push_back(normalIndex[0]);
+						NormalIndices.push_back(normalIndex[1]);
+						NormalIndices.push_back(normalIndex[2]);
+					}
 				}
-				VertexIndices.push_back(vertexIndex[0]);
-				VertexIndices.push_back(vertexIndex[1]);
-				VertexIndices.push_back(vertexIndex[2]);
-				NormalIndices.push_back(normalIndex[0]);
-				NormalIndices.push_back(normalIndex[1]);
-				NormalIndices.push_back(normalIndex[2]);
+				else
+				{
+					VertexIndices.push_back(vertexIndex[0]);
+					VertexIndices.push_back(vertexIndex[1]);
+					VertexIndices.push_back(vertexIndex[2]);
+					VertexIndices.push_back(vertexIndex[0]);
+					VertexIndices.push_back(vertexIndex[2]);
+					VertexIndices.push_back(vertexIndex[3]);
+					NormalIndices.push_back(normalIndex[0]);
+					NormalIndices.push_back(normalIndex[1]);
+					NormalIndices.push_back(normalIndex[2]);
+					NormalIndices.push_back(normalIndex[0]);
+					NormalIndices.push_back(normalIndex[2]);
+					NormalIndices.push_back(normalIndex[3]);
+				}
 			}
 			else if (!tempModel->HasNormals && tempModel->HasTexcords)
 			{
-				unsigned int vertexIndex[3], uvIndex[3];
-				int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
-				if (matches != 6) {
-					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-					fclose(file);
-					return;
+				unsigned int vertexIndex[4], uvIndex[4];
+				int matches = fscanf(file, "%d/%d %d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2], &vertexIndex[3], &uvIndex[3]);
+				if (matches != 8) {
+					if (matches != 6) {
+						printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+						fclose(file);
+						return;
+					}
+					else
+					{
+						VertexIndices.push_back(vertexIndex[0]);
+						VertexIndices.push_back(vertexIndex[1]);
+						VertexIndices.push_back(vertexIndex[2]);
+						TexcordIndices.push_back(uvIndex[0]);
+						TexcordIndices.push_back(uvIndex[1]);
+						TexcordIndices.push_back(uvIndex[2]);
+					}
 				}
-				VertexIndices.push_back(vertexIndex[0]);
-				VertexIndices.push_back(vertexIndex[1]);
-				VertexIndices.push_back(vertexIndex[2]);
-				TexcordIndices.push_back(uvIndex[0]);
-				TexcordIndices.push_back(uvIndex[1]);
-				TexcordIndices.push_back(uvIndex[2]);
+				else
+				{
+					VertexIndices.push_back(vertexIndex[0]);
+					VertexIndices.push_back(vertexIndex[1]);
+					VertexIndices.push_back(vertexIndex[2]);
+					VertexIndices.push_back(vertexIndex[0]);
+					VertexIndices.push_back(vertexIndex[2]);
+					VertexIndices.push_back(vertexIndex[3]);
+					TexcordIndices.push_back(uvIndex[0]);
+					TexcordIndices.push_back(uvIndex[1]);
+					TexcordIndices.push_back(uvIndex[2]);
+					TexcordIndices.push_back(uvIndex[0]);
+					TexcordIndices.push_back(uvIndex[2]);
+					TexcordIndices.push_back(uvIndex[3]);
+				}
+
+				
 			}
 
 
@@ -388,12 +457,14 @@ void CModelManager::LoadTexture(const char * path)
 	if (!Tex)
 	{
 		CLog::MyLog(1, "Failed to load a texture");
+		return;
 	}
 	else
 	{
 		GLint Format;
 		Format = GL_RGBA;
 		SDL_Surface* Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
+		SDL_FreeSurface(Tex);
 		FinishSurface(Finish);
 
 		GLuint TexID;
@@ -411,7 +482,6 @@ void CModelManager::LoadTexture(const char * path)
 		SDL_FreeSurface(Finish);
 	}
 
-	SDL_FreeSurface(Tex);
 
 	const char* name(path);
 	const char* slash = strrchr(name, '/');
