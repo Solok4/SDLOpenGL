@@ -9,6 +9,7 @@
 #include "CMovementComponent.h"
 #include "COpengl.h"
 
+
 class CObject3D
 {
 public:

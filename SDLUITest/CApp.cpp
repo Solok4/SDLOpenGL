@@ -90,7 +90,7 @@ void CApp::Loop()
 				SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
 				glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
 					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
-				CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+				//CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
 			}
 			else
 			{
@@ -169,7 +169,7 @@ void CApp::EmscriptenLoop()
 			SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
 			glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
 				SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
-			CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+			//CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
 		}
 		else
 		{

@@ -20,6 +20,8 @@ public:
 
 private:
 
+	int LastX = 0;
+	int LastY = 0;
 	float FOV;
 	float Sensitivity = 5;
 	bool IsFree = false;

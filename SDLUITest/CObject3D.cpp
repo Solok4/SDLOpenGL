@@ -125,7 +125,31 @@ std::shared_ptr<CBaseComponent> CObject3D::GetComponentByName(std::string name)
 	{
 		if (o->GetName() == name)
 		{
-			return o;
+			switch (o->GetType())
+			{
+			case STATIC_MESH_COMPONENT:
+			{
+				return std::dynamic_pointer_cast<CStaticMeshComponent>(o);
+				break;
+			}
+			case CAMERA_COMPONENT:
+			{
+				return std::dynamic_pointer_cast<CCameraComponent>(o);
+				break;
+			}
+			case LIGHT_COMPONENT:
+			{
+				return std::dynamic_pointer_cast<CLightComponent>(o);
+				break;
+			}
+			case MOVEMENT_COMPONENT:
+			{
+				return std::dynamic_pointer_cast<CMovementComponent>(o);
+				break;
+			}
+			default:
+				break;
+			}
 		}
 	}
 	return nullptr;

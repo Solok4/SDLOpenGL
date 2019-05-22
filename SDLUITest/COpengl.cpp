@@ -250,14 +250,18 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 	glBindTexture(GL_TEXTURE_2D, FboStruct.CBuffer);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->WindowW, this->WindowH, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FboStruct.CBuffer, 0);
 
 	glGenRenderbuffers(1, &FboStruct.RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, FboStruct.RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, this->WindowW, this->WindowH);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, FboStruct.RBO);
 	FboStruct.ShaderName = ShaderName;
 	this->Framebuffers.push_back(FboStruct);

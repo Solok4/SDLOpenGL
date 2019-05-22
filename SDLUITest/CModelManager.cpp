@@ -450,7 +450,7 @@ void CModelManager::Load(const char * path, const char * tex)
 {
 }
 
-void CModelManager::LoadTexture(const char * path)
+void CModelManager::LoadTexture(const char* path)
 {
 	SDL_Surface* Tex = IMG_Load(path);
 	std::shared_ptr<Texture> tempTex(new Texture);
