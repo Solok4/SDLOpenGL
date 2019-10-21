@@ -19,6 +19,7 @@
 #include "CStaticMeshComponent.h"
 #include "CSceneManager.h"
 #include "CKeyboardConf.h"
+#include "CGameplayManager.h"
 
 
 class CApp
@@ -50,7 +51,6 @@ public:
 	int MouseX;
 	int MouseY;
 	bool MouseLock;
-	uint32_t FrameTime;
 	int WindowW;
 	int WindowH;
 
@@ -58,11 +58,13 @@ public:
 
 	uint32_t Start;
 	uint32_t End;
+	uint32_t FrameTime;
 
 	std::unique_ptr<CLayoutManager> LayoutManager;
 	std::unique_ptr<CModelManager> ModelManager;
 	std::unique_ptr<CSceneManager> SceneManager;
 	std::unique_ptr<CKeyboardConf> KeyboardConf;
+	std::unique_ptr<CGameplayManager> GameplayManager;
 
 };
 

@@ -102,6 +102,18 @@
     <ClInclude Include="CMovementComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
+    <ClInclude Include="CContainer.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameplayManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IDraw.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -175,6 +187,15 @@
     </ClCompile>
     <ClCompile Include="CMovementComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CContainer.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameplayManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

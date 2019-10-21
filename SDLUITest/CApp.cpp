@@ -4,6 +4,7 @@
 #include <stdio.h>
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
+#include <io.h>
 #endif // __EMSCRIPTEN__
 
 
@@ -16,17 +17,19 @@ CApp::CApp()
 	this->MouseX = 0;
 	this->MouseY = 0;
 	this->MouseLock = false;
-	LayoutManager = std::unique_ptr<CLayoutManager>(new CLayoutManager);
-	ModelManager = std::unique_ptr<CModelManager>(new CModelManager);
-	SceneManager = std::unique_ptr<CSceneManager>(new CSceneManager);
-	KeyboardConf = std::unique_ptr<CKeyboardConf>(new CKeyboardConf);
+	this->LayoutManager = std::make_unique<CLayoutManager>();
+	this->ModelManager = std::make_unique<CModelManager>();
+	this->SceneManager = std::make_unique<CSceneManager>();
+	this->KeyboardConf = std::make_unique<CKeyboardConf>();
+	this->GameplayManager = std::make_unique<CGameplayManager>();
 	this->SetFPSLock(0);
 }
 
 
 CApp::~CApp()
 {
-	CLog::MyLog(0, "CAppDestructor");
+	CLog::MyLog(LogType::Log, "CAppDestructor");
+	CApp::Destroy();
 }
 
 
@@ -35,11 +38,12 @@ bool CApp::Init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
-		CLog::MyLog(1, "Failed to initalize SDL");
+		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
 		return false;
 	}
 	Renderer.Init();
 	OpenGL.Create(Renderer.GetWindow());
+	PreLoop();
 	return true;
 }
 
@@ -48,20 +52,19 @@ void CApp::Destroy()
 	OpenGL.Delete();
 	Renderer.Destroy();
 	SDL_Quit();
-
 }
 
 void CApp::Loop()
 {
-	PreLoop();
-#ifdef __EMSCRIPTEN__
-	return;
-#endif // __EMSCRIPTEN__
 	std::vector<std::shared_ptr<CObject2D>> ButtonList;
 	std::shared_ptr<CLayout> CurrentLayout = LayoutManager->GetCurrentLayout();
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
+	std::shared_ptr<CGameplay> CurrentGameplay = GameplayManager->GetCurrentGameplay();
+	std::vector<std::shared_ptr<CLightComponent>> LightList;
+#ifndef __EMSCRIPTEN__
 	while (Event.GetIsRunning())
 	{
+#endif 
 		//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
 		this->Start = SDL_GetTicks();
 		CurrentLayout = LayoutManager->GetCurrentLayout();
@@ -88,9 +91,10 @@ void CApp::Loop()
 
 				SceneManager->GetCamera()->SetIsFree(true);
 				SceneManager->GetCamera()->ProcessMouseMovements(Event.GetMouseData(), Renderer.GetWindow());
+				OpenGL.GetShadersClass().SetCurrentShaderProgram("Default");
 				glUniform3f(OpenGL.GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
 					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
-				//CLog::MyLog(0, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+				//CLog::MyLog(LogType::Log, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetRotation().x, SceneManager->GetCamera()->GetRotation().y, SceneManager->GetCamera()->GetRotation().z);
 			}
 			else
 			{
@@ -100,13 +104,26 @@ void CApp::Loop()
 		}
 
 		OpenGL.PreLoop();
+		uint32_t TickTime = (this->FrameTime * CurrentGameplay->GetTimescale());
 
-		CurrentLayout->Tick(this->FrameTime);
-		CurrentScene->Tick(this->FrameTime);
+		CurrentLayout->Tick(TickTime);
+		CurrentScene->Tick(TickTime);
+		LightList = CurrentScene->GetLightObjects();
+		for (int i = 0; i < LightList.size(); i++)
+		{
+			OpenGL.ProcessLight(LightList[i],i);
+			if (LightList[i]->GetLightStruct().LightType == LightType::Point)
+			{
 
+			}
+			else
+			{
+				CurrentScene->Draw(&this->OpenGL);
+			}
+			OpenGL.PostProcessLight(LightList[i], i);
+		}
 		OpenGL.UseFramebuffer("Default");
 		OpenGL.PreLoopPerspective(CurrentScene->GetCamera());
-		OpenGL.ProcessLight(CurrentScene->GetLightObjects());
 		CurrentScene->Draw(&this->OpenGL);
 
 		OpenGL.UseFramebuffer("0");
@@ -114,14 +131,9 @@ void CApp::Loop()
 
 		OpenGL.GetShadersClass().SetCurrentShaderProgram("Gui");
 		OpenGL.PreLoopOrtho(Renderer.GetWindow());
-		CurrentLayout->Draw(&this->OpenGL);
-		
+		CurrentLayout->Draw(&this->OpenGL);	
 
 		OpenGL.ProLoop(Renderer.GetWindow());
-		this->End = SDL_GetTicks();
-		this->FrameTime = this->End - this->Start;
-
-		
 
 		if (this->FPSLock != 0)
 		{
@@ -130,12 +142,15 @@ void CApp::Loop()
 				SDL_Delay((1000/this->FPSLock) - this->FrameTime);
 			}
 		}
-
-
-
+		this->End = SDL_GetTicks();
+		this->FrameTime = this->End - this->Start;
+#ifndef __EMSCRIPTEN__
 	}
+#else
+		emscripten_cancel_main_loop();
+#endif
 }
-
+/*
 #ifdef __EMSCRIPTEN__
 void CApp::EmscriptenLoop()
 {
@@ -212,6 +227,7 @@ void CApp::EmscriptenLoop()
 
 }
 #endif // __EMSCRIPTEN__
+*/
 
 void CApp::PollEvents()
 {
@@ -227,40 +243,7 @@ void CApp::PollEvents()
 void CApp::PreLoop()
 {
 	OpenGL.PrepareToLoop();
-	{
-		OpenGL.AddNewFramebuffer("Default","Default");
-	}
-	{
-
-		LayoutManager->AddNewLayout("Default");
-		LayoutManager->ChangeCurrentLayout("Default");
-		std::shared_ptr<CLayout> Layout = LayoutManager->GetLayoutByName("Default");
-		Layout->SetWindowData(Renderer.GetWindow());
-		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
-		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(700.f, 40.f), vec2(100.f));
-		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300, 300.f), vec2(128.f, 64.f));
-		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
-		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
-		Layout->PrepareToLoop();
-
-		auto TempButton = std::dynamic_pointer_cast<CButton>(Layout->FindObjectByName("TestButton"));
-		TempButton->LoadTexture("Assets/Textures/Tex.tga");
-		TempButton->BindTexture(TempButton->GetTexture());
-		TempButton->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
-		TempButton->Label->SetText("First Button");
-		//TempButton->AttachFunc(MouseClick);
-
-		auto TempButton2 = std::dynamic_pointer_cast<CButton>(Layout->FindObjectByName("TestButton2"));
-		TempButton2->LoadTexture("Assets/Textures/TestTex.bmp");
-		TempButton2->BindTexture(TempButton2->GetTexture());
-		TempButton2->AttachFunc([]() {CLog::MyLog(0, "TempButton2 Press"); });
-		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
-		TempButton2->Label->SetText("ASDF");
-
-		auto TempLabel = std::dynamic_pointer_cast<CLabel>(Layout->FindObjectByName("TestLabel"));
-		TempLabel->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 24));
-		TempLabel->SetText("Text Test");
-	}
+	OpenGL.AddNewFramebuffer("Default","Default");
 
 	ModelManager->LoadOBJ("Assets/Models/PiernikNorm.obj");
 	ModelManager->CreateMaterial("Piernik");
@@ -272,87 +255,135 @@ void CApp::PreLoop()
 	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);
 	ModelManager->GetModelByName("PiernikNorm.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
 
+	ModelManager->LoadTexture("Assets/Textures/Tex.tga");
+	ModelManager->LoadTexture("Assets/Textures/TestTex.bmp");
+
+	{
+
+		LayoutManager->AddNewLayout("Default");
+		LayoutManager->ChangeCurrentLayout("Default");
+		std::shared_ptr<CLayout> Layout = LayoutManager->GetLayoutByName("Default");
+		Layout->SetWindowData(Renderer.GetWindow());
+		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(10.f, 0.f), vec2(40.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "FpsCounter", vec2(10.f, 30.f), vec2(40.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(128.f, 64.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
+		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
+		Layout->PrepareToLoop();
+
+		auto TempImage = Layout->FindObjectByName<CImage>("TestImage");
+		TempImage->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
+
+		auto TempButton = Layout->FindObjectByName<CButton>("TestButton");
+		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
+		TempButton->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->Label->SetText("First Button");
+		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); });
+
+		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
+		TempButton2->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
+		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); });
+		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton2->Label->SetText("ASDF");
+
+		auto TempLabel = Layout->FindObjectByName<CLabel>("TestLabel");
+		TempLabel->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
+		TempLabel->SetText("FrameTime: ");
+		TempLabel->BindTickFunction([this,TempLabel](uint32_t tick) {
+			std::string FrameTime = std::to_string(this->GetFrameTime());
+			std::string Combined = std::string("Frametime: " + FrameTime);
+			TempLabel->SetText(Combined);
+			});
+
+		auto TempLabel2 = Layout->FindObjectByName<CLabel>("FpsCounter");
+		TempLabel2->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
+		TempLabel2->SetText("Fps: ");
+		TempLabel2->BindTickFunction([this, TempLabel2](uint32_t tick) {
+
+			uint32_t CurrentFrametime = this->GetFrameTime();
+			uint32_t FrameRate = 0;
+			if (CurrentFrametime > 0)
+			{
+				FrameRate = round(1000 / CurrentFrametime);
+			}
+			std::string FrameTime = std::to_string(FrameRate);
+			std::string Combined = std::string("Fps: " + FrameTime);
+			TempLabel2->SetText(Combined);
+			});
+	}
+
 
 
 	SceneManager->AddNewScene("Default");
 	auto tempScene(SceneManager->GetSceneByName("Default"));
 	{
-		tempScene->AddObjectToScene("Test");
-		auto tempObject3D = tempScene->GetObjectByName("Test");
+		auto tempObject3D = tempScene->AddObjectToScene("Test");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(0.f, 0.f, 5.f));
-		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		auto tempStaticMeshComponent = tempObject3D->GetComponentByName<CStaticMeshComponent>("Mesh");
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 0.f, 0.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 	}
 	{
-		tempScene->AddObjectToScene("Test1");
-		auto tempObject3D = tempScene->GetObjectByName("Test1");
+		auto tempObject3D = tempScene->AddObjectToScene("Test1");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(0.f, 0.f, -5.f));
-		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		auto tempStaticMeshComponent = tempObject3D->GetComponentByName<CStaticMeshComponent>("Mesh");
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 180.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 	}
 	{
-		tempScene->AddObjectToScene("Test2");
-		auto tempObject3D = tempScene->GetObjectByName("Test2");
+		auto tempObject3D = tempScene->AddObjectToScene("Test2");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(5.f, 0.f, 0.f));
-		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		auto tempStaticMeshComponent = tempObject3D->GetComponentByName<CStaticMeshComponent>("Mesh");
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 90.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 	}
 	{
-		tempScene->AddObjectToScene("Test3");
-		auto tempObject3D = tempScene->GetObjectByName("Test3");
+		auto tempObject3D = tempScene->AddObjectToScene("Test3");
 		tempObject3D->AddComponent(Object3DComponent::STATIC_MESH_COMPONENT, "Mesh");
 		tempObject3D->SetPosition(vec3(-5.f, 0.f, 0.f));
-		auto tempStaticMeshComponent = dynamic_pointer_cast<CStaticMeshComponent>(tempObject3D->GetComponentByName("Mesh"));
+		auto tempStaticMeshComponent = tempObject3D->GetComponentByName<CStaticMeshComponent>("Mesh");
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
 		tempStaticMeshComponent->SetRotation(vec3(0.f, 180.f, 0.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 	}
 	{
-		tempScene->AddObjectToScene("Light1");
-		auto tempLight = tempScene->GetObjectByName("Light1");
-		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "Light");
-		tempLight->SetPosition(glm::vec3(0.f, 5.0f, 0.f));
-		tempLight->SetRotation(glm::vec3(0.f, 90.f, 0.f));
-		auto light = dynamic_pointer_cast<CLightComponent>(tempLight->GetComponentByName("Light"));
+		auto tempLight = tempScene->AddObjectToScene("Light1");
+		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "OrangeLight");
+		tempLight->SetPosition(glm::vec3(0.f, 0.0f, 0.f));
+		tempLight->SetRotation(glm::vec3(90.f, 90.f, 0.f));
+		auto light = tempLight->GetComponentByName<CLightComponent>("OrangeLight");
 		light->SetLightType(LightType::Directional);
-		light->SetLightBaseData(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f));
-		light->SetLightColor(vec3(1.0f,1.f,0.f));
+		light->SetLightBaseData(glm::vec3(0.5f), glm::vec3(0.7f), glm::vec3(0.8f));
+		light->SetLightColor(vec3(1.0f,1.f,1.f));
 		tempScene->AddLightToScene(tempLight);
-	}
-	{
-		tempScene->AddObjectToScene("Light2");
-		auto tempLight = tempScene->GetObjectByName("Light2");
-		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "Light");
-		tempLight->SetPosition(glm::vec3(0.f, 5.0f, 0.f));
-		tempLight->SetRotation(glm::vec3(45.f, 0.f, 0.f));
-		auto light = dynamic_pointer_cast<CLightComponent>(tempLight->GetComponentByName("Light"));
-		light->SetLightType(LightType::Directional);
-		light->SetLightBaseData(glm::vec3(0.5f), glm::vec3(0.5f), glm::vec3(0.5f));
-		light->SetLightColor(vec3(0.0f, 1.f, 0.f));
-		tempScene->AddLightToScene(tempLight);
-	}
-	
 
-	tempScene->AddObjectToScene("CameraTest");
-	auto tempCamera = tempScene->GetObjectByName("CameraTest");
+		auto templight2 = tempScene->AddObjectToScene("Light2", tempLight);
+		templight2->SetPosition(glm::vec3(.0f, -3.0f, 0.f));
+		auto light2 = templight2->GetComponentByName<CLightComponent>("OrangeLight");
+		light2->SetLightType(LightType::Point);
+		light2->SetLightColor(glm::vec3(0.0f, 1.0f, 0.0f));
+		light2->SetLightPointLightData(1.f, 0.09f, 0.032f);
+		tempScene->AddLightToScene(templight2);
+	}
+
+	
+	auto tempCamera = tempScene->AddObjectToScene("CameraTest");
 	tempCamera->SetPosition(vec3(0.f, 0.f, 0.f));
 	tempCamera->AddComponent(Object3DComponent::CAMERA_COMPONENT, "Camera");
-	auto Camera = dynamic_pointer_cast<CCameraComponent>(tempCamera->GetComponentByName("Camera"));
+	auto Camera = tempCamera->GetComponentByName<CCameraComponent>("Camera");
 	tempCamera->AddComponent(Object3DComponent::MOVEMENT_COMPONENT, "Movement");
-	auto Movement = dynamic_pointer_cast<CMovementComponent>(tempCamera->GetComponentByName("Movement"));
+	auto Movement = tempCamera->GetComponentByName<CMovementComponent>("Movement");
 	tempScene->SetMovementObject(Movement);
 
 	Camera->SetFov(65.f);
@@ -360,8 +391,12 @@ void CApp::PreLoop()
 
 	SceneManager->SetCurrentScene("Default");
 
-	this->SetFPSLock(90);
-	this->KeyboardConf->SetKeyTriggerStatus(SDLK_1, true);
+	this->SetFPSLock(60);
+	this->KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_1, true);
+
+	auto gameplay = this->GameplayManager->AddNewGameplay("Default");
+	gameplay->SetTimescale(1.0f);
+	this->GameplayManager->SelectCurrentGameplay("Default");
 }
 
 void CApp::SetMouseLock(bool lock)
@@ -383,20 +418,20 @@ void CApp::SetFPSLock(int FPS)
 
 void CApp::KeyEvents(array<bool, 322> keys)
 {
-	if (keys[SDLK_1])
+	if (keys[SDL_SCANCODE_1])
 	{
-		CLog::MyLog(0, "Pressed 1");
+		CLog::MyLog(LogType::Log, "Pressed 1");
 		this->MouseLock = !this->MouseLock;
 	}
-	if (keys[SDLK_t])
+	if (keys[SDL_SCANCODE_T])
 	{
 		LayoutManager->ChangeCurrentLayout("Default");
 	}
-	if (keys[SDLK_y])
+	if (keys[SDL_SCANCODE_Y])
 	{
 		LayoutManager->ChangeCurrentLayout("Blank");
 	}
-	if (keys[SDLK_w])
+	if (keys[SDL_SCANCODE_W])
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(true);
 	}
@@ -404,7 +439,7 @@ void CApp::KeyEvents(array<bool, 322> keys)
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(false);
 	}
-	if (keys[SDLK_s])
+	if (keys[SDL_SCANCODE_S])
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(true);
 	}
@@ -412,7 +447,7 @@ void CApp::KeyEvents(array<bool, 322> keys)
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(false);
 	}
-	if (keys[SDLK_a])
+	if (keys[SDL_SCANCODE_A])
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(true);
 	}
@@ -420,7 +455,7 @@ void CApp::KeyEvents(array<bool, 322> keys)
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(false);
 	}
-	if (keys[SDLK_d])
+	if (keys[SDL_SCANCODE_D])
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(true);
 	}
@@ -428,7 +463,23 @@ void CApp::KeyEvents(array<bool, 322> keys)
 	{
 		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(false);
 	}
-	if (keys[SDLK_y])
+	if (keys[SDL_SCANCODE_SPACE])
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(true);
+	}
+	else
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(false);
+	}
+	if (keys[SDL_SCANCODE_LSHIFT])
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(true);
+	}
+	else
+	{
+		SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(false);
+	}
+	if (keys[SDL_SCANCODE_Y])
 	{
 		LayoutManager->ChangeCurrentLayout("Blank");
 	}

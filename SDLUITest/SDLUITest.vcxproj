@@ -177,7 +177,10 @@
     <ClInclude Include="CBaseComponent.h" />
     <ClInclude Include="CButton.h" />
     <ClInclude Include="CCameraComponent.h" />
+    <ClInclude Include="CContainer.h" />
     <ClInclude Include="CEvent.h" />
+    <ClInclude Include="CGameplay.h" />
+    <ClInclude Include="CGameplayManager.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CKeyboardConf.h" />
     <ClInclude Include="CLabel.h" />
@@ -194,6 +197,7 @@
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
+    <ClInclude Include="IDraw.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Shaders.h" />
   </ItemGroup>
@@ -202,7 +206,10 @@
     <ClCompile Include="CBaseComponent.cpp" />
     <ClCompile Include="CButton.cpp" />
     <ClCompile Include="CCameraComponent.cpp" />
+    <ClCompile Include="CContainer.cpp" />
     <ClCompile Include="CEvent.cpp" />
+    <ClCompile Include="CGameplay.cpp" />
+    <ClCompile Include="CGameplayManager.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CKeyboardConf.cpp" />
     <ClCompile Include="CLabel.cpp" />

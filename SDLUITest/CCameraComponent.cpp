@@ -12,6 +12,26 @@ CCameraComponent::CCameraComponent()
 	this->Sensitivity = 5.f;
 }
 
+CCameraComponent::CCameraComponent(const CCameraComponent& cam):CBaseComponent(cam)
+{
+	this->LastX = cam.LastX;
+	this->LastY = cam.LastY;
+	this->FOV = cam.FOV;
+	this->Sensitivity = cam.Sensitivity;
+	this->IsFree = cam.IsFree;
+	this->First = cam.First;
+}
+
+CCameraComponent::CCameraComponent(const std::shared_ptr<CCameraComponent>& camera) :CBaseComponent(camera)
+{
+	this->LastX = camera->LastX;
+	this->LastY = camera->LastY;
+	this->FOV = camera->FOV;
+	this->Sensitivity = camera->Sensitivity;
+	this->IsFree = camera->IsFree;
+	this->First = camera->First;
+}
+
 
 CCameraComponent::~CCameraComponent()
 {

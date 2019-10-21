@@ -7,10 +7,10 @@
 CLabel::CLabel()
 {
 	this->_Size = glm::vec2(200.0f, 100.0f);
-	this->Color = { 255,255,255 };
 	this->_Rotation = vec3(180.f, 0.0f, 0.0f);
 	this->Font = TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 20);
 	this->SetText("Default");
+	this->ColorMask = vec4(1.0f);
 }
 
 
@@ -27,9 +27,9 @@ void CLabel::SetFont(TTF_Font* font)
 void CLabel::SetText(std::string Text)
 {
 	SDL_Surface* TextSurface;
-	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text.c_str(), this->Color)))
+	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text.c_str(), {255,255,255})))
 	{
-		CLog::MyLog(1, "Failed to create text surface: %s",TTF_GetError());
+		CLog::MyLog(LogType::Error, "Failed to create text surface: %s",TTF_GetError());
 		return;
 	}
 	else
@@ -58,8 +58,8 @@ TTF_Font * CLabel::GetFont()
 	return this->Font;
 }
 
-void CLabel::SetColor(SDL_Color Col)
+void CLabel::SetColorSDL(SDL_Color Col)
 {
-	this->Color = { Col.b ,Col.g,Col.r };
+	this->SetColor(vec3(Col.b/255,Col.g/255,Col.r/255)) ;
 }
 

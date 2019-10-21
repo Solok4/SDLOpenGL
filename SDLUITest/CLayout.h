@@ -22,7 +22,21 @@ public:
 	TTF_Font* GetFont();
 
 	void AddItem(int id, const char* name,glm::vec2 pos,glm::vec2 size);
-	std::shared_ptr<CObject2D> FindObjectByName(const char* name);
+	template<typename T>
+	std::shared_ptr<T> FindObjectByName(const char* name)
+	{
+		for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+		{
+			for (auto o : it->second)
+			{
+				if (strcmp(o->GetName(), name) == 0)
+				{
+					return std::dynamic_pointer_cast<T>(o);
+				}
+			}
+		}
+		return NULL;
+	}
 	std::vector<std::shared_ptr<CObject2D>> GetObjectByType(int type);
 
 	std::vector<std::shared_ptr<CObject2D>> GetButtons();

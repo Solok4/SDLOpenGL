@@ -4,17 +4,39 @@
 
 CBaseComponent::CBaseComponent()
 {
-	this->_Type = 0;
+	this->_Type = Object3DComponent::BASE_COMPONENT;
 	this->_Position = glm::vec3(0.f, 0.f, 0.f);
 	this->_Rotation = glm::vec3(0.f);
 	this->_Scale = glm::vec3(1.f);
 	this->CalculateMatrix();
 }
 
+CBaseComponent::CBaseComponent(const CBaseComponent& comp)
+{
+	this->_Name = comp._Name;
+	this->_Type = comp._Type;
+	this->_Position = comp._Position;
+	this->_Rotation = comp._Rotation;
+	this->_Scale = comp._Scale;
+	this->_RotOffset = comp._RotOffset;
+	this->_PosOffset = comp._PosOffset;
+}
+
+CBaseComponent::CBaseComponent(const std::shared_ptr<CBaseComponent>& obj)
+{
+	this->_Name = obj->_Name;
+	this->_Type = obj->_Type;
+	this->_Position = obj->_Position;
+	this->_Rotation = obj->_Rotation;
+	this->_Scale = obj->_Scale;
+	this->_RotOffset = obj->_RotOffset;
+	this->_PosOffset = obj->_PosOffset;
+}
+
 
 CBaseComponent::~CBaseComponent()
 {
-	CLog::MyLog(0, "BaseComponentDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Log, "BaseComponentDestructor %s",this->GetName().c_str());
 }
 
 void CBaseComponent::SetName(std::string name)
@@ -30,7 +52,7 @@ std::string CBaseComponent::GetName()
 void CBaseComponent::AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent)
 {
 	this->_ParrentObject = Parrent;
-	this->SetPosition(glm::vec3(0.0f));
+	//this->SetPosition(glm::vec3(0.0f));
 	this->CalculateMatrix();
 }
 
@@ -47,12 +69,12 @@ std::shared_ptr<CObject3D> CBaseComponent::GetPossesingObject()
 	return this->PossesingObject;
 }
 
-void CBaseComponent::SetType(int type)
+void CBaseComponent::SetType(Object3DComponent type)
 {
 	this->_Type = type;
 }
 
-int CBaseComponent::GetType()
+Object3DComponent CBaseComponent::GetType()
 {
 	return this->_Type;
 }
@@ -89,6 +111,15 @@ glm::vec3 CBaseComponent::GetRightVector()
 	RV.z = this->_Position.z + (cos(glm::radians(this->_Rotation.z))*sin(glm::radians(this->_Rotation.y+90.f)));
 	//CLog::MyLog(0, "RVector x=%f y=%f z=%f",RV.x,RV.y,RV.z);
 	return RV;
+}
+
+glm::vec3 CBaseComponent::GetUpVector()
+{
+	glm::vec3 UV;
+	UV.x = this->_Position.x;
+	UV.y = this->_Position.y + 1;
+	UV.z = this->_Position.z;
+	return UV;
 }
 
 void CBaseComponent::SetPosition(glm::vec3 pos)
@@ -154,6 +185,3 @@ glm::mat4 CBaseComponent::GetModelMatrix()
 	return this->ModelMatrix;
 }
 
-void CBaseComponent::Draw(int program)
-{
-}

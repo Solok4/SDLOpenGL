@@ -20,9 +20,11 @@ public:
 
 	void IsClicked(SDL_MouseButtonEvent MouseData);
 
-	void AttachFunc(void(*fun)());
+	void AttachFunc(std::function<void()> func);
 
 	virtual void OnHover();
+
+	virtual void OnMiss();
 
 	virtual void Prepare() override;
 

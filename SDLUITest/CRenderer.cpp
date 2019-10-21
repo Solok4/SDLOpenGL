@@ -12,7 +12,7 @@ CRenderer::CRenderer()
 
 CRenderer::~CRenderer()
 {
-	CLog::MyLog(0, "RendererDestructor");
+	CLog::MyLog(LogType::Log, "RendererDestructor");
 }
 
 void CRenderer::Init()
@@ -20,12 +20,12 @@ void CRenderer::Init()
 	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenWidth, ScreenHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 	if (Window == nullptr)
 	{
-		CLog::MyLog(1, "Failed to create window: %s",SDL_GetError());
+		CLog::MyLog(LogType::Error, "Failed to create window: %s",SDL_GetError());
 
 	}
 	if (TTF_Init() != 0)
 	{
-		CLog::MyLog(1, "Failed to initalize TTF: %s",TTF_GetError());
+		CLog::MyLog(LogType::Error, "Failed to initalize TTF: %s",TTF_GetError());
 	}
 
 }

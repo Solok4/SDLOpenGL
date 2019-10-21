@@ -16,30 +16,43 @@ CLog::~CLog()
 {
 }
 
-void CLog::MyLog(int key, const char* Message,...)
+void CLog::MyLog(LogType type, const char* Message,...)
 {
 	char VAContent[2048];
 	char Final[2048];
-	switch (key)
+	switch (type)
 	{
-	case 1: {
+	case LogType::Log: {
+		//Log
+#ifdef __EMSCRIPTEN__
+		strncpy(Final, "[Log]: ", 8);
+#else
+		strncpy_s(Final, "[Log]: ", 8);
+#endif
+		break;
+	}
+	case LogType::Error:
+	{
+#ifdef __EMSCRIPTEN__
+		strncpy(Final, "[Error]: ", 12);
+#else
+		strncpy_s(Final, "[Error]: ", 12);
+#endif
+		break;
+	}
+	case LogType::Warning:
+	{
 		//Warning
 #ifdef __EMSCRIPTEN__
 		strncpy(Final, "[Warning]: ", 12);
 #else
-		strncpy_s(Final,"[Warning]: ",12);
+		strncpy_s(Final, "[Warning]: ", 12);
 #endif
 		break;
 	}
 
 	default:
-		//Log
-#ifdef __EMSCRIPTEN__
-		strncpy(Final, "[Log]: ", 8);
-#else
-		strncpy_s(Final,"[Log]: ",8);
-#endif
-		break;
+	{}
 	}
 	va_list vl;
 	va_start(vl, Message);

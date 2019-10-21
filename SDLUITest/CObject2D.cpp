@@ -17,13 +17,15 @@ CObject2D::CObject2D()
 	this->SetPosition(glm::vec2(0.0f, 0.0f));
 	this->SetSize(glm::vec2(1.0f, 1.0f));
 	this->SetRotation(glm::vec3(0.f, 0.f, 0.f));
-	this->RootObject = nullptr;
+	this->ParrentObject = nullptr;
+	this->ColorMask = vec4(1.0f);
+	this->_LocalOffset = vec2(0.f);
 }
 
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(0, "Object2DDestructor %s",this->_Name);
+	CLog::MyLog(LogType::Log, "Object2DDestructor %s",this->_Name);
 }
 
 void CObject2D::Prepare()
@@ -77,13 +79,11 @@ void CObject2D::Prepare()
 	this->_VBO.push_back(VBO[0]);
 	this->_VBO.push_back(VBO[1]);
 
-
-
 }
 
 void CObject2D::RefreshModelMatrix()
 {
-	mat4 Translation = translate(mat4(), vec3(this->_Position.x, this->_Position.y, (float)Layer));
+	mat4 Translation = translate(mat4(), vec3(this->_Position.x + (this->_LocalOffset.x), this->_Position.y + (this->_LocalOffset.y), (float)Layer));
 	mat4 Scaling = scale(vec3(this->_Size.x, this->_Size.y, 1.0f));
 	mat4 RotationX = rotate(radians(this->_Rotation.x), vec3(1.0f, 0.0f, 0.0f));
 	mat4 RotationY = rotate(radians(this->_Rotation.y), vec3(0.0f, 1.0f, 0.0f));
@@ -95,28 +95,29 @@ void CObject2D::RefreshModelMatrix()
 
 void CObject2D::SetPosition(vec2 vec)
 {
-	if (this->RootObject == nullptr)
+	if (this->ParrentObject == nullptr)
 	{
-		this->_Position = vec;
-		
+		this->_Position.x = vec.x;
+		this->_Position.y = vec.y;
 	}
 	else
 	{
-		this->_Position = this->RootObject->_Position + vec;
+		this->_Position.x = this->ParrentObject->_Position.x + vec.x;
+		this->_Position.y = this->ParrentObject->_Position.y + vec.y;
 	}
 	this->RefreshModelMatrix();
 }
 
 void CObject2D::SetRotation(vec3 vec)
 {
-	if (this->RootObject == nullptr)
+	if (this->ParrentObject == nullptr)
 	{
 		this->_Rotation = vec;
 
 	}
 	else
 	{
-		this->_Rotation = this->RootObject->_Rotation + vec;
+		this->_Rotation = this->ParrentObject->_Rotation + vec;
 	}
 	this->RefreshModelMatrix();
 }
@@ -124,38 +125,64 @@ void CObject2D::SetRotation(vec3 vec)
 void CObject2D::SetSize(vec2 vec)
 {
 	this->_Size = vec;
+	this->_LocalOffset.x = vec.x / 2;
+	this->_LocalOffset.y = vec.y / 2;
 	this->RefreshModelMatrix();
 }
 
 void CObject2D::PreDraw()
 {
-	glBindVertexArray(this->_VAO);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glActiveTexture(GL_TEXTURE0);
+	if (this->_IsVisible)
+	{
+		glBindVertexArray(this->_VAO);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glActiveTexture(GL_TEXTURE0);
+	}
 
 }
 
 void CObject2D::Draw()
 {
-	glBindTexture(GL_TEXTURE_2D, this->TextureID);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+	if (this->_IsVisible)
+	{
+		glBindTexture(GL_TEXTURE_2D, this->TextureID);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
 }
 
 void CObject2D::PostDraw()
 {
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
+	if (this->_IsVisible)
+	{
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
+	}
 }
 
-void CObject2D::BindRootObject(std::shared_ptr<CObject2D> obj)
+void CObject2D::BindParrentObject(std::shared_ptr<CObject2D> obj)
 {
-	this->RootObject = obj;
+	this->ParrentObject = obj;
+	obj->AddToParrentOfTable(std::make_shared<CObject2D>(*this));
 }
 
-vec3 CObject2D::GetForwardVector()
+std::shared_ptr<CObject2D> CObject2D::GetParrentObject() const
+{
+	return this->ParrentObject;
+}
+
+void CObject2D::AddToParrentOfTable(std::shared_ptr<CObject2D> obj)
+{
+	this->ParrentOf.push_back(obj);
+}
+
+std::vector<std::shared_ptr<CObject2D>> CObject2D::GetParentOfTable() const
+{
+	return this->ParrentOf;
+}
+
+vec3 CObject2D::GetForwardVector() const
 {
 	glm::vec3 FV;
 	FV.x = this->_Position.x + (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
@@ -194,64 +221,50 @@ int CObject2D::GetObjectLayer()
 	return this->Layer;
 }
 
+void CObject2D::SetVisibility(bool visibility)
+{
+	this->_IsVisible = visibility;
+}
+
+bool CObject2D::GetVisibility() const
+{
+	return this->_IsVisible;
+}
+
+void CObject2D::SetIsActive(bool active)
+{
+	this->_IsActive = active;
+}
+
+bool CObject2D::GetIsActive() const
+{
+	return this->_IsActive;
+}
+
+void CObject2D::SetColor(vec3 color)
+{
+	this->ColorMask = vec4(color, this->ColorMask.a);
+}
+
+void CObject2D::SetAlpha(float alpha)
+{
+	this->ColorMask = vec4(vec3(this->ColorMask), alpha);
+}
+
+void CObject2D::SetColorMask(vec4 ColorMask)
+{
+	this->ColorMask = ColorMask;
+}
+
+vec4 CObject2D::GetColorMask() const
+{
+	return this->ColorMask;
+}
+
 void CObject2D::Tick(uint32_t delta)
 {
-}
-
-
-void CObject2D::LoadTexture(const char * str, const char* name)
-{
-	
-	/*std::string FileName(str);
-	int lastSlash = FileName.find_last_of("/");
-	std::string JustFile(FileName.substr(lastSlash + 1));*/
-
-	const char* FileName(str);
-	const char* lastSlash = strrchr(FileName, '/');
-	const char* JustFile(lastSlash+1);
-
-	SDL_Surface* Tex;
-	Tex = IMG_Load(str);
-	if (!Tex)
-	{
-		CLog::MyLog(1, "Failed to load a texture: %s %d",FileName,IMG_GetError());
-		return;
-	}
-	//FinishSurface(Tex);
-	GLint Format;
-	if (Tex->format->BitsPerPixel == 32)
-	{
-		Format = GL_RGBA;
-		Tex = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
-	}
-	else if (Tex->format->BitsPerPixel == 24)
-	{
-		Format = GL_RGB;
-		Tex = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGB24, 0);
-	}
-	GLuint TexID;
-	glGenTextures(1, &TexID);
-	glBindTexture(GL_TEXTURE_2D, TexID);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, Format, Tex->w, Tex->h, 0, Format, GL_UNSIGNED_BYTE, Tex->pixels);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	this->Textures.emplace(name, TexID);
-
-}
-
-GLuint CObject2D::GetTexture(const char* name)
-{
-	auto it = this->Textures.find(name);
-	if (it != this->Textures.end())
-	{
-		return this->Textures.at(it->first);
-	}
-	return NULL;
+	if(this->TickFunc != nullptr)
+	this->TickFunc(delta);
 }
 
 void CObject2D::BindTexture(GLuint Tex)
@@ -264,7 +277,7 @@ void CObject2D::SetName(const char* name)
 	this->_Name = name;
 }
 
-const char* CObject2D::GetName()
+const char* CObject2D::GetName() const
 {
 	return this->_Name;
 }
@@ -274,7 +287,7 @@ void CObject2D::SetID(int id)
 	this->_ID = id;
 }
 
-int CObject2D::GetID()
+int CObject2D::GetID() const
 {
 	return this->_ID;
 }
@@ -282,4 +295,9 @@ int CObject2D::GetID()
 mat4 CObject2D::GetModelMatrix()
 {
 	return this->ModelMatrix;
+}
+
+void CObject2D::BindTickFunction(std::function<void(uint32_t)> func)
+{
+	this->TickFunc = func;
 }

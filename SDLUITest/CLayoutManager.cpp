@@ -11,7 +11,7 @@ CLayoutManager::CLayoutManager()
 
 CLayoutManager::~CLayoutManager()
 {
-	CLog::MyLog(0, "LayoutManagerDestructor");
+	CLog::MyLog(LogType::Log, "LayoutManagerDestructor");
 }
 
 void CLayoutManager::AddNewLayout(const char* name)

@@ -25,7 +25,7 @@ int main()
 #ifdef __EMSCRIPTEN__
 	Lp = [&]
 	{
-		app.EmscriptenLoop();
+		app.Loop();
 	};
 	emscripten_set_main_loop(Loop, 0, true);
 #endif

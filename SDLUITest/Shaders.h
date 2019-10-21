@@ -3,6 +3,7 @@
 #include "CLog.h"
 #include "GL/glew.h"
 #include <vector>
+#include <memory>
 
 struct Uniform
 {
@@ -17,15 +18,22 @@ struct ShadProgram
 	std::vector< std::shared_ptr<Uniform>> Uniforms;
 };
 
+enum ShaderType
+{
+	Vertex = 0,
+	Fragment,
+	Geometry,
+};
+
 class Shaders
 {
 public:
 	Shaders();
 	~Shaders();
 
-	void CreateShader(const char* File, bool IsVertex);
+	void CreateShader(const char* File, ShaderType type);
 	std::string ReadShaderFromFile(const char* Filename);
-	void CreateShaderProgram(std::string name);
+	void CreateShaderProgram(std::string name, bool useGeometryShader);
 	void SetCurrentShaderProgram(std::string name);
 	GLuint GetCurrentShaderProgram();
 	std::shared_ptr<ShadProgram> GetShaderStruct(std::string name);
@@ -39,6 +47,7 @@ private:
 
 	unsigned int VertexShader;
 	unsigned int FragmentShader;
+	unsigned int GeometryShader;
 	std::vector< std::shared_ptr<ShadProgram>> ShaderProgram;
 
 	std::shared_ptr<ShadProgram> CurrentShaderProgram;

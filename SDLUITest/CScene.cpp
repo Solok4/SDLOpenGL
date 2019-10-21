@@ -12,14 +12,25 @@ CScene::CScene()
 
 CScene::~CScene()
 {
-	CLog::MyLog(0, "SceneDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Log, "SceneDestructor %s",this->GetName().c_str());
 }
 
-void CScene::AddObjectToScene(std::string Name)
+std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name)
 {
-	std::shared_ptr<CObject3D> temp(new CObject3D);
+	std::shared_ptr<CObject3D> temp=std::make_shared<CObject3D>();
 	temp->SetName(Name);
 	this->Objects3D.push_back(temp);
+	this->DrawableCached = false;
+	return temp;
+}
+
+std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name, std::shared_ptr<CObject3D> &obj)
+{
+	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(obj);
+	temp->SetName(Name);
+	this->Objects3D.push_back(temp);
+	this->DrawableCached = false;
+	return temp;
 }
 
 std::shared_ptr<CObject3D> CScene::GetObjectByName(std::string Name)
@@ -42,6 +53,7 @@ void CScene::RemoveObjectFromScene(std::string Name)
 		if (this->Objects3D[i]->GetName() == Name)
 		{
 			this->Objects3D.erase(this->Objects3D.begin()+i);
+			this->DrawableCached = false;
 			break;
 		}
 	}
@@ -118,13 +130,36 @@ std::string CScene::GetName()
 	return this->Name;
 }
 
-void CScene::Draw(COpengl * opengl)
+void CScene::Draw(COpengl* opengl)
 {
-
-	for (auto o : Objects3D)
+	if (this->DrawableCached)
 	{
-		o->Draw(opengl);
+		for (auto c : this->ObjectsToDraw)
+		{
+			auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+			if (sm != nullptr)
+			{
+				sm->CalculateMatrix();
+				opengl->SetModelMatrix(sm->GetModelMatrix());
+				opengl->SetNormalMatrix(sm->GetModelMatrix());
+				auto material = sm->GetModel()->Mat;
+				glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
+					material->LM.Ambient.x, material->LM.Ambient.y, material->LM.Ambient.z);
+				glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
+					material->LM.Diffuse.x, material->LM.Diffuse.y, material->LM.Diffuse.z);
+				glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
+					material->LM.Specular.x, material->LM.Specular.y, material->LM.Specular.z);
+				glUniform1f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
+					material->LM.Shininess);
+			}
+			c->Draw(opengl->GetShadersClass().GetCurrentShaderProgram());
+		}
 	}
+	else
+	{
+		this->CacheObjectsToDraw();
+	}
+
 }
 
 void CScene::Tick(uint32_t delta)
@@ -132,6 +167,67 @@ void CScene::Tick(uint32_t delta)
 	for (auto o : this->Objects3D)
 	{
 		o->Tick(delta);
+	}
+}
+
+void CScene::SetSkyBox(SkyboxType type, Texture texture)
+{
+	glGenVertexArrays(1, &this->SkyboxVAO);
+	glBindVertexArray(this->SkyboxVAO);
+	glGenBuffers(2, this->SkyboxVBOs);
+
+	if (type == SkyboxType::CubeType)
+	{
+		this->Skyboxtype = type;
+		float skyboxVertices[] = {
+			// positions          
+			-1.0f,  1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+
+			-1.0f, -1.0f,  1.0f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+			-1.0f,  1.0f,  1.0f,
+			-1.0f, -1.0f,  1.0f,
+
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+
+			-1.0f, -1.0f,  1.0f,
+			-1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f, -1.0f,  1.0f,
+			-1.0f, -1.0f,  1.0f,
+
+			-1.0f,  1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			-1.0f,  1.0f,  1.0f,
+			-1.0f,  1.0f, -1.0f,
+
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f,
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f,
+			 1.0f, -1.0f,  1.0f
+		};
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, this->SkyboxVBOs[0]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glDisableVertexAttribArray(0);
 	}
 }
 
@@ -146,7 +242,18 @@ void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
 		this->Camera = Cam;
 		return;
 	}
-	CLog::MyLog(1, "Camera not bound to scene: %s ", this->Name.c_str());
+	CLog::MyLog(LogType::Error, "Camera not bound to scene: %s ", this->Name.c_str());
+}
+
+void CScene::SetCamera(std::shared_ptr<CObject3D> Cam)
+{
+	std::shared_ptr<CCameraComponent> component = std::dynamic_pointer_cast<CCameraComponent>(Cam->GetComponentByType(Object3DComponent::CAMERA_COMPONENT));
+	if (component == nullptr)
+	{
+		CLog::MyLog(LogType::Error, "This object don't have camera component in it. Object: %s", Cam->GetName());
+		return;
+	}
+	this->Camera = component;
 }
 
 std::shared_ptr<CCameraComponent> CScene::GetCamera()
@@ -159,10 +266,44 @@ void CScene::SetMovementObject(std::shared_ptr<CMovementComponent> Movement)
 	if (Movement != nullptr)
 	{
 		this->MovementObject = Movement;
+		return;
 	}
+	CLog::MyLog(LogType::Error, "Movement not bound to scene: %s ", this->Name.c_str());
+}
+
+void CScene::SetMovementObject(std::shared_ptr<CObject3D> Movement)
+{
+	std::shared_ptr<CMovementComponent> component = std::dynamic_pointer_cast<CMovementComponent>(Movement->GetComponentByType(Object3DComponent::MOVEMENT_COMPONENT));
+	if (component == nullptr)
+	{
+		CLog::MyLog(LogType::Error, "This object don't have movement component in it. Object: %s", Movement->GetName());
+		return;
+	}
+	this->MovementObject = component;
 }
 
 std::shared_ptr<CMovementComponent> CScene::GetMovementObject()
 {
 	return this->MovementObject;
+}
+
+void CScene::CacheObjectsToDraw()
+{
+	for (auto o : this->Objects3D)
+	{
+		auto list = o->GetComponentList();
+			for (auto c : list)
+			{
+				std::shared_ptr<IDraw> drawable = std::dynamic_pointer_cast<IDraw>(c);
+				if (drawable == nullptr)
+				{
+					continue;
+				}
+				else
+				{
+					this->ObjectsToDraw.push_back(drawable);
+				}
+			}
+	}
+	this->DrawableCached = true;
 }

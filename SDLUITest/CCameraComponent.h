@@ -6,6 +6,8 @@ class CCameraComponent :
 {
 public:
 	CCameraComponent();
+	CCameraComponent(const CCameraComponent& cam);
+	CCameraComponent(const std::shared_ptr<CCameraComponent>& camera);
 	~CCameraComponent();
 
 	void SetFov(float fov);

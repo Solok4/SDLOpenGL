@@ -14,6 +14,7 @@
 #include "CCameraComponent.h"
 #include "Shaders.h"
 #include "CLightComponent.h"
+//#include "CScene.h"
 
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glew32.lib")
@@ -25,6 +26,13 @@ struct MyFrameBuffer
 	GLuint RBO=0;
 	GLuint CBuffer=0;
 	const char* ShaderName;
+};
+
+struct MyLightFramebuffer
+{
+	std::string name;
+	GLuint FBO;
+	GLuint DepthBuff;
 };
 
 
@@ -42,6 +50,7 @@ public:
 	void PreLoop();
 	void SetModelMatrix(glm::mat4 matrix);
 	void SetModelMatrixLayout(glm::mat4 matrix);
+	void SetColorMaskLayout(glm::vec3 ColorMask);
 	void SetNormalMatrix(glm::mat4 matrix);
 
 	void ProLoop(SDL_Window* Window);
@@ -55,9 +64,13 @@ public:
 	void UseFramebuffer(std::string name);
 	MyFrameBuffer GetFramebuffer(std::string name);
 	void ClearFramebuffers();
-	void FinalDraw();
 
-	void ProcessLight(std::vector<std::shared_ptr<CLightComponent>> lights);
+	void AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int size);
+	void UseLightFramebuffer(std::string name);
+	MyLightFramebuffer GetLightFrameBuffer(std::string name);
+	void FinalDraw();
+	void ProcessLight(std::shared_ptr<CLightComponent> light,int i);
+	void PostProcessLight(std::shared_ptr<CLightComponent> light, int count);
 
 	Shaders GetShadersClass();
 
@@ -69,6 +82,7 @@ private:
 	int WindowH;
 	float AspectRatio;
 	std::vector<MyFrameBuffer> Framebuffers;
+	std::vector<MyLightFramebuffer> LightFramebuffers;
 
 	GLuint FinalVao;
 	GLuint FinalVbo;

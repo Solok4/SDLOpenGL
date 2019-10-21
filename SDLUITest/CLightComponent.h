@@ -32,6 +32,8 @@ class CLightComponent :
 {
 public:
 	CLightComponent();
+	CLightComponent(const CLightComponent& light);
+	CLightComponent(std::shared_ptr<CLightComponent>& obj);
 	~CLightComponent();
 
 	void Tick(uint32_t delta) override;

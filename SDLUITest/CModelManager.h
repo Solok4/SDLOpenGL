@@ -3,6 +3,7 @@
 #include "GL/glew.h"
 #include <vector>
 #include <memory>
+#include <string>
 #include "SDL_image.h"
 #ifdef __EMSCRIPTEN__
 #include <SDL2/SDL.h>
@@ -51,6 +52,7 @@ enum TextureTypes
 	SpecularMap,
 };
 
+
 struct Texture
 {
 	GLuint Texture;
@@ -72,6 +74,9 @@ public:
 	std::shared_ptr<Material> GetMaterialByName(const char* name);
 	void BindTextureToMaterial(const char* MaterialName, const char* TextureName, TextureTypes TextureType);
 	std::shared_ptr<Model> GetModelByName(std::string name);
+	std::shared_ptr<Texture> GetTextureByName(const char* name);
+
+	void LoadCubeMap(std::vector<std::string> faces);
 
 private:
 

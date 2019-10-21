@@ -11,7 +11,7 @@ CLayout::CLayout()
 
 CLayout::~CLayout()
 {
-	CLog::MyLog(0, "LayoutDestructor %s",this->Name);
+	CLog::MyLog(LogType::Log, "LayoutDestructor %s",this->Name);
 }
 
 void CLayout::SetWindowData(SDL_Window * WND)
@@ -27,33 +27,20 @@ void CLayout::PrepareToLoop()
 		for (auto o : it->second)
 		{
 			o->Prepare();
-			auto TryButton = std::dynamic_pointer_cast<CButton>(o);
-			if (!(TryButton == NULL))
-			{
-				TryButton->AttachFunc([]() {CLog::MyLog(0, "Print string"); });
-				continue;
-			}
-			auto TryLabel = std::dynamic_pointer_cast<CLabel>(o);
-			if (!(TryLabel == NULL))
-			{
-				TryLabel->SetFont(this->GetFont());
-				TryLabel->SetText("Test");
-				continue;
-			}
-			o->LoadTexture("Assets/Textures/TestTex.bmp");
-			o->BindTexture(o->GetTexture());
 		}
 	}
 }
 
 void CLayout::Draw(COpengl* opengl)
 {
+	glDisable(GL_CULL_FACE);
 	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{	
 		for (auto o : it->second)
 		{
 			o->PreDraw();
 			opengl->SetModelMatrixLayout(o->GetModelMatrix());
+			opengl->SetColorMaskLayout(o->GetColorMask());
 			o->Draw();
 			o->PostDraw();
 			if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
@@ -67,6 +54,7 @@ void CLayout::Draw(COpengl* opengl)
 			}
 		}
 	}
+	glEnable(GL_CULL_FACE);
 }
 
 void CLayout::SetFont(const char* font)
@@ -74,7 +62,7 @@ void CLayout::SetFont(const char* font)
 	this->Font = TTF_OpenFont(font, 32);
 	if (!this->Font)
 	{
-		CLog::MyLog(1, "Failed to load font %s",font);
+		CLog::MyLog(LogType::Error, "Failed to load font %s",font);
 		return;
 	}
 }
@@ -105,7 +93,6 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 
 			Objects2D.emplace(Object2DType::OBJECT2D_LABEL,std::vector<std::shared_ptr<CObject2D>>(1,temp));
 		}
-		
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
@@ -153,21 +140,6 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 	}
 
 
-}
-
-std::shared_ptr<CObject2D> CLayout::FindObjectByName(const char* name)
-{
-	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
-	{
-		for (auto o : it->second)
-		{
-			if (strcmp(o->GetName(), name) == 0)
-			{
-				return o;
-			}
-		}
-	}
-	return NULL;
 }
 
 std::vector<std::shared_ptr<CObject2D>> CLayout::GetObjectByType(int type)

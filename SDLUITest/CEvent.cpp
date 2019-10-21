@@ -45,10 +45,10 @@ void CEvent::PollEvents()
 		switch(this->_Event.type)
 		{
 		case SDL_KEYDOWN:
-			Keys[this->_Event.key.keysym.sym] = true;
+			Keys[this->_Event.key.keysym.scancode] = true;
 			break;
 		case SDL_KEYUP:
-			Keys[this->_Event.key.keysym.sym] = false;
+			Keys[this->_Event.key.keysym.scancode] = false;
 			break;
 		default:
 			break;

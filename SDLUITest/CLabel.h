@@ -13,11 +13,10 @@ public:
 	void SetText(std::string Text);
 	virtual void Prepare() override;
 	TTF_Font* GetFont();
-	void SetColor(SDL_Color Col);
+	void SetColorSDL(SDL_Color Col);
 
 
 	TTF_Font* Font;
-	SDL_Color Color;
 
 };
 

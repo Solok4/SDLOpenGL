@@ -15,6 +15,16 @@ CLightComponent::CLightComponent()
 	this->Light.LightType = LightType::Directional;
 }
 
+CLightComponent::CLightComponent(const CLightComponent& light) :CBaseComponent(light)
+{
+	this->Light = light.Light;
+}
+
+CLightComponent::CLightComponent(std::shared_ptr<CLightComponent>& obj):CBaseComponent(obj)
+{
+	this->Light = obj->Light;
+}
+
 
 CLightComponent::~CLightComponent()
 {

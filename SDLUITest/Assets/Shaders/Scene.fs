@@ -30,31 +30,33 @@ in vec2 UV;
 in vec3 FragPos;
 in vec3 CameraP;
 in vec3 NormalVec;
+in vec4 LightMVP[8];
 out vec4 FragColor;
 
+uniform sampler2D ShadowMap[8];
+uniform samplerCube ShadowCube[8];
+
 uniform Material Mat;
-uniform Light Lights[32];
+uniform Light Lights[8];
 
 uniform sampler2D Base;
 uniform sampler2D Normal;
 uniform sampler2D Specular;
 
-vec3 ProccessDirectionalLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
+vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 {
 	//ambient
 	vec3 Ambient = vec3(0.1)*l.Color;
+	float bias =0.005;
+	float visibility =1.0;
+	//if(texture(l.ShadowMap,mvp.xy).z < mvp.z-bias)
+	//{
+	//	visibility =0.5;
+	//}
 	
 	//Diffuse
 	//NormalTex.xyz = NormalTex.xyz*2.0-1.0;
-	vec3 norm;
-	if(gl_FrontFacing)
-	{
-		norm = normalize(NormalVec*NormalTex.xyz);
-	}
-	else
-	{
-		norm = normalize(-NormalVec*NormalTex.xyz);
-	}
+	vec3 norm = normalize(NormalVec*NormalTex.xyz);
 	vec3 LightDir = normalize(l.Rotation);
 	float diff = max(dot(norm,LightDir),0.0);
 	vec3 diffuse = (diff*Mat.Diffuse*l.Diffuse)*l.Color;
@@ -133,14 +135,14 @@ void main()
 	
 	vec3 result;
 	
-	for(int i=0; i<32;i++)
+	for(int i=0; i<8;i++)
 	{
 		if(Lights[i].LightType == 0)
-			result += ProccessDirectionalLight(Lights[i],BaseEl,NormalEl,SpecularEl);
-		//else if(Lights[i].LightType == 1)
-		//	result += ProccessPointLight(Lights[i],BaseEl,NormalEl,SpecularEl);
-		//else if(Lights[i].LightType == 2)
-		//	result += ProccessSpotLight(Lights[i],BaseEl,NormalEl,SpecularEl);
+			result += ProccessDirectionalLight(Lights[i],LightMVP[i],BaseEl,NormalEl,SpecularEl);
+		else if(Lights[i].LightType == 1)
+			result += ProccessPointLight(Lights[i],BaseEl,NormalEl,SpecularEl);
+		else if(Lights[i].LightType == 2)
+			result += ProccessSpotLight(Lights[i],BaseEl,NormalEl,SpecularEl);
 	}
 	
 
