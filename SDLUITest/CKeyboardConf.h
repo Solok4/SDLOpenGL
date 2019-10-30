@@ -28,6 +28,6 @@ public:
 	std::array<bool, 322> KeyResults;
 	std::array<KeyboardButtons, 322> KeyBtns;
 
-
-
 };
+
+extern std::unique_ptr<CKeyboardConf> KeyboardConf;

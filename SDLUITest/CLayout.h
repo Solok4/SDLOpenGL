@@ -16,7 +16,7 @@ public:
 	~CLayout();
 	void SetWindowData(SDL_Window* WND);
 	void PrepareToLoop();
-	void Draw(COpengl* opengl);
+	void Draw();
 
 	void SetFont(const char* font);
 	TTF_Font* GetFont();

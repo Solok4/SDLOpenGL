@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CEvent.h"
 
+std::unique_ptr<CEvent> Event;
 
 CEvent::CEvent()
 {

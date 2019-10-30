@@ -26,7 +26,6 @@ void CLabel::SetFont(TTF_Font* font)
 
 void CLabel::SetText(std::string Text)
 {
-	SDL_Surface* TextSurface;
 	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text.c_str(), {255,255,255})))
 	{
 		CLog::MyLog(LogType::Error, "Failed to create text surface: %s",TTF_GetError());
@@ -34,7 +33,6 @@ void CLabel::SetText(std::string Text)
 	}
 	else
 	{
-		TextSurface = SDL_ConvertSurfaceFormat(TextSurface, SDL_PIXELFORMAT_RGBA32, 0);
 		this->SetSize(glm::vec2(TextSurface->w,TextSurface->h));
 		glBindTexture(GL_TEXTURE_2D, this->TextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TextSurface->w, TextSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, TextSurface->pixels);

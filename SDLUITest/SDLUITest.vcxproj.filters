@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Objects 3D\Components">
       <UniqueIdentifier>{6c3db7be-475d-4eb8-8d51-f68b82e005ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="_Shaders">
+      <UniqueIdentifier>{9ebbdb0e-ec51-4f63-a650-e9d5b26e346f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -197,5 +200,49 @@
     <ClCompile Include="CGameplayManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\final.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\finale.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\final.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\finale.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Gui.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Guie.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Gui.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Guie.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Scene.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Scenee.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Scene.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Scenee.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Shadows.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Shadows.vert">
+      <Filter>_Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

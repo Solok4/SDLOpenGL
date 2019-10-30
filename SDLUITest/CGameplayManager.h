@@ -22,3 +22,4 @@ public:
 	std::shared_ptr<CGameplay> CurrentGameplay;
 };
 
+extern std::unique_ptr<CGameplayManager> GameplayManager;

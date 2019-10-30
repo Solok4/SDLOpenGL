@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CGameplayManager.h"
 
+std::unique_ptr<CGameplayManager> GameplayManager;
 
 CGameplayManager::CGameplayManager()
 {

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CSceneManager.h"
 
+std::unique_ptr<CSceneManager> SceneManager;
 
 CSceneManager::CSceneManager()
 {

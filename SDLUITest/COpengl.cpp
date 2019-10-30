@@ -8,9 +8,10 @@
 #include "CLog.h"
 #include "COpengl.h"
 #include <fstream>
+#include "CSceneManager.h"
 
-#define MAX_LIGHTS 8
 
+std::unique_ptr<COpengl> OpenGL;
 
 COpengl::COpengl()
 {
@@ -72,27 +73,30 @@ void COpengl::Delete()
 void COpengl::PrepareToLoop()
 {
 #ifdef __EMSCRIPTEN__
-	Shaders.CreateShader("Assets/Shaders/Gui.vse", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Gui.fse", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Gui");
-	Shaders.CreateShader("Assets/Shaders/Scene.vse", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Scene.fse", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Default");
-	Shaders.CreateShader("Assets/Shaders/final.vse", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/final.fse", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Final");
-#else
-	Shaders.CreateShader("Assets/Shaders/Gui.vs", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Gui.fs", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/Guie.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/Guie.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Gui",false);
-	Shaders.CreateShader("Assets/Shaders/Scene.vs", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Scene.fs", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/Scenee.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/Scenee.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("Default",false);
+	Shaders.CreateShader("Assets/Shaders/finale.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/finale.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("Final",false);
+	Shaders.CreateShader("Assets/Shaders/Shadowse.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/Shadowse.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("Shadows", false);
+#else
+	Shaders.CreateShader("Assets/Shaders/Gui.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/Gui.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("Gui",false);
+	Shaders.CreateShader("Assets/Shaders/Scene.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/Scene.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Default", false);
-	Shaders.CreateShader("Assets/Shaders/final.vs", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/final.fs", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/final.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/final.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Final", false);
-	Shaders.CreateShader("Assets/Shaders/Shadows.vs", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Shadows.fs", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/Shadows.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/Shadows.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Shadows", false);
 #endif // __EMSCRIPTEN__
 
@@ -136,9 +140,13 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Default", "Model");
 	Shaders.AddUniformToShaderStruct("Default", "CameraPos");
 	Shaders.AddUniformToShaderStruct("Default", "NormalMatrix");
+
 	Shaders.AddUniformToShaderStruct("Default", "Base");
 	Shaders.AddUniformToShaderStruct("Default", "Normal");
 	Shaders.AddUniformToShaderStruct("Default", "Specular");
+
+	Shaders.AddUniformToShaderStruct("Default", "ShadowMap");
+	Shaders.AddUniformToShaderStruct("Default", "LightCount");
 	{
 		std::string LightNumber;
 		std::string Uniform;
@@ -169,8 +177,6 @@ void COpengl::PrepareToLoop()
 			Shaders.AddUniformToShaderStruct("Default", Uniform);
 			Uniform = LightNumber + ".LightType";
 			Shaders.AddUniformToShaderStruct("Default", Uniform);
-			Uniform = LightNumber + ".ShadowMap";
-			Shaders.AddUniformToShaderStruct("Default", Uniform);
 			Uniform = "depthMVP[" + std::to_string(i);
 			Uniform += "]";
 			Shaders.AddUniformToShaderStruct("Default", Uniform);
@@ -195,8 +201,6 @@ void COpengl::PreLoop()
 {
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-
 }
 
 void COpengl::SetModelMatrix(glm::mat4 matrix)
@@ -232,7 +236,7 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 {
 	if (Camera != nullptr)
 	{
-		ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
+		ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetPosition()+ Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->AspectRatio, 0.1f, 100.0f);
 		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
@@ -284,13 +288,14 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 
 	glGenRenderbuffers(1, &FboStruct.RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, FboStruct.RBO);
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, this->WindowW, this->WindowH);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, FboStruct.RBO);
+
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		CLog::MyLog(LogType::Error, "Framebuffer %s is not complete", FBName);
+		CLog::MyLog(LogType::Error, "Framebuffer %s is not complete", FBName.c_str());
 	}
 	FboStruct.ShaderName = ShaderName;
 	this->Framebuffers.push_back(FboStruct);
@@ -339,7 +344,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, FboStruct.DepthBuff, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,GL_TEXTURE_2D, FboStruct.DepthBuff, 0);
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -349,7 +354,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 		do {
 			result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		
-			CLog::MyLog(LogType::Error, "Light Framebuffer isn't complete %s :%d", light->GetName(),glGetError());
+			CLog::MyLog(LogType::Error, "Light Framebuffer isn't complete %s :%d", light->GetName().c_str(),glGetError());
 
 		} while (result != GL_FRAMEBUFFER_COMPLETE);
 	}
@@ -386,7 +391,7 @@ MyLightFramebuffer COpengl::GetLightFrameBuffer(std::string name)
 			return o;
 		}
 	}
-	CLog::MyLog(LogType::Error, "LightFramebuffer named %s not found", name);
+	CLog::MyLog(LogType::Error, "LightFramebuffer named %s not found", name.c_str());
 	return {};
 }
 
@@ -430,6 +435,7 @@ void COpengl::ClearFramebuffers()
 {
 	for (auto o : this->Framebuffers)
 	{
+		//glDeleteTextures(1, &o.DBO);
 		glDeleteRenderbuffers(1,&o.RBO);
 		glDeleteTextures(1, &o.CBuffer);
 		glDeleteFramebuffers(1,&o.FBO);
@@ -487,17 +493,35 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 
 		depthProjectionMatrix = glm::perspective<float>(glm::radians(90.f), 1, 0.01f, 100.f);
 		COpengl::UseLightFramebuffer(lights->GetName());
+		depthViewMatrix = glm::lookAt(lights->GetPosition(), lights->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	else
 	{
-		depthProjectionMatrix = glm::ortho<float>(-5.f, 5.f, -5.f, 5.f, -0.1f, 20.f);
+		depthProjectionMatrix = glm::ortho<float>(-10.f, 10.f, -10.f,10.f, 0.0f, 200.f);
 		COpengl::UseLightFramebuffer(lights->GetName());
+
+		auto camera =SceneManager->GetCurrentScene()->GetCamera();
+		glm::vec3 LightPostition = camera->GetPosition();
+		glm::vec3 LightRotation = lights->GetRotation();
+
+		glm::vec3 FinalVec;
+
+		FinalVec.x = (cos(glm::radians(LightRotation.x + 90.0f)) * cos(glm::radians(LightRotation.y-180.f)));
+		FinalVec.y = sin(glm::radians(LightRotation.x + 90.0f));
+		FinalVec.z = (cos(glm::radians(LightRotation.x + 90.0f)) * sin(glm::radians(LightRotation.y-180.f)));
+
+		glm::vec3 FVectorCamera = LightPostition + (FinalVec*20.f);
+
+		depthViewMatrix = glm::lookAt(FVectorCamera, LightPostition, glm::vec3(0.0f, 1.0f, 0.0f));
+
+
+		//CLog::MyLog(LogType::Log, "Camera P: %f, %f, %f", FVectorCamera.x, FVectorCamera.y, FVectorCamera.z);
+
+		CLog::MyLog(LogType::Log, "Camera P: %f, %f, %f R: %f, %f Light R: %f, %f\n", camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z,
+			camera->GetRotation().x, camera->GetRotation().y, lights->GetRotation().x, lights->GetRotation().y);
 	}
 
-	depthViewMatrix = glm::lookAt(lights->GetPosition(), lights->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 	depthMVP = depthProjectionMatrix * depthViewMatrix;
-	Shaders.SetCurrentShaderProgram("Shadows");
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
 	depthBiasMatrix = BiasMatrix * depthMVP;
 
 	LightStruct = lights->GetLightStruct();
@@ -505,6 +529,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	LightNumber += std::to_string(index);
 	LightNumber += "]";
 	Uniform = LightNumber + ".Position";
+
 	Shaders.SetCurrentShaderProgram("Default");
 	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Position.x, LightStruct.Position.y, LightStruct.Position.z);
 	Uniform = LightNumber + ".Rotation";
@@ -530,7 +555,9 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	Uniform = "depthMVP[" + std::to_string(index);
 	Uniform += "]";
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", Uniform), 1, GL_FALSE, &depthBiasMatrix[0][0]);
+
 	Shaders.SetCurrentShaderProgram("Shadows");
+	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
 	glCullFace(GL_FRONT);
 }
 void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count)
@@ -543,12 +570,14 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 	}
 	else
 	{
-		Uniform = "ShadowMap[" + std::to_string(count);
-		Uniform += "]";
+		/*Uniform = "ShadowMap[" + std::to_string(count);
+		Uniform += "]";*/
 	}
-	glActiveTexture(GL_TEXTURE3+count);
 	Shaders.SetCurrentShaderProgram("Default");
-	glUniform1i(Shaders.GetUniformByNameStruct("Default", Uniform), COpengl::GetLightFrameBuffer(light->GetName()).FBO);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, COpengl::GetLightFrameBuffer(light->GetName()).DepthBuff);
+	glUniform1i(Shaders.GetUniformByNameStruct("Default","ShadowMap"), 3);
+	//glUniform1i(Shaders.GetUniformByNameStruct("Default", Uniform), COpengl::GetLightFrameBuffer(light->GetName()).FBO);
 	Shaders.SetCurrentShaderProgram("Shadows");
 }
 

@@ -8,6 +8,7 @@
 #include "CLog.h"
 #include <fstream>
 #include <array>
+#include <memory>
 
 
 using namespace std;
@@ -37,6 +38,7 @@ private:
 	SDL_MouseButtonEvent MouseEvent;
 
 	bool _IsRunning = true;
-	
 };
+
+extern std::unique_ptr<CEvent> Event;
 

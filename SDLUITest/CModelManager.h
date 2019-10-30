@@ -85,4 +85,5 @@ private:
 	std::vector<std::shared_ptr<Texture>> Textures;
 };
 
+extern std::unique_ptr<CModelManager> ModelManager;
 

@@ -27,7 +27,7 @@ public:
 	std::vector<std::shared_ptr<CLightComponent>> GetLightObjects();
 	void SetName(std::string Name);
 	std::string GetName();
-	void Draw(COpengl* opengl);
+	void Draw(DrawType);
 
 	void Tick(uint32_t delta);
 

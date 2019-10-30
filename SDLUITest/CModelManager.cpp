@@ -4,6 +4,7 @@
 #include "CLog.h"
 #include "glm/glm.hpp"
 
+std::unique_ptr<CModelManager> ModelManager;
 
 CModelManager::CModelManager()
 {
@@ -82,7 +83,7 @@ void CModelManager::LoadOBJ(const char * path)
 		if (strcmp(LineHeader, "v") == 0)
 		{
 			glm::vec3 Vertex;
-#ifdef __EMSCRIPTEN_
+#ifdef __EMSCRIPTEN__
 			fscanf(file, "%f %f %f", &Vertex.x, &Vertex.y, &Vertex.z);
 #else
 			fscanf_s(file, "%f %f %f", &Vertex.x, &Vertex.y, &Vertex.z);
@@ -93,7 +94,7 @@ void CModelManager::LoadOBJ(const char * path)
 		{
 			tempModel->HasTexcords = true;
 			glm::vec2 Texcord;
-#ifdef __EMSCRIPTEN_
+#ifdef __EMSCRIPTEN__
 			fscanf(file, "%f %f", &Texcord.x, &Texcord.y);
 #else
 			fscanf_s(file, "%f %f", &Texcord.x, &Texcord.y);
@@ -104,7 +105,7 @@ void CModelManager::LoadOBJ(const char * path)
 		{
 			tempModel->HasNormals = true;
 			glm::vec3 Normal;
-#ifdef __EMSCRIPTEN_
+#ifdef __EMSCRIPTEN__
 			fscanf(file, "%f %f %f", &Normal.x, &Normal.y, &Normal.z);
 #else
 			fscanf_s(file, "%f %f %f", &Normal.x, &Normal.y, &Normal.z);

@@ -15,22 +15,21 @@ std::function<void()> Lp;
 
 int main()
 {
-	CApp app;
 
-	if (!app.Init())
+	if (!Init())
 	{
-		app.Destroy();
+		Destroy();
 	}
-	app.Loop();
+	Loop();
 #ifdef __EMSCRIPTEN__
 	Lp = [&]
 	{
-		app.Loop();
+		Loop();
 	};
 	emscripten_set_main_loop(Loop, 0, true);
 #endif
 
-	app.Destroy();
+	Destroy();
 	return 0;
 }
 

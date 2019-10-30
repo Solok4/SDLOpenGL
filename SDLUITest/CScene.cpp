@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CScene.h"
+#include "COpengl.h"
 
 
 
@@ -130,7 +131,7 @@ std::string CScene::GetName()
 	return this->Name;
 }
 
-void CScene::Draw(COpengl* opengl)
+void CScene::Draw(DrawType DType)
 {
 	if (this->DrawableCached)
 	{
@@ -139,20 +140,30 @@ void CScene::Draw(COpengl* opengl)
 			auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
 			if (sm != nullptr)
 			{
-				sm->CalculateMatrix();
-				opengl->SetModelMatrix(sm->GetModelMatrix());
-				opengl->SetNormalMatrix(sm->GetModelMatrix());
-				auto material = sm->GetModel()->Mat;
-				glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
-					material->LM.Ambient.x, material->LM.Ambient.y, material->LM.Ambient.z);
-				glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
-					material->LM.Diffuse.x, material->LM.Diffuse.y, material->LM.Diffuse.z);
-				glUniform3f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
-					material->LM.Specular.x, material->LM.Specular.y, material->LM.Specular.z);
-				glUniform1f(opengl->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
-					material->LM.Shininess);
+				if (DType == DrawType::FullDraw)
+				{
+					sm->CalculateMatrix();
+					OpenGL->SetModelMatrix(sm->GetModelMatrix());
+					OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+					auto material = sm->GetModel()->Mat;
+					glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
+						material->LM.Ambient.x, material->LM.Ambient.y, material->LM.Ambient.z);
+					glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
+						material->LM.Diffuse.x, material->LM.Diffuse.y, material->LM.Diffuse.z);
+					glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
+						material->LM.Specular.x, material->LM.Specular.y, material->LM.Specular.z);
+					glUniform1f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
+						material->LM.Shininess);
+					c->Draw(DType);
+				}
+				else if (DType == DrawType::VerticesOnly)
+				{
+					sm->CalculateMatrix();
+					OpenGL->SetModelMatrix(sm->GetModelMatrix());
+					c->Draw(DType);
+				}
 			}
-			c->Draw(opengl->GetShadersClass().GetCurrentShaderProgram());
+
 		}
 	}
 	else
@@ -250,7 +261,7 @@ void CScene::SetCamera(std::shared_ptr<CObject3D> Cam)
 	std::shared_ptr<CCameraComponent> component = std::dynamic_pointer_cast<CCameraComponent>(Cam->GetComponentByType(Object3DComponent::CAMERA_COMPONENT));
 	if (component == nullptr)
 	{
-		CLog::MyLog(LogType::Error, "This object don't have camera component in it. Object: %s", Cam->GetName());
+		CLog::MyLog(LogType::Error, "This object don't have camera component in it. Object: %s", Cam->GetName().c_str());
 		return;
 	}
 	this->Camera = component;
@@ -276,7 +287,7 @@ void CScene::SetMovementObject(std::shared_ptr<CObject3D> Movement)
 	std::shared_ptr<CMovementComponent> component = std::dynamic_pointer_cast<CMovementComponent>(Movement->GetComponentByType(Object3DComponent::MOVEMENT_COMPONENT));
 	if (component == nullptr)
 	{
-		CLog::MyLog(LogType::Error, "This object don't have movement component in it. Object: %s", Movement->GetName());
+		CLog::MyLog(LogType::Error, "This object don't have movement component in it. Object: %s", Movement->GetName().c_str());
 		return;
 	}
 	this->MovementObject = component;

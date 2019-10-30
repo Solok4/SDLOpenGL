@@ -79,9 +79,9 @@ void CMovementComponent::MoveDown(bool isDown)
 void CMovementComponent::Tick(uint32_t delta)
 {
 	CBaseComponent::Tick(delta);
-	glm::vec3 diffX = this->GetForwardVector() - this->_ParrentObject->GetPosition();
-	glm::vec3 diffY = this->GetRightVector() - this->_ParrentObject->GetPosition();
-	glm::vec3 diffZ = this->GetUpVector() - this->_ParrentObject->GetPosition();
+	glm::vec3 diffX = this->GetForwardVector();
+	glm::vec3 diffY = this->GetRightVector();
+	glm::vec3 diffZ = this->GetUpVector();
 	//CLog::MyLog(0, "FVector x:%f y:%f z:%f", this->GetForwardVector().x, this->GetForwardVector().y, this->GetForwardVector().z);
 	if (isMoveForward)
 	{

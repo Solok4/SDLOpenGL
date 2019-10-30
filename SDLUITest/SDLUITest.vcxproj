@@ -94,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -112,7 +112,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -130,7 +130,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -152,7 +152,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -234,6 +234,48 @@
     </ClCompile>
     <ClCompile Include="SDLUITest.cpp" />
     <ClCompile Include="Shaders.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\final.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\finale.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\final.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\finale.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Gui.frag" />
+    <None Include="Assets\Shaders\Guie.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Gui.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Guie.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Scene.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Scenee.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Scene.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Scenee.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Shadows.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Shadows.vert">
+      <FileType>Script</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

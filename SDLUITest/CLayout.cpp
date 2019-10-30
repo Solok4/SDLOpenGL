@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CLayout.h"
 #include <memory>
+#include "COpengl.h"
 
 
 CLayout::CLayout()
@@ -31,7 +32,7 @@ void CLayout::PrepareToLoop()
 	}
 }
 
-void CLayout::Draw(COpengl* opengl)
+void CLayout::Draw()
 {
 	glDisable(GL_CULL_FACE);
 	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
@@ -39,8 +40,8 @@ void CLayout::Draw(COpengl* opengl)
 		for (auto o : it->second)
 		{
 			o->PreDraw();
-			opengl->SetModelMatrixLayout(o->GetModelMatrix());
-			opengl->SetColorMaskLayout(o->GetColorMask());
+			OpenGL->SetModelMatrixLayout(o->GetModelMatrix());
+			OpenGL->SetColorMaskLayout(o->GetColorMask());
 			o->Draw();
 			o->PostDraw();
 			if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
@@ -48,7 +49,7 @@ void CLayout::Draw(COpengl* opengl)
 				auto temp = std::dynamic_pointer_cast<CButton>(o);
 				
 				temp->GetLabel()->PreDraw();
-				opengl->SetModelMatrixLayout(temp->GetLabel()->GetModelMatrix());
+				OpenGL->SetModelMatrixLayout(temp->GetLabel()->GetModelMatrix());
 				temp->GetLabel()->Draw();
 				temp->GetLabel()->PostDraw();
 			}

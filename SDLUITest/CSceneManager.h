@@ -23,3 +23,5 @@ public:
 	std::shared_ptr<CScene> CurrentScene;
 };
 
+extern std::unique_ptr<CSceneManager> SceneManager;
+

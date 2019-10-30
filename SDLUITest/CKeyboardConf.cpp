@@ -3,7 +3,7 @@
 #include "CKeyboardConf.h"
 #include "CLog.h"
 
-
+std::unique_ptr<CKeyboardConf> KeyboardConf;
 
 CKeyboardConf::CKeyboardConf()
 {

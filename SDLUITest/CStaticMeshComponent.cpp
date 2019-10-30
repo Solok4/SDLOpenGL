@@ -3,6 +3,8 @@
 #include "GL/glew.h"
 #include <string>
 #include "CLog.h"
+#include "COpengl.h"
+#include "CSceneManager.h"
 
 
 CStaticMeshComponent::CStaticMeshComponent()
@@ -34,73 +36,104 @@ std::shared_ptr<Model> CStaticMeshComponent::GetModel()
 	return this->_Model;
 }
 
-void CStaticMeshComponent::Draw(int program)
+void CStaticMeshComponent::Draw(DrawType DType)
 {
 	if (this->_IsActive)
 	{
 		if (this->_Model != nullptr)
 		{
-			glBindVertexArray(this->_Model->VAO);
+			int program = 0;
+			if (DType == DrawType::FullDraw)
+			{
+				OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
+				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
+				glBindVertexArray(this->_Model->VAO);
 #ifdef HD4850 
-			glEnableVertexAttribArray(1);
-			if (this->_Model->HasTexcords)
-				glEnableVertexAttribArray(2);
-			if (this->_Model->HasNormals)
-				glEnableVertexAttribArray(0);
-			glActiveTexture(GL_TEXTURE0);
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
-			glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->BaseTexIndex]);
-			glUniform1i(glGetUniformLocation(program, "Base"), 0);
-			if (this->_Model->Mat->NormalMapIndex != 255)
-			{
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->NormalMapIndex]);
-				glUniform1i(glGetUniformLocation(program, "Normal"), 1);
-			}
-			if (this->_Model->Mat->SpecularMapIndex != 255)
-			{
-				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->SpecularMapIndex]);
-				glUniform1i(glGetUniformLocation(program, "Specular"), 2);
-			}
-			//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
-			glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
-			if (this->_Model->HasNormals)
-				glDisableVertexAttribArray(0);
-			if (this->_Model->HasTexcords)
-				glDisableVertexAttribArray(2);
-			glDisableVertexAttribArray(1);
-#else
-			glEnableVertexAttribArray(0);
-			if (this->_Model->HasTexcords)
 				glEnableVertexAttribArray(1);
-			if (this->_Model->HasNormals)
-				glEnableVertexAttribArray(2);
-			glActiveTexture(GL_TEXTURE0);
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
-			glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->BaseTexIndex]);
-			glUniform1i(glGetUniformLocation(program, "Base"), 0);
-			if (this->_Model->Mat->NormalMapIndex != 255)
-			{
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->NormalMapIndex]);
-				glUniform1i(glGetUniformLocation(program, "Normal"), 1);
-			}
-			if (this->_Model->Mat->SpecularMapIndex != 255)
-			{
-				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->SpecularMapIndex]);
-				glUniform1i(glGetUniformLocation(program, "Specular"), 2);
-			}
-			//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
-			glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
-			if (this->_Model->HasNormals)
-				glDisableVertexAttribArray(2);
-			if (this->_Model->HasTexcords)
+				if (this->_Model->HasTexcords)
+					glEnableVertexAttribArray(2);
+				if (this->_Model->HasNormals)
+					glEnableVertexAttribArray(0);
+				glActiveTexture(GL_TEXTURE0);
+				//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
+				glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->BaseTexIndex]);
+				glUniform1i(glGetUniformLocation(program, "Base"), 0);
+				if (this->_Model->Mat->NormalMapIndex != 255)
+				{
+					glActiveTexture(GL_TEXTURE1);
+					glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->NormalMapIndex]);
+					glUniform1i(glGetUniformLocation(program, "Normal"), 1);
+				}
+				if (this->_Model->Mat->SpecularMapIndex != 255)
+				{
+					glActiveTexture(GL_TEXTURE2);
+					glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->SpecularMapIndex]);
+					glUniform1i(glGetUniformLocation(program, "Specular"), 2);
+				}
+
+				//auto lights = SceneManager->GetCurrentScene()->GetLightObjects();
+				//for (int i = 0; i < lights.size(); i++)
+				//{
+				//	glActiveTexture(GL_TEXTURE3 + i);
+				//	glBindTexture(GL_TEXTURE_2D, OpenGL->GetLightFrameBuffer(lights[i]->GetName()).FBO);
+				//	glUniform1i(glGetUniformLocation(program, "ShadowMap"), 3 + i);
+				//}
+
+				//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				if (this->_Model->HasNormals)
+					glDisableVertexAttribArray(0);
+				if (this->_Model->HasTexcords)
+					glDisableVertexAttribArray(2);
 				glDisableVertexAttribArray(1);
-			glDisableVertexAttribArray(0);
+#else
+				glEnableVertexAttribArray(0);
+				if (this->_Model->HasTexcords)
+					glEnableVertexAttribArray(1);
+				if (this->_Model->HasNormals)
+					glEnableVertexAttribArray(2);
+				glActiveTexture(GL_TEXTURE0);
+				//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_Model->EBO);
+				glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->BaseTexIndex]);
+				glUniform1i(glGetUniformLocation(program, "Base"), 0);
+				if (this->_Model->Mat->NormalMapIndex != 255)
+				{
+					glActiveTexture(GL_TEXTURE1);
+					glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->NormalMapIndex]);
+					glUniform1i(glGetUniformLocation(program, "Normal"), 1);
+				}
+				if (this->_Model->Mat->SpecularMapIndex != 255)
+				{
+					glActiveTexture(GL_TEXTURE2);
+					glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->SpecularMapIndex]);
+					glUniform1i(glGetUniformLocation(program, "Specular"), 2);
+				}
+				//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				if (this->_Model->HasNormals)
+					glDisableVertexAttribArray(2);
+				if (this->_Model->HasTexcords)
+					glDisableVertexAttribArray(1);
+				glDisableVertexAttribArray(0);
 #endif
-			glBindVertexArray(0);
+				glBindVertexArray(0);
+			}
+			else if (DType == DrawType::VerticesOnly)
+			{
+				OpenGL->GetShadersClass().SetCurrentShaderProgram("Shadows");
+				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
+				glBindVertexArray(this->_Model->VAO);
+#ifdef HD4850
+				glEnableVertexAttribArray(1);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				glDisableVertexAttribArray(1);
+#else
+				glEnableVertexAttribArray(0);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				glDisableVertexAttribArray(0);
+#endif
+				glBindVertexArray(0);
+			}
 		}
 	}
 }

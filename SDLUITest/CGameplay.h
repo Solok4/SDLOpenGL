@@ -8,8 +8,12 @@ public:
 	
 	void SetTimescale(float timescale);
 	float GetTimescale();
+	void SetMouseLock(bool lock);
+	void ToggleMouseLock();
+	bool GetMouseLock();
 
 	const char* Name;
 	float TimeScale;
+	bool MouseLock = false;
 };
 

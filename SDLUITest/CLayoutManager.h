@@ -25,3 +25,4 @@ private:
 	std::vector<std::shared_ptr<CLayout>> Layouts;
 };
 
+extern std::unique_ptr<CLayoutManager> LayoutManager;

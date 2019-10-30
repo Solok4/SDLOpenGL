@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CLayoutManager.h"
 
+std::unique_ptr<CLayoutManager> LayoutManager;
 
 CLayoutManager::CLayoutManager()
 {

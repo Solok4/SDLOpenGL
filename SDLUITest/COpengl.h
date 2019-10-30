@@ -14,7 +14,8 @@
 #include "CCameraComponent.h"
 #include "Shaders.h"
 #include "CLightComponent.h"
-//#include "CScene.h"
+
+#define MAX_LIGHTS 8
 
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glew32.lib")
@@ -23,6 +24,7 @@ struct MyFrameBuffer
 {
 	std::string name;
 	GLuint FBO=0;
+	//GLuint DBO = 0;
 	GLuint RBO=0;
 	GLuint CBuffer=0;
 	const char* ShaderName;
@@ -91,4 +93,6 @@ private:
 
 
 };
+
+extern std::unique_ptr<COpengl> OpenGL;
 

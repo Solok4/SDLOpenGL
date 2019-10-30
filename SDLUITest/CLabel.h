@@ -17,6 +17,7 @@ public:
 
 
 	TTF_Font* Font;
+	SDL_Surface* TextSurface;
 
 };
 
