@@ -16,6 +16,8 @@
 #include "CLightComponent.h"
 
 #define MAX_LIGHTS 8
+#define SHADOWMAP_SIZE 1024
+#define FARPLANE 50.0f
 
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glew32.lib")

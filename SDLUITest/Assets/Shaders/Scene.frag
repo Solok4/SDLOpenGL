@@ -38,6 +38,7 @@ out vec4 FragColor;
 
 uniform Material Mat;
 uniform Light Lights[8];
+uniform float FarPlane;
 
 uniform sampler2D Base;
 uniform sampler2D Normal;
@@ -54,7 +55,6 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	//ambient
 	vec3 Ambient = Mat.Ambient*l.Ambient*l.Color;
 
-	ShadowMapIterator++;
 	
 	//Diffuse
 	//NormalTex.xyz = NormalTex.xyz*2.0-1.0;
@@ -76,22 +76,26 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	
 	vec3 projCoords = mvp.xyz / mvp.w;
 	projCoords = projCoords *0.5+0.5;
-	float ClosestDepth = texture(ShadowMap,projCoords.xy).r;
+	float ClosestDepth = texture(ShadowMap/*[ShadowMapIterator]*/,projCoords.xy).r;
 	float CurrentDepth = projCoords.z;
 	float visibility = 0;
 	//visibility = CurrentDepth-bias > ClosestDepth? 1.0:0.5;
-	vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
+	vec2 texelSize = 1.0 / textureSize(ShadowMap/*[ShadowMapIterator]*/, 0);
 	for(int x = -1; x <= 1; ++x)
 	{
 		for(int y = -1; y <= 1; ++y)
 		{
-			float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+			float pcfDepth = texture(ShadowMap/*[ShadowMapIterator]*/, projCoords.xy + vec2(x, y) * texelSize).r; 
 			visibility += CurrentDepth - bias > pcfDepth ? 0.5 : 1.0;        
 		}    
 	}
 	visibility /= 9.0;
 	if(projCoords.z >1.0)
+	{
 		visibility = 1.0;
+	}
+
+	ShadowMapIterator++;
 
 	return ((Ambient+diffuse+specular)* BaseTex.xyz)*visibility;
 }
@@ -119,8 +123,15 @@ vec3 ProccessPointLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 	float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
 	vec3 specular = (Mat.Specular*spec)*l.Color;
 	specular *= attenuation;
+
+	vec3 FragToLight = FragPos - l.Position;
+	float ClosestDepth = texture(ShadowCube,FragToLight).r;
+	ClosestDepth*=FarPlane;
+	float CurrentDepth = length(FragToLight);
+	float bias = 0.05;
+	float visibility = CurrentDepth - bias > ClosestDepth ? 0.5:1.0;
 	
-	return (Ambient+diffuse+specular)* BaseTex.xyz;
+	return ((Ambient+diffuse+specular)* BaseTex.xyz)*visibility;
 }
 
 vec3 ProccessSpotLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)

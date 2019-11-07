@@ -260,6 +260,15 @@
     <None Include="Assets\Shaders\Guie.vert">
       <FileType>Script</FileType>
     </None>
+    <None Include="Assets\Shaders\PointShad.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\PointShad.geom">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\PointShad.vert">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\Scene.frag">
       <FileType>Script</FileType>
     </None>

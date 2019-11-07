@@ -244,5 +244,14 @@
     <None Include="Assets\Shaders\Shadows.vert">
       <Filter>_Shaders</Filter>
     </None>
+    <None Include="Assets\Shaders\PointShad.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\PointShad.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\PointShad.geom">
+      <Filter>_Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

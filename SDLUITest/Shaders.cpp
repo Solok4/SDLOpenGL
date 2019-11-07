@@ -58,7 +58,7 @@ void Shaders::CreateShader(const char * File, ShaderType type)
 			CLog::MyLog(LogType::Log, "Geometry Shader compile status: %d", Result);
 			glGetShaderInfoLog(GeometryShaderID, 512, NULL, logBuff);
 			CLog::MyLog(LogType::Log, "Info: %s", logBuff);
-			this->FragmentShader = GeometryShaderID;
+			this->GeometryShader = GeometryShaderID;
 		}
 		else
 		{
@@ -115,7 +115,7 @@ void Shaders::CreateShaderProgram(std::string name,bool UseGeometryShader)
 			return;
 		}
 	}
-	else
+
 	{
 		ShadProgram Prog;
 		Prog.name = name;

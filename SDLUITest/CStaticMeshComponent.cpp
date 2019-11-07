@@ -45,7 +45,6 @@ void CStaticMeshComponent::Draw(DrawType DType)
 			int program = 0;
 			if (DType == DrawType::FullDraw)
 			{
-				OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
 				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
 				glBindVertexArray(this->_Model->VAO);
 #ifdef HD4850 
@@ -120,7 +119,6 @@ void CStaticMeshComponent::Draw(DrawType DType)
 			}
 			else if (DType == DrawType::VerticesOnly)
 			{
-				OpenGL->GetShadersClass().SetCurrentShaderProgram("Shadows");
 				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
 				glBindVertexArray(this->_Model->VAO);
 #ifdef HD4850

@@ -5,7 +5,7 @@
 #include <chrono>
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
-#include <io.h>
+//#include <io.h>
 #else
 #include "emscripten.h"
 #endif // __EMSCRIPTEN__
@@ -63,16 +63,10 @@ void Loop()
 		if (SceneManager->GetCamera() != nullptr)
 		{
 			if (CurrentGameplay->GetMouseLock())
-			//if (false)
 			{
 				SDL_ShowCursor(false);
 
 				SceneManager->GetCamera()->SetIsFree(true);
-				/*SceneManager->GetCamera()->ProcessMouseMovements(Event->GetMouseData(), Renderer->GetWindow());
-				OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
-				glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
-					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);*/
-				//CLog::MyLog(LogType::Log, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetRotation().x, SceneManager->GetCamera()->GetRotation().y, SceneManager->GetCamera()->GetRotation().z);
 			}
 			else
 			{
@@ -88,17 +82,22 @@ void Loop()
 		CurrentScene->Tick(TickTime);
 
 		LightList = CurrentScene->GetLightObjects();
+		int ShadowMapIterator = 0;
+		int ShadowCubeIterator = 0;
 		for (int i = 0; i < LightList.size() && i<MAX_LIGHTS; i++)
 		{
 			if (LightList[i]->IsActive())
 			{
-				OpenGL->ProcessLight(LightList[i], i);
 				if (LightList[i]->GetLightStruct().LightType == LightType::Point)
 				{
-
+					OpenGL->ProcessLight(LightList[i], i);
+					ShadowCubeIterator++;
+					CurrentScene->Draw(DrawType::VerticesOnly);
 				}
 				else
 				{
+					OpenGL->ProcessLight(LightList[i], i);
+					ShadowMapIterator++;
 					CurrentScene->Draw(DrawType::VerticesOnly);
 				}
 				OpenGL->PostProcessLight(LightList[i], i);
@@ -260,13 +259,15 @@ void PreLoop()
 		light->SetLightColor(vec3(1.0f,1.f,1.f));
 		tempScene->AddLightToScene(tempLight);
 
-		//auto templight2 = tempScene->AddObjectToScene("Light2", tempLight);
-		//templight2->SetPosition(glm::vec3(.0f, -3.0f, 0.f));
-		//auto light2 = templight2->GetComponentByName<CLightComponent>("OrangeLight");
-		//light2->SetLightType(LightType::Point);
-		//light2->SetLightColor(glm::vec3(0.0f, 1.0f, 0.0f));
-		//light2->SetLightPointLightData(1.f, 0.09f, 0.032f);
-		//tempScene->AddLightToScene(templight2);
+		auto tempLight2 = tempScene->AddObjectToScene("Light2");
+		tempLight2->AddComponent(Object3DComponent::LIGHT_COMPONENT, "GreenLight");
+		tempLight2->SetPosition(glm::vec3(0.f, 0.0f, 0.f));
+		tempLight2->SetRotation(glm::vec3(10.1f, 50.f, 0.f));
+		auto light2 = tempLight2->GetComponentByName<CLightComponent>("GreenLight");
+		light2->SetLightType(LightType::Point);
+		light2->SetLightColor(glm::vec3(0.0f, 1.0f, 0.0f));
+		light2->SetLightPointLightData(1.f, 0.09f, 0.032f);
+		tempScene->AddLightToScene(tempLight2);
 	}
 
 	
