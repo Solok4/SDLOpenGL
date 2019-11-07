@@ -29,7 +29,7 @@ public:
 	std::string GetName();
 	void Draw(DrawType);
 
-	void Tick(uint32_t delta);
+	void Tick(double delta);
 
 	void SetSkyBox(SkyboxType type, Texture texture);
 

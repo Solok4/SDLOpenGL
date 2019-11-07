@@ -30,7 +30,7 @@ CLightComponent::~CLightComponent()
 {
 }
 
-void CLightComponent::Tick(uint32_t delta)
+void CLightComponent::Tick(double delta)
 {
 	CBaseComponent::Tick(delta);
 

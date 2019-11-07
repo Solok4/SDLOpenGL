@@ -163,7 +163,8 @@ void CBaseComponent::SetScale(glm::vec3 scale)
 	this->CalculateMatrix();
 }
 
-void CBaseComponent::Tick(uint32_t delta)
+
+void CBaseComponent::Tick(double delta)
 {
 	if (this->_ParrentObject != nullptr)
 	{

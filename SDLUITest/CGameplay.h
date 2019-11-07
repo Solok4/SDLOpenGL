@@ -1,4 +1,8 @@
 #pragma once
+
+#include <stdint.h>
+#include <array>
+
 class CGameplay
 {
 public:
@@ -11,6 +15,8 @@ public:
 	void SetMouseLock(bool lock);
 	void ToggleMouseLock();
 	bool GetMouseLock();
+	virtual void Tick(double delta);
+	virtual void KeyEvents(std::array<bool, 322> keys);
 
 	const char* Name;
 	float TimeScale;

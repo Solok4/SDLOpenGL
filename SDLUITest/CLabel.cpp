@@ -2,6 +2,7 @@
 #include "CLabel.h"
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include <stdarg.h>
 
 
 CLabel::CLabel()
@@ -24,9 +25,17 @@ void CLabel::SetFont(TTF_Font* font)
 	this->Font = font;
 }
 
-void CLabel::SetText(std::string Text)
+void CLabel::SetText(const char* format, ...)
 {
-	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text.c_str(), {255,255,255})))
+	char Text[512];
+	va_list vl;
+	va_start(vl, format);
+#ifdef __EMSCRIPTEN__
+	vsprintf(Text, format, vl);
+#else
+	vsprintf_s(Text, format, vl);
+#endif
+	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text, {255,255,255})))
 	{
 		CLog::MyLog(LogType::Error, "Failed to create text surface: %s",TTF_GetError());
 		return;
@@ -43,6 +52,7 @@ void CLabel::SetText(std::string Text)
 		glGenerateMipmap(GL_TEXTURE_2D);
 		SDL_FreeSurface(TextSurface);
 	}
+	va_end(vl);
 }
 
 void CLabel::Prepare()

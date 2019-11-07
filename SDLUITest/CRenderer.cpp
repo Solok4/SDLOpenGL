@@ -21,9 +21,9 @@ void CRenderer::Init()
 	this->WInfo->ScreenHeight = this->ScreenHeight;
 	this->WInfo->ScreenWidth = this->ScreenWidth;
 	this->WInfo->WindowFlags = this->Flags;
-	this->WInfo->BeginingOfTheFrame = 0;
-	this->WInfo->EndOfTheFrame = 0;
-	this->WInfo->Delta = 0;
+	this->WInfo->BeginingOfTheFrame = std::chrono::system_clock::now();
+	this->WInfo->EndOfTheFrame = std::chrono::system_clock::now();
+	this->WInfo->Delta = this->WInfo->EndOfTheFrame- this->WInfo->BeginingOfTheFrame;
 	this->WInfo->FPSLock = 60;
 
 	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenWidth, ScreenHeight, Flags);
@@ -36,6 +36,8 @@ void CRenderer::Init()
 	{
 		CLog::MyLog(LogType::Error, "Failed to initalize TTF: %s",TTF_GetError());
 	}
+
+	SDL_GetWindowPosition(Window, &this->WInfo->ScreenPosX, &this->WInfo->ScreenPosY);
 
 }
 

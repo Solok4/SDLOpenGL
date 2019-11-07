@@ -2,6 +2,7 @@
 #include "CApp.h"
 #include "CLog.h"
 #include <stdio.h>
+#include <chrono>
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
 #include <io.h>
@@ -52,23 +53,13 @@ void Loop()
 	{
 #endif 
 		//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
-		WInfo->BeginingOfTheFrame = SDL_GetTicks();
+		WInfo->BeginingOfTheFrame = std::chrono::system_clock::now();
 		CurrentLayout = LayoutManager->GetCurrentLayout();
-		PollEvents();
-		if (CurrentLayout != nullptr)
-		{
-			ButtonList = CurrentLayout->GetButtons();
-			for (auto o : ButtonList)
-			{
-				auto butt = std::dynamic_pointer_cast<CButton>(o);
-				if (butt != NULL)
-				{
-					butt->IsClicked(Event->GetMouseData());
-				}
-			}
-		}
-
+		CurrentGameplay = GameplayManager->GetCurrentGameplay();
 		CurrentScene = SceneManager->GetCurrentScene();
+
+		PollEvents();
+
 		if (SceneManager->GetCamera() != nullptr)
 		{
 			if (CurrentGameplay->GetMouseLock())
@@ -77,10 +68,10 @@ void Loop()
 				SDL_ShowCursor(false);
 
 				SceneManager->GetCamera()->SetIsFree(true);
-				SceneManager->GetCamera()->ProcessMouseMovements(Event->GetMouseData(), Renderer->GetWindow());
+				/*SceneManager->GetCamera()->ProcessMouseMovements(Event->GetMouseData(), Renderer->GetWindow());
 				OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
 				glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
-					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);
+					SceneManager->GetCamera()->GetPosition().x, SceneManager->GetCamera()->GetPosition().y, SceneManager->GetCamera()->GetPosition().z);*/
 				//CLog::MyLog(LogType::Log, "CameraX: %f, CameraY: %f CameraZ: %f", SceneManager->GetCamera()->GetRotation().x, SceneManager->GetCamera()->GetRotation().y, SceneManager->GetCamera()->GetRotation().z);
 			}
 			else
@@ -91,24 +82,29 @@ void Loop()
 		}
 
 		OpenGL->PreLoop();
-		uint32_t TickTime =(WInfo->Delta * CurrentGameplay->GetTimescale());
-
+		double TickTime =((WInfo->Delta.count() * CurrentGameplay->GetTimescale())*1000);
+		CurrentGameplay->Tick(TickTime);
 		CurrentLayout->Tick(TickTime);
 		CurrentScene->Tick(TickTime);
+
 		LightList = CurrentScene->GetLightObjects();
 		for (int i = 0; i < LightList.size() && i<MAX_LIGHTS; i++)
 		{
-			OpenGL->ProcessLight(LightList[i],i);
-			if (LightList[i]->GetLightStruct().LightType == LightType::Point)
+			if (LightList[i]->IsActive())
 			{
+				OpenGL->ProcessLight(LightList[i], i);
+				if (LightList[i]->GetLightStruct().LightType == LightType::Point)
+				{
 
+				}
+				else
+				{
+					CurrentScene->Draw(DrawType::VerticesOnly);
+				}
+				OpenGL->PostProcessLight(LightList[i], i);
 			}
-			else
-			{
-				CurrentScene->Draw(DrawType::VerticesOnly);
-			}
-			OpenGL->PostProcessLight(LightList[i], i);
 		}
+		glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
 		OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
 		glUniform1i(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "LightCount"), LightList.size());
 		OpenGL->UseFramebuffer("Default");
@@ -124,15 +120,15 @@ void Loop()
 
 		OpenGL->ProLoop(Renderer->GetWindow());
 
-		WInfo->EndOfTheFrame = SDL_GetTicks();
+		WInfo->EndOfTheFrame = std::chrono::system_clock::now();
 		WInfo->Delta = WInfo->EndOfTheFrame - WInfo->BeginingOfTheFrame;
 		if (WInfo->FPSLock != 0)
 		{
-			if (WInfo->Delta < (1000/ WInfo->FPSLock))
+			if (WInfo->Delta.count()*1000 < (1000/ WInfo->FPSLock))
 			{
-				SDL_Delay((1000/ WInfo->FPSLock) - WInfo->Delta);
+				SDL_Delay( (uint32)round( (1000/ WInfo->FPSLock) - (WInfo->Delta.count() * 1000)));
 
-				WInfo->EndOfTheFrame = SDL_GetTicks();
+				WInfo->EndOfTheFrame = std::chrono::system_clock::now();
 				WInfo->Delta = WInfo->EndOfTheFrame - WInfo->BeginingOfTheFrame;
 			}
 		}
@@ -145,10 +141,6 @@ void PollEvents()
 {
 	Event->PollEvents();
 	KeyboardConf->ProcessButtons(Event->GetKeyboardData());
-	KeyEvents(KeyboardConf->GetKeyButtons());
-	int MouseX = 0, MouseY = 0;
-	Event->GetMouseMotion(MouseX,MouseY);
-	LayoutManager->SetMousePosition(MouseX, MouseY);
 }
 
 void PreLoop()
@@ -174,7 +166,7 @@ void PreLoop()
 		LayoutManager->AddNewLayout("Default");
 		LayoutManager->ChangeCurrentLayout("Default");
 		std::shared_ptr<CLayout> Layout = LayoutManager->GetLayoutByName("Default");
-		Layout->SetWindowData(Renderer->GetWindow());
+		//Layout->SetWindowData(Renderer->GetWindow());
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(10.f, 0.f), vec2(40.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "FpsCounter", vec2(10.f, 30.f), vec2(40.f));
@@ -201,13 +193,18 @@ void PreLoop()
 		auto TempLabel = Layout->FindObjectByName<CLabel>("TestLabel");
 		TempLabel->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
 		TempLabel->SetText("FrameTime: ");
-
+		TempLabel->BindTickFunction([&,TempLabel](double delta)
+			{
+				TempLabel->SetText("FrameTime: %.2f",delta);
+			});
 
 		auto TempLabel2 = Layout->FindObjectByName<CLabel>("FpsCounter");
 		TempLabel2->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
 		TempLabel2->SetText("Fps: ");
-
-
+		TempLabel2->BindTickFunction([&, TempLabel2](double delta)
+			{
+				TempLabel2->SetText("Fps: %.2f",1000/delta);
+			});
 
 	}
 	SceneManager->AddNewScene("Default");
@@ -256,7 +253,7 @@ void PreLoop()
 		auto tempLight = tempScene->AddObjectToScene("Light1");
 		tempLight->AddComponent(Object3DComponent::LIGHT_COMPONENT, "OrangeLight");
 		tempLight->SetPosition(glm::vec3(0.f, 0.0f, 0.f));
-		tempLight->SetRotation(glm::vec3(0.1f, 180.f, 0.f));
+		tempLight->SetRotation(glm::vec3(10.1f, 50.f, 0.f));
 		auto light = tempLight->GetComponentByName<CLightComponent>("OrangeLight");
 		light->SetLightType(LightType::Directional);
 		light->SetLightBaseData(glm::vec3(0.1f), glm::vec3(0.7f), glm::vec3(0.8f));
@@ -294,91 +291,13 @@ void PreLoop()
 	GameplayManager->SelectCurrentGameplay("Default");
 }
 
-void SetMouseLock(bool lock)
-{
-	//MouseLock = lock;
-}
-
 void ResizeWindow(int w, int h)
 {
 	Renderer->Resize(w, h);
-	LayoutManager->SetWindowData(Renderer->GetWindow());
+	LayoutManager->RefreshWindowData();
 }
 
 void SetFPSLock(int FPS)
 {
 	Renderer->GetWindowInfo()->FPSLock = FPS;
 }
-
-
-void KeyEvents(array<bool, 322> keys)
-{
-	if (keys[SDL_SCANCODE_1])
-	{
-		CLog::MyLog(LogType::Log, "Pressed 1");
-		GameplayManager->GetCurrentGameplay()->ToggleMouseLock();
-		//MouseLock = !MouseLock;
-	}
-	if (keys[SDL_SCANCODE_T])
-	{
-		LayoutManager->ChangeCurrentLayout("Default");
-	}
-	if (keys[SDL_SCANCODE_Y])
-	{
-		LayoutManager->ChangeCurrentLayout("Blank");
-	}
-	if (keys[SDL_SCANCODE_W])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(false);
-	}
-	if (keys[SDL_SCANCODE_S])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(false);
-	}
-	if (keys[SDL_SCANCODE_A])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(false);
-	}
-	if (keys[SDL_SCANCODE_D])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(false);
-	}
-	if (keys[SDL_SCANCODE_SPACE])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(false);
-	}
-	if (keys[SDL_SCANCODE_LSHIFT])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(false);
-	}
-	if (keys[SDL_SCANCODE_Y])
-	{
-		LayoutManager->ChangeCurrentLayout("Blank");
-	}
-
-}
-

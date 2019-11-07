@@ -2,6 +2,8 @@
 #include "CLayout.h"
 #include <memory>
 #include "COpengl.h"
+#include "CEvent.h"
+
 
 
 CLayout::CLayout()
@@ -15,10 +17,9 @@ CLayout::~CLayout()
 	CLog::MyLog(LogType::Log, "LayoutDestructor %s",this->Name);
 }
 
-void CLayout::SetWindowData(SDL_Window * WND)
+void CLayout::RefreshWindowData()
 {
-	SDL_GetWindowPosition(WND, &WindowPosX, &WindowPosY);
-	SDL_GetWindowSize(WND, &WindowWidth, &WindowHeight);
+	this->WNDInfo = Renderer->GetWindowInfo();
 }
 
 void CLayout::PrepareToLoop()
@@ -176,19 +177,23 @@ void CLayout::SetName(const char* name)
 	this->Name = name;
 }
 
-void CLayout::GetMousePosition(int x, int y)
+void CLayout::Tick(double delta)
 {
-	this->MousePosX = x;
-	this->MousePosY = y;
-}
-
-void CLayout::Tick(uint32_t delta)
-{
+	Event->GetMouseMotion(this->MousePosX, this->MousePosY);
 	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
 		for (auto o : it->second)
 		{
 			o->Tick(delta);
+		}
+	}
+	auto buttons = this->GetButtons();
+	for (auto b : buttons)
+	{
+		auto butt = std::dynamic_pointer_cast<CButton>(b);
+		if (butt != NULL)
+		{
+			butt->IsClicked(Event->GetMouseData());
 		}
 	}
 }

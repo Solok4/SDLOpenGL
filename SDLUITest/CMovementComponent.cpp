@@ -76,7 +76,7 @@ void CMovementComponent::MoveDown(bool isDown)
 }
 
 
-void CMovementComponent::Tick(uint32_t delta)
+void CMovementComponent::Tick(double delta)
 {
 	CBaseComponent::Tick(delta);
 	glm::vec3 diffX = this->GetForwardVector();
@@ -181,9 +181,9 @@ void CMovementComponent::Tick(uint32_t delta)
 			}
 		}
 
-	this->ResultVector = diffX * this->CurrentXAccel;
-	this->ResultVector += diffY * this->CurrentYAccel;
-	this->ResultVector += diffZ * this->CurrentZAccel;
+	this->ResultVector = diffX * (float)this->CurrentXAccel;
+	this->ResultVector += diffY * (float)this->CurrentYAccel;
+	this->ResultVector += diffZ * (float)this->CurrentZAccel;
 
 	this->CurrentSpeed = glm::sqrt(glm::pow(this->ResultVector.x, 2) + glm::pow(this->ResultVector.y, 2) + glm::pow(this->ResultVector.y, 2));
 

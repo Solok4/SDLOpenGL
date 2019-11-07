@@ -54,7 +54,7 @@ public:
 
 	vec4 GetColorMask() const;
 
-	virtual void Tick(uint32_t delta);
+	virtual void Tick(double delta);
 
 	void BindTexture(GLuint Tex);
 
@@ -66,7 +66,7 @@ public:
 
 	mat4 GetModelMatrix();
 
-	void BindTickFunction(std::function<void(uint32_t)> func);
+	void BindTickFunction(std::function<void(double)> func);
 
 
 protected:
@@ -85,7 +85,7 @@ protected:
 	bool _IsActive = true;
 	bool _IsVisible = true;
 
-	std::function<void(uint32_t)> TickFunc = nullptr;
+	std::function<void(double)> TickFunc = nullptr;
 
 	vec4 ColorMask;
 

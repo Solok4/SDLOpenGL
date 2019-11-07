@@ -16,15 +16,15 @@ public:
 	void MoveUp(bool isUp);
 	void MoveDown(bool isDown);
 
-	void Tick(uint32_t delta) override;
+	void Tick(double delta) override;
 
-	float MaxAccel =0.1f;
-	float MaxSpeed =1;
-	float CurrentXAccel= 0;
-	float CurrentYAccel = 0;
-	float CurrentZAccel = 0;
-	float CurrentSpeed = 0;
-	float AccelTime=200;
+	double MaxAccel =0.1f;
+	double MaxSpeed =1;
+	double CurrentXAccel= 0;
+	double CurrentYAccel = 0;
+	double CurrentZAccel = 0;
+	double CurrentSpeed = 0;
+	double AccelTime=200;
 
 	bool isMoveForward = false;
 	bool isMoveBackward = false;

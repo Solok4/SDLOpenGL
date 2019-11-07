@@ -9,12 +9,14 @@
 #include "CImage.h"
 #include "CLog.h"
 #include "COpengl.h"
+#include "CRenderer.h"
+
 class CLayout
 {
 public:
 	CLayout();
 	~CLayout();
-	void SetWindowData(SDL_Window* WND);
+	void RefreshWindowData();
 	void PrepareToLoop();
 	void Draw();
 
@@ -45,14 +47,9 @@ public:
 	const char* GetName();
 	void SetName(const char* name);
 
-	void GetMousePosition(int x,int y);
+	void Tick(double delta);
 
-	void Tick(uint32_t delta);
-
-	int WindowWidth;
-	int WindowHeight;
-	int WindowPosX;
-	int WindowPosY;
+	std::shared_ptr<WindowInfo> WNDInfo;
 
 	int MousePosX;
 	int MousePosY;

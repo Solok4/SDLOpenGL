@@ -248,7 +248,9 @@
     <None Include="Assets\Shaders\finale.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Gui.frag" />
+    <None Include="Assets\Shaders\Gui.frag">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\Guie.frag">
       <FileType>Script</FileType>
     </None>

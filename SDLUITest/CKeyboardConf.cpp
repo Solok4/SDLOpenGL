@@ -38,7 +38,7 @@ void CKeyboardConf::ProcessButtons(std::array<bool, 322> ButArray)
 			{
 				this->KeyResults[i] = false;
 			}
-			else 
+			else if ((this->KeyBtns[i].LastStatus == true) && (this->KeyBtns[i].IsPressed == false))
 			{
 				this->KeyResults[i] = false;
 				this->KeyBtns[i].LastStatus = false;

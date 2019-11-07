@@ -32,23 +32,11 @@
 	void Loop();
 	void PollEvents();
 	void PreLoop();
-	void SetMouseLock(bool lock);
+	//void SetMouseLock(bool lock);
 	void ResizeWindow(int w, int h);
 	void SetFPSLock(int FPS);
 
 	void KeyEvents(array<bool,322> keys);
 
-
-	/*int MouseX;
-	int MouseY;
-	bool MouseLock;
-	int WindowW;
-	int WindowH;
-
-	int FPSLock;
-
-	uint32_t Start;
-	uint32_t End;
-	uint32_t FrameTime;*/
 
 #endif // !CAPP

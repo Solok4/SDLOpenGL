@@ -36,7 +36,7 @@ public:
 	CLightComponent(std::shared_ptr<CLightComponent>& obj);
 	~CLightComponent();
 
-	void Tick(uint32_t delta) override;
+	void Tick(double delta) override;
 	void SetLightColor(glm::vec3 Color);
 	void SetLightBaseData(glm::vec3 Ambient, glm::vec3 Diffuse, glm::vec3 Specular);
 	void SetLightPointLightData(float constant, float linear, float quadriatic);

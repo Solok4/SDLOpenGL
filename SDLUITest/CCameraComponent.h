@@ -12,13 +12,12 @@ public:
 
 	void SetFov(float fov);
 	float GetFov();
-	void ProcessMouseMovements(SDL_MouseButtonEvent e, SDL_Window* Wnd);
+	void ProcessMouseMovements();
 	void SetIsFree(bool used);
 	void ClipCamera();
-	void Tick(uint32_t delta) override;
+	void Tick(double delta) override;
 
 
-	
 
 private:
 

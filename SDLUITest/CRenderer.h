@@ -12,6 +12,8 @@
 #include <memory>
 #endif // __EMSCRIPTEN__
 
+#include <chrono>
+
 #pragma comment(lib,"SDL2.lib")
 #pragma comment(lib,"SDL2_ttf.lib")
 #pragma comment(lib,"SDL2_image.lib")
@@ -20,13 +22,15 @@ struct WindowInfo
 {
 	int ScreenWidth;
 	int ScreenHeight;
-	Uint32 WindowFlags;
+	int ScreenPosX;
+	int ScreenPosY;
+	uint32_t WindowFlags;
 
-	Uint32 Delta;
-	Uint32 BeginingOfTheFrame;
-	Uint32 EndOfTheFrame;
+	std::chrono::duration<double> Delta;
+	std::chrono::time_point<std::chrono::system_clock> BeginingOfTheFrame;
+	std::chrono::time_point<std::chrono::system_clock> EndOfTheFrame;
 
-	Uint32 FPSLock;
+	uint32_t FPSLock;
 };
 
 

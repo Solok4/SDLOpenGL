@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "CCameraComponent.h"
+#include "CEvent.h"
+#include "CRenderer.h"
+#include "COpengl.h"
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
 #endif
@@ -50,7 +53,7 @@ float CCameraComponent::GetFov()
 	return this->FOV;
 }
 
-void CCameraComponent::ProcessMouseMovements(SDL_MouseButtonEvent e, SDL_Window* Wnd)
+void CCameraComponent::ProcessMouseMovements()
 {
 	if (this->IsFree)
 	{
@@ -58,24 +61,28 @@ void CCameraComponent::ProcessMouseMovements(SDL_MouseButtonEvent e, SDL_Window*
 
 		int DeltaX = 0;
 		int DeltaY = 0;
+		int MouseX = 0;
+		int MouseY = 0;
+		Event->GetMouseMotion(MouseX, MouseY);
 #ifdef __EMSCRIPTEN__
-		DeltaX = e.x - this->LastX;
-		DeltaY = e.y - this->LastY;
-		this->LastX = e.x;
-		this->LastY = e.y;
+		DeltaX = MouseX - this->LastX;
+		DeltaY = MouseY - this->LastY;
+		this->LastX = MouseX;
+		this->LastY = MouseY;
 #else
-		int w = 0; int h = 0;
-		int xpos = 0; int ypos = 0;
-		SDL_GetWindowPosition(Wnd, &xpos, &ypos);
-		SDL_GetWindowSize(Wnd, &w, &h);
+		auto WNDInfo = Renderer->GetWindowInfo();
+		int w = WNDInfo->ScreenWidth; int h = WNDInfo->ScreenHeight;
+		int xpos = WNDInfo->ScreenPosX; int ypos = WNDInfo->ScreenPosY;
+		/*SDL_GetWindowPosition(Wnd, &xpos, &ypos);
+		SDL_GetWindowSize(Wnd, &w, &h);*/
 		SetCursorPos(xpos + (w / 2), ypos + (h / 2));
-		DeltaX = e.x - (w / 2);
-		DeltaY = e.y - (h / 2);
+		DeltaX = MouseX - (w / 2);
+		DeltaY = MouseY - (h / 2);
 #endif
 		if (this->First)
 		{
-			this->LastX = e.x;
-			this->LastY = e.y;
+			this->LastX = MouseX;
+			this->LastY = MouseY;
 			DeltaX = 0;
 			DeltaY = 0;
 			this->First = false;
@@ -134,8 +141,15 @@ void CCameraComponent::ClipCamera()
 	}
 }
 
-void CCameraComponent::Tick(uint32_t delta)
+void CCameraComponent::Tick(double delta)
 {
 	this->_ParrentObject->SetRotation(this->_Rotation);
 	CBaseComponent::Tick(delta);
+	if (this->IsFree)
+	{
+		this->ProcessMouseMovements();
+		OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
+		glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
+			this->_Position.x+this->_PosOffset.x, this->_Position.y+ this->_PosOffset.y, this->_Position.z+ this->_PosOffset.z);
+	}
 }

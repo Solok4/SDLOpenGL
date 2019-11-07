@@ -261,7 +261,7 @@ vec4 CObject2D::GetColorMask() const
 	return this->ColorMask;
 }
 
-void CObject2D::Tick(uint32_t delta)
+void CObject2D::Tick(double delta)
 {
 	if(this->TickFunc != nullptr)
 	this->TickFunc(delta);
@@ -297,7 +297,7 @@ mat4 CObject2D::GetModelMatrix()
 	return this->ModelMatrix;
 }
 
-void CObject2D::BindTickFunction(std::function<void(uint32_t)> func)
+void CObject2D::BindTickFunction(std::function<void(double)> func)
 {
 	this->TickFunc = func;
 }

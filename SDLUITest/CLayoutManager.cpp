@@ -51,16 +51,10 @@ std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
 	return this->CurrentLayout;
 }
 
-void CLayoutManager::SetMousePosition(int mX, int mY)
-{
-	if(this->CurrentLayout !=nullptr)
-		this->CurrentLayout->GetMousePosition(mX, mY);
-}
-
-void CLayoutManager::SetWindowData(SDL_Window * Window)
+void CLayoutManager::RefreshWindowData()
 {
 	for (auto o : this->Layouts)
 	{
-		o->SetWindowData(Window);
+		o->RefreshWindowData();
 	}
 }

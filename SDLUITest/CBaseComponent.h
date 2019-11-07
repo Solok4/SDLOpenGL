@@ -38,11 +38,15 @@ public:
 	glm::vec3 GetForwardVector();
 	glm::vec3 GetRightVector();
 	glm::vec3 GetUpVector();
+	bool IsActive() { return this->_IsActive; };
+
 	void SetPosition(glm::vec3 pos);
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
+	void SetIsActive(bool active) { this->_IsActive = active; };
 
-	virtual void Tick(uint32_t delta);
+
+	virtual void Tick(double delta);
 
 
 	glm::vec3 GetPosition();

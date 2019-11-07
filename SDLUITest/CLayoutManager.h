@@ -15,8 +15,7 @@ public:
 
 	std::shared_ptr<CLayout> GetCurrentLayout();
 
-	void SetMousePosition(int mX, int mY);
-	void SetWindowData(SDL_Window* Window);
+	void RefreshWindowData();
 
 private:
 

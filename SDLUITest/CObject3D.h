@@ -58,7 +58,7 @@ public:
 	std::shared_ptr<CBaseComponent> GetComponentByType(Object3DComponent type);
 	std::vector<std::shared_ptr<CBaseComponent>> GetComponentList();
 
-	void Tick(uint32_t delta);
+	void Tick(double delta);
 
 
 protected:

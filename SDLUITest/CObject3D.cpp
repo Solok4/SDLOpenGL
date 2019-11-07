@@ -206,7 +206,7 @@ std::vector<std::shared_ptr<CBaseComponent>> CObject3D::GetComponentList()
 	return this->_Components;
 }
 
-void CObject3D::Tick(uint32_t delta)
+void CObject3D::Tick(double delta)
 {
 	for (auto o : this->_Components)
 	{

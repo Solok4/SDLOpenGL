@@ -173,7 +173,7 @@ void CScene::Draw(DrawType DType)
 
 }
 
-void CScene::Tick(uint32_t delta)
+void CScene::Tick(double delta)
 {
 	for (auto o : this->Objects3D)
 	{
