@@ -149,7 +149,9 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Default", "Specular");
 
 	Shaders.AddUniformToShaderStruct("Default", "ShadowMap");
+#ifndef __EMSCRIPTEN__
 	Shaders.AddUniformToShaderStruct("Default", "ShadowCube");
+#endif
 	GLint TextureUnits;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &TextureUnits);
 	/*{
@@ -226,6 +228,7 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Shadows", "depthMVP");
 	Shaders.AddUniformToShaderStruct("Shadows", "Model");
 
+#ifndef __EMSCRIPTEN__
 	Shaders.AddUniformToShaderStruct("PointShad", "Model");
 	Shaders.AddUniformToShaderStruct("PointShad", "LightPos");
 	Shaders.AddUniformToShaderStruct("PointShad", "FarPlane");
@@ -233,7 +236,7 @@ void COpengl::PrepareToLoop()
 	{
 		Shaders.AddUniformToShaderStruct("PointShad", "ShadowMatrices[" + std::to_string(i) + "]");
 	}
-	
+#endif
 	
 }
 
@@ -247,7 +250,9 @@ void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default","Model"), 1, GL_FALSE, &matrix[0][0]);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "Model"), 1, GL_FALSE, &matrix[0][0]);
+#ifndef __EMSCRIPTEN__
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("PointShad", "Model"), 1, GL_FALSE, &matrix[0][0]);
+#endif
 }
 
 void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
@@ -370,6 +375,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 	glGenTextures(1, &FboStruct.DepthBuff);
 	if (light->GetLightStruct().LightType == LightType::Point)
 	{
+#ifndef __EMSCRIPTEN__
 		glBindTexture(GL_TEXTURE_CUBE_MAP, FboStruct.DepthBuff);
 		for (int i = 0; i < 6; i++)
 		{
@@ -384,6 +390,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, FboStruct.DepthBuff, 0);
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
+#endif
 	}
 	else
 	{
@@ -397,8 +404,10 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, FboStruct.DepthBuff, 0);
+#ifndef __EMSCRIPTEN__
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
+#endif
 
 	}
 	
@@ -547,7 +556,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	COpengl::AddNewLightFramebuffer(lights, SHADOWMAP_SIZE);
 	if (lights->GetLightStruct().LightType == LightType::Point)
 	{
-
+#ifndef __EMSCRIPTEN__
 		depthProjectionMatrix = glm::perspective<float>(glm::radians(90.f), 1, 0.01f, 100.f);
 		COpengl::UseLightFramebuffer(lights->GetName());
 		depthViewMatrix = glm::lookAt(lights->GetPosition(), lights->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -567,7 +576,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 
 		glUniform3f(Shaders.GetUniformByNameStruct("PointShad", "LightPos"), lights->GetPosition().x, lights->GetPosition().y, lights->GetPosition().z);
 		glUniform1f(Shaders.GetUniformByNameStruct("PointShad", "FarPlane"), FARPLANE);
-
+#endif
 	}
 	else if(lights->GetLightStruct().LightType == LightType::Directional)
 	{
@@ -633,8 +642,10 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 
 	if (lights->GetLightStruct().LightType == LightType::Point)
 	{
+#ifndef __EMSCRIPTEN__
 		Shaders.SetCurrentShaderProgram("PointShad");
 		//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
+#endif
 	}
 	else
 	{
@@ -651,10 +662,12 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 
 	if (light->GetLightStruct().LightType == LightType::Point)
 	{
+#ifndef __EMSCRIPTEN__
 		glBindTexture(GL_TEXTURE_CUBE_MAP, COpengl::GetLightFrameBuffer(light->GetName()).DepthBuff);
 		Uniform = "ShadowCube[" + std::to_string(count);
 		Uniform += "]";
 		glUniform1i(Shaders.GetUniformByNameStruct("Default", "ShadowCube"), 3+count);
+#endif
 	}
 	else
 	{

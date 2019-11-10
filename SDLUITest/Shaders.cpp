@@ -77,7 +77,6 @@ std::string Shaders::ReadShaderFromFile(const char * Filename)
 	if (ShaderFileHandle.good() == false)
 	{
 		CLog::MyLog(LogType::Error, "Failed to read shader from file: %s", ShaderName.c_str());
-		std::runtime_error("Failed to read shader from file");
 		return "";
 	}
 
@@ -130,7 +129,7 @@ void Shaders::CreateShaderProgram(std::string name,bool UseGeometryShader)
 
 		GLint result = GL_FALSE;
 		glGetProgramiv(Prog.Program, GL_LINK_STATUS, &result);
-		CLog::MyLog(LogType::Log, "Shader Program link status: %d", result);
+		CLog::MyLog(LogType::Log, "%s> Shader Program link status: %d",name.c_str(), result);
 		glDetachShader(Prog.Program, this->VertexShader);
 		glDetachShader(Prog.Program, this->FragmentShader);
 		if (UseGeometryShader)

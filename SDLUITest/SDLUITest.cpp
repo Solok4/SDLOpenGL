@@ -8,8 +8,6 @@
 
 #include <emscripten.h>
 
-void Loop();
-std::function<void()> Lp;
 #endif
 
 
@@ -22,23 +20,12 @@ int main()
 	}
 	Loop();
 #ifdef __EMSCRIPTEN__
-	Lp = [&]
-	{
-		Loop();
-	};
 	emscripten_set_main_loop(Loop, 0, true);
 #endif
 
 	Destroy();
 	return 0;
 }
-
-#ifdef __EMSCRIPTEN__
-void Loop()
-{
-	Lp();
-}
-#endif // __EMSCRIPTEN__
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

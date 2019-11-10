@@ -30,35 +30,60 @@ varying vec2 UV;
 varying vec3 FragPos;
 varying vec3 CameraP;
 varying vec3 NormalVec;
+varying vec4 LightMVP[8];
+varying float LCount;
 
 
 uniform Material Mat;
-uniform Light Lights[32];
+uniform Light Lights[8];
+uniform float FarPlane;
 
 uniform sampler2D Base;
 uniform sampler2D Normal;
 uniform sampler2D Specular;
+uniform sampler2D ShadowMap;
+uniform samplerCube ShadowCube;
 
-vec3 ProccessDirectionalLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
+int ShadowMapIterator=0;
+int ShadowCubeIterator=0;
+
+vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 {
 	//ambient
-	vec3 Ambient = vec3(0.1)*l.Color;
+	vec3 Ambient = Mat.Ambient*l.Ambient*l.Color;
+
 	
 	//Diffuse
 	//NormalTex.xyz = NormalTex.xyz*2.0-1.0;
 	vec3 norm = normalize(NormalVec*NormalTex.xyz);
-	vec3 LightDir = normalize(l.Rotation);
-	float diff = max(dot(norm,LightDir),0.0);
+	vec3 LightDir = normalize(l.Position - FragPos);
+	float diff = max(dot(LightDir,norm),0.0);
 	vec3 diffuse = (diff*Mat.Diffuse*l.Diffuse)*l.Color;
-	
+		
 	//Specular
 	vec3 viewDir = normalize(CameraP-FragPos);
+	vec3 HalfWayDir = normalize(LightDir+ CameraP);
 	vec3 reflectDir = reflect(-LightDir,norm);
+	//float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
 	float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
-	vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
+	vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
+	//vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
+		
+	float bias = max(0.15 * (1.0 - dot(norm, LightDir)), 0.005);
 	
-	//return ((Ambient+diffuse+specular)* BaseTex.xyz);
-	return (Ambient)* BaseTex.xyz;
+	vec3 projCoords = mvp.xyz / mvp.w;
+	projCoords = projCoords *0.5+0.5;
+	float ClosestDepth = texture2D(ShadowMap,projCoords.xy).x;
+	float CurrentDepth = projCoords.z;
+	float visibility = CurrentDepth-bias > ClosestDepth? 1.0:0.5;
+	if(projCoords.z >1.0)
+	{
+		visibility = 1.0;
+	}
+
+	ShadowMapIterator++;
+
+	return ((Ambient+diffuse+specular)* BaseTex.xyz)*visibility;
 }
 
 vec3 ProccessPointLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
@@ -85,7 +110,7 @@ vec3 ProccessPointLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 	vec3 specular = (Mat.Specular*spec)*l.Color;
 	specular *= attenuation;
 	
-	return (Ambient+diffuse+specular)* BaseTex.xyz;
+	return ((Ambient+diffuse+specular)* BaseTex.xyz);
 }
 
 vec3 ProccessSpotLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
@@ -125,11 +150,10 @@ void main()
 	vec4 SpecularEl = texture2D(Specular,UV);
 	
 	vec3 result;
-	
-	for(int i=0; i<32;i++)
+	for(int i=0; i<8;i++)
 	{
 		if(Lights[i].LightType == 0)
-			result += ProccessDirectionalLight(Lights[i],BaseEl,NormalEl,SpecularEl);
+			result += ProccessDirectionalLight(Lights[i],LightMVP[i],BaseEl,NormalEl,SpecularEl);
 		else if(Lights[i].LightType == 1)
 			result += ProccessPointLight(Lights[i],BaseEl,NormalEl,SpecularEl);
 		else if(Lights[i].LightType == 2)

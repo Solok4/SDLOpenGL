@@ -269,6 +269,15 @@
     <None Include="Assets\Shaders\PointShad.vert">
       <FileType>Script</FileType>
     </None>
+    <None Include="Assets\Shaders\PointShade.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\PointShade.geom">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\PointShade.vert">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\Scene.frag">
       <FileType>Script</FileType>
     </None>
@@ -285,6 +294,12 @@
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\Shadows.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Shadowse.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Shadowse.vert">
       <FileType>Script</FileType>
     </None>
   </ItemGroup>

@@ -170,9 +170,9 @@ void main()
 	vec4 NormalEl = texture(Normal,UV);
 	vec4 SpecularEl = texture(Specular,UV);
 	
+	int LightsC = int(LCount);
 	vec3 result;
-	
-	for(int i=0; i<LCount;i++)
+	for(int i=0; i<LightsC;i++)
 	{
 		if(Lights[i].LightType == 0)
 			result += ProccessDirectionalLight(Lights[i],LightMVP[i],BaseEl,NormalEl,SpecularEl);

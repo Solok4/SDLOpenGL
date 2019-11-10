@@ -253,5 +253,20 @@
     <None Include="Assets\Shaders\PointShad.geom">
       <Filter>_Shaders</Filter>
     </None>
+    <None Include="Assets\Shaders\PointShade.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\PointShade.geom">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\PointShade.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Shadowse.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Shadowse.vert">
+      <Filter>_Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
