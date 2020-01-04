@@ -117,7 +117,12 @@ void CScene::RemoveLightFromScene(std::string Name)
 
 std::vector<std::shared_ptr<CLightComponent>> CScene::GetLightObjects()
 {
-	return this->Lights;
+	std::vector < std::shared_ptr < CLightComponent >> EnabledLights;
+	for (auto a : this->Lights)
+	{
+		if (a->IsActive())	EnabledLights.push_back(a);
+	}
+	return EnabledLights;
 }
 
 

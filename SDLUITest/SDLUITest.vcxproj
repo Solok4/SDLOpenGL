@@ -197,6 +197,7 @@
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
+    <ClInclude Include="CTempLayout.h" />
     <ClInclude Include="IDraw.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Shaders.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="CStaticMeshComponent.cpp" />
     <ClCompile Include="CLayoutManager.cpp" />
     <ClCompile Include="CModelManager.cpp" />
+    <ClCompile Include="CTempLayout.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

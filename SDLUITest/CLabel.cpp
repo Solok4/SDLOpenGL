@@ -5,12 +5,12 @@
 #include <stdarg.h>
 
 
-CLabel::CLabel()
+CLabel::CLabel() : CObject2D()
 {
 	this->_Size = glm::vec2(200.0f, 100.0f);
 	this->_Rotation = vec3(180.f, 0.0f, 0.0f);
 	this->Font = TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 20);
-	this->SetText("Default");
+	//this->SetText("Default");
 	this->ColorMask = vec4(1.0f);
 }
 

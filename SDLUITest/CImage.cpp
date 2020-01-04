@@ -2,7 +2,7 @@
 #include "CImage.h"
 
 
-CImage::CImage()
+CImage::CImage() : CObject2D()
 {
 }
 

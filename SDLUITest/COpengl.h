@@ -59,7 +59,7 @@ public:
 
 	void ProLoop(SDL_Window* Window);
 	void PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera);
-	void PreLoopOrtho(SDL_Window* Window);
+	void PreLoopOrtho();
 
 	void SetAspectRatio(SDL_Window* Window);
 	float GetAspectRatio() { return this->AspectRatio; };

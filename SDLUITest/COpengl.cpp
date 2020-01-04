@@ -28,6 +28,9 @@ COpengl::~COpengl()
 	CLog::MyLog(LogType::Log, "OpenglDestructor");
 }
 
+/*
+Creates context and initalize glew
+*/
 bool COpengl::Create(SDL_Window* Window)
 {
 #ifdef __EMSCRIPTEN__
@@ -69,7 +72,9 @@ void COpengl::Delete()
 	}
 }
 
-
+/*
+Creates shaders and uniforms. Also creates quad for final drawing.
+*/
 void COpengl::PrepareToLoop()
 {
 #ifdef __EMSCRIPTEN__
@@ -152,32 +157,6 @@ void COpengl::PrepareToLoop()
 #ifndef __EMSCRIPTEN__
 	Shaders.AddUniformToShaderStruct("Default", "ShadowCube");
 #endif
-	GLint TextureUnits;
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &TextureUnits);
-	/*{
-		std::string ShadowMaps;
-		for (int i = 0; i < 2; i++)
-		{
-
-			ShadowMaps = "ShadowMap[" + std::to_string(i);
-			ShadowMaps += "]";
-			Shaders.AddUniformToShaderStruct("Default", ShadowMaps);
-		}
-	}*/
-	//{
-	//	std::string ShadowMaps;
-	//	for (int i = 0; i < MAX_LIGHTS; i++)
-	//	{
-
-	//		/*ShadowMaps = "ShadowMap[" + std::to_string(i);
-	//		ShadowMaps += "]";
-	//		Shaders.AddUniformToShaderStruct("Default", ShadowMaps);*/
-
-	//		ShadowMaps = "ShadowCube["+ std::to_string(i);
-	//		ShadowMaps += "]";
-	//		Shaders.AddUniformToShaderStruct("Default", ShadowMaps);
-	//	}
-	//}
 	Shaders.AddUniformToShaderStruct("Default", "LightCount");
 	{
 		std::string LightNumber;
@@ -240,6 +219,10 @@ void COpengl::PrepareToLoop()
 	
 }
 
+
+/*
+Clear Buffers
+*/
 void COpengl::PreLoop()
 {
 	
@@ -255,22 +238,35 @@ void COpengl::SetModelMatrix(glm::mat4 matrix)
 #endif
 }
 
+/*
+Set position, scale and rotation to gui element
+*/
 void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
 {
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Model"), 1, GL_FALSE, &matrix[0][0]);
 }
 
+/*
+Sets colour of gui element
+*/
 void COpengl::SetColorMaskLayout(glm::vec3 ColorMask)
 {
 	glUniform3f(Shaders.GetUniformByNameStruct("Gui", "ColorMask"), ColorMask.x, ColorMask.y, ColorMask.z);
 }
 
+/*
+Calculates inversed and transposed normal matrix to base drawing struct
+*/
 void COpengl::SetNormalMatrix(glm::mat4 matrix)
 {
-	glm::mat4 NormalMatrix =glm::transpose(glm::inverse(matrix));
+	glm::mat4 NormalMatrix = glm::transpose(glm::inverse(matrix));
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "NormalMatrix"), 1, GL_FALSE, &NormalMatrix[0][0]);
 }
 
+
+/*
+Use default program and swap buffers
+*/
 void COpengl::ProLoop(SDL_Window* Window)
 {
 	glUseProgram(0);
@@ -278,6 +274,9 @@ void COpengl::ProLoop(SDL_Window* Window)
 	SDL_GL_SwapWindow(Window);
 }
 
+/*
+Sets viewport based on camera settings
+*/
 void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 {
 	if (Camera != nullptr)
@@ -296,7 +295,10 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 
 }
 
-void COpengl::PreLoopOrtho(SDL_Window* Window)
+/*
+Sets viewport for gui elements
+*/
+void COpengl::PreLoopOrtho()
 {
 	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WindowW, (float)this->WindowH, 0.0f, -0.1f, 1000.0f);
@@ -305,6 +307,7 @@ void COpengl::PreLoopOrtho(SDL_Window* Window)
 
 
 }
+
 
 void COpengl::SetAspectRatio(SDL_Window * Window)
 {
@@ -315,6 +318,9 @@ void COpengl::SetAspectRatio(SDL_Window * Window)
 	this->AspectRatio = (float)w / (float)h;
 }
 
+/*
+Creates new framebuffer for drawing. Creates framebuffer and renderbuffer
+*/
 void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 {
 	MyFrameBuffer FboStruct;
@@ -349,6 +355,9 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 	this->Framebuffers.push_back(FboStruct);
 }
 
+/*
+Creates framebuffer that are used for lighting. Those saves only depth from the scene.
+*/
 void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int size)
 {
 	for (auto x : this->LightFramebuffers)
@@ -426,6 +435,9 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 
 }
 
+/*
+Binds light framebuffer to be drawn to
+*/
 void COpengl::UseLightFramebuffer(std::string name)
 {
 	if (name == "")
@@ -449,6 +461,9 @@ void COpengl::UseLightFramebuffer(std::string name)
 	}
 }
 
+/*
+Returns LightFramebuffer object
+*/
 MyLightFramebuffer COpengl::GetLightFrameBuffer(std::string name)
 {
 	for (auto o : this->LightFramebuffers)
@@ -462,6 +477,9 @@ MyLightFramebuffer COpengl::GetLightFrameBuffer(std::string name)
 	return {};
 }
 
+/*
+Binds normal framebuffer for drawing. If name == "0" default framebuffer will be bound
+*/
 void COpengl::UseFramebuffer(std::string name)
 {
 	if (name == "0")
@@ -488,6 +506,9 @@ void COpengl::UseFramebuffer(std::string name)
 	CLog::MyLog(LogType::Error, "Framebuffer named %s not found", name.c_str());
 }
 
+/*
+Returns normal framebuffer object
+*/
 MyFrameBuffer COpengl::GetFramebuffer(std::string name)
 {
 	for (auto o : this->Framebuffers)
@@ -499,6 +520,9 @@ MyFrameBuffer COpengl::GetFramebuffer(std::string name)
 	return {};
 }
 
+/*
+Clears all framebuffers including those used for lighting
+*/
 void COpengl::ClearFramebuffers()
 {
 	for (auto o : this->Framebuffers)
@@ -517,6 +541,9 @@ void COpengl::ClearFramebuffers()
 	}
 }
 
+/*
+Renders content of Default framebuffer on to the quad. Last part of rendering
+*/
 void COpengl::FinalDraw()
 {
 	glBindVertexArray(this->FinalVao);
@@ -533,8 +560,9 @@ void COpengl::FinalDraw()
 	glBindVertexArray(0);
 }
 
-
-
+/*
+Calculates data to process light on to the scene. Binds light framebuffer, sends uniforms and changes shader program depending on shadow type
+*/
 void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 {
 	Light LightStruct;
@@ -585,7 +613,6 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 
 		auto camera =SceneManager->GetCurrentScene()->GetCamera();
 		glm::vec3 LightPostition = camera->GetPosition();
-		glm::vec3 LightRotation = lights->GetRotation();
 
 		glm::vec3 FinalVec = lights->GetForwardVector();
 
@@ -593,12 +620,6 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 		lights->SetPosition(FVectorCamera);
 
 		depthViewMatrix = glm::lookAt(FVectorCamera, LightPostition, glm::vec3(0.0f, 1.0f, 0.0f));
-
-
-		//CLog::MyLog(LogType::Log, "Camera P: %f, %f, %f", FVectorCamera.x, FVectorCamera.y, FVectorCamera.z);
-
-		//CLog::MyLog(LogType::Log, "Camera P: %f, %f, %f R: %f, %f Light R: %f, %f\n", camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z,
-		//	camera->GetRotation().x, camera->GetRotation().y, lights->GetRotation().x, lights->GetRotation().y);
 	}
 	else // spotlight
 	{
@@ -654,6 +675,10 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	}
 	glViewport(0, 0, SHADOWMAP_SIZE, SHADOWMAP_SIZE);
 }
+
+/*
+Sends shadowmaps as uniforms to default shader program.
+*/
 void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count)
 {
 	std::string Uniform;
@@ -676,11 +701,6 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 		Uniform += "]";
 		glUniform1i(Shaders.GetUniformByNameStruct("Default", "ShadowMap"), 3+count);
 	}
-	
-	//glUniform1i(Shaders.GetUniformByNameStruct("Default", "ShadowMap"), 3);
-	//glUniform1i(Shaders.GetUniformByNameStruct("Default",Uniform), 3+count);
-	//glUniform1i(Shaders.GetUniformByNameStruct("Default", Uniform), COpengl::GetLightFrameBuffer(light->GetName()).FBO);
-	//Shaders.SetCurrentShaderProgram("Shadows");
 }
 
 Shaders COpengl::GetShadersClass()

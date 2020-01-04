@@ -69,16 +69,6 @@ void CStaticMeshComponent::Draw(DrawType DType)
 					glBindTexture(GL_TEXTURE_2D, this->_Model->Mat->Tex[this->_Model->Mat->SpecularMapIndex]);
 					glUniform1i(glGetUniformLocation(program, "Specular"), 2);
 				}
-
-				//auto lights = SceneManager->GetCurrentScene()->GetLightObjects();
-				//for (int i = 0; i < lights.size(); i++)
-				//{
-				//	glActiveTexture(GL_TEXTURE3 + i);
-				//	glBindTexture(GL_TEXTURE_2D, OpenGL->GetLightFrameBuffer(lights[i]->GetName()).FBO);
-				//	glUniform1i(glGetUniformLocation(program, "ShadowMap"), 3 + i);
-				//}
-
-				//glDrawElements(GL_STATIC_DRAW, this->_Model->IndicesCount, GL_UNSIGNED_INT, 0);
 				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
 				if (this->_Model->HasNormals)
 					glDisableVertexAttribArray(0);

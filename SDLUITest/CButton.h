@@ -27,8 +27,8 @@ public:
 	virtual void OnMiss();
 
 	virtual void Prepare() override;
-
-	CLabel* GetLabel();
+	void SetLabel(std::shared_ptr<CLabel> label);
+	std::shared_ptr<CLabel> GetLabel();
 
 	std::function<void()> Func;
 
@@ -40,6 +40,6 @@ public:
 	int ScreenWidth=0;
 	int ScreenHeight=0;
 
-	CLabel* Label;
+	std::shared_ptr<CLabel> Label;
 };
 

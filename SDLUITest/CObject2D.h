@@ -8,6 +8,13 @@
 #include <functional>
 using namespace glm;
 
+enum Object2DType
+{
+	OBJECT2D_LABEL = 0,
+	OBJECT2D_IMAGE,
+	OBJECT2D_BUTTON
+};
+
 class CObject2D
 {
 public:

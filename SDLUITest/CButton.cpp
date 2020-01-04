@@ -4,13 +4,12 @@
 #include "CLog.h"
 
 
-CButton::CButton()
+CButton::CButton() : CObject2D()
 {
 	this->_Size = vec2(1.0f);
 	this->_Position = vec3(0.0f);
 	this->_Rotation = vec3(0.f);
 	this->ColorMask = vec4(1.f);
-	Label = new CLabel();
 }
 
 
@@ -77,14 +76,22 @@ void CButton::OnMiss()
 void CButton::Prepare()
 {
 	CObject2D::Prepare();
-	Label->Prepare();
+	/*Label->Prepare();
 	Label->MoveObjectLayerUp();
 	Label->BindParrentObject(std::make_shared<CObject2D>(*this));
-	Label->SetPosition(glm::vec2(this->_Size.x/4,this->_Size.y/4));
+	Label->SetPosition(glm::vec2(this->_Size.x/4,this->_Size.y/4));*/
+}
+
+void CButton::SetLabel(std::shared_ptr<CLabel> label)
+{
+	if (label->GetID() == Object2DType::OBJECT2D_LABEL)
+	{
+		this->Label = label;
+	}
 }
 
 
-CLabel* CButton::GetLabel()
+std::shared_ptr<CLabel> CButton::GetLabel()
 {
 	return this->Label;
 }

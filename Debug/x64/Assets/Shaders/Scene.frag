@@ -169,9 +169,8 @@ void main()
 	vec4 BaseEl = texture(Base,UV);
 	vec4 NormalEl = texture(Normal,UV);
 	vec4 SpecularEl = texture(Specular,UV);
-	
+
 	vec3 result;
-	
 	for(int i=0; i<LCount;i++)
 	{
 		if(Lights[i].LightType == 0)

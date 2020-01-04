@@ -5,7 +5,6 @@
 #include <chrono>
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
-//#include <io.h>
 #else
 #include "emscripten.h"
 #endif // __EMSCRIPTEN__
@@ -18,12 +17,12 @@ bool Init()
 {
 	OpenGL = std::make_unique<COpengl>();
 	Renderer = std::make_unique<CRenderer>();
-	Event = std::make_unique < CEvent>();
-	LayoutManager = std::make_unique < CLayoutManager>();
-	ModelManager = std::make_unique < CModelManager>();
-	SceneManager = std::make_unique < CSceneManager>();
-	KeyboardConf = std::make_unique < CKeyboardConf>();
-	GameplayManager = std::make_unique < CGameplayManager>();
+	Event = std::make_unique<CEvent>();
+	LayoutManager = std::make_unique<CLayoutManager>();
+	ModelManager = std::make_unique<CModelManager>();
+	SceneManager = std::make_unique<CSceneManager>();
+	KeyboardConf = std::make_unique<CKeyboardConf>();
+	GameplayManager = std::make_unique<CGameplayManager>();
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
@@ -60,8 +59,10 @@ void Loop()
 
 		PollEvents();
 
+		//Check if camera in scene manager exists
 		if (SceneManager->GetCamera() != nullptr)
 		{
+			//If free look mode is activated
 			if (CurrentGameplay->GetMouseLock())
 			{
 				SDL_ShowCursor(false);
@@ -114,8 +115,8 @@ void Loop()
 		OpenGL->FinalDraw();
 
 		OpenGL->GetShadersClass().SetCurrentShaderProgram("Gui");
-		OpenGL->PreLoopOrtho(Renderer->GetWindow());
-		CurrentLayout->Draw();	
+		OpenGL->PreLoopOrtho();
+		LayoutManager->Draw();	
 
 		OpenGL->ProLoop(Renderer->GetWindow());
 
@@ -162,13 +163,12 @@ void PreLoop()
 
 	{
 
-		LayoutManager->AddNewLayout("Default");
+		auto Layout = LayoutManager->AddNewLayout("Default");
 		LayoutManager->ChangeCurrentLayout("Default");
-		std::shared_ptr<CLayout> Layout = LayoutManager->GetLayoutByName("Default");
 		//Layout->SetWindowData(Renderer->GetWindow());
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
-		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(10.f, 0.f), vec2(40.f));
-		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "FpsCounter", vec2(10.f, 30.f), vec2(40.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(20.f, 20.f), vec2(40.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "FpsCounter", vec2(20.f, 50.f), vec2(40.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
@@ -205,6 +205,20 @@ void PreLoop()
 				TempLabel2->SetText("Fps: %.2f",1000/delta);
 			});
 
+	}
+	{
+		auto SecondLayout = LayoutManager->AddNewLayout("DoubleTest");
+		SecondLayout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButtonSecond", vec2(500.f, 500.f), vec2(100.f, 50.f));
+
+		SecondLayout->PrepareToLoop();
+		
+		auto TempButton = SecondLayout->FindObjectByName<CButton>("TestButtonSecond");
+		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
+		TempButton->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->Label->SetText("SecondLay Button");
+		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); });
+
+		//LayoutManager->PushActiveLayout("DoubleTest");
 	}
 	SceneManager->AddNewScene("Default");
 	auto tempScene(SceneManager->GetSceneByName("Default"));
@@ -284,7 +298,7 @@ void PreLoop()
 
 	SceneManager->SetCurrentScene("Default");
 
-	SetFPSLock(90);
+	SetFPSLock(60);
 	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_1, true);
 
 	auto gameplay = GameplayManager->AddNewGameplay("Default");

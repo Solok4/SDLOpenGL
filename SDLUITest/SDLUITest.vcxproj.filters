@@ -75,20 +75,8 @@
     <ClInclude Include="CImage.h">
       <Filter>Header Files\Objects 2D</Filter>
     </ClInclude>
-    <ClInclude Include="CLayout.h">
-      <Filter>Header Files\Objects 2D</Filter>
-    </ClInclude>
-    <ClInclude Include="CLayoutManager.h">
-      <Filter>Header Files\Objects 2D</Filter>
-    </ClInclude>
     <ClInclude Include="CModelManager.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CScene.h">
-      <Filter>Header Files\Objects 3D</Filter>
-    </ClInclude>
-    <ClInclude Include="CSceneManager.h">
-      <Filter>Header Files\Objects 3D</Filter>
     </ClInclude>
     <ClInclude Include="CCameraComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
@@ -116,6 +104,21 @@
     </ClInclude>
     <ClInclude Include="IDraw.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLayoutManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CTempLayout.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,20 +164,8 @@
     <ClCompile Include="CImage.cpp">
       <Filter>Source Files\Objects 2D</Filter>
     </ClCompile>
-    <ClCompile Include="CLayout.cpp">
-      <Filter>Source Files\Objects 2D</Filter>
-    </ClCompile>
-    <ClCompile Include="CLayoutManager.cpp">
-      <Filter>Source Files\Objects 2D</Filter>
-    </ClCompile>
     <ClCompile Include="CModelManager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CScene.cpp">
-      <Filter>Source Files\Objects 3D</Filter>
-    </ClCompile>
-    <ClCompile Include="CSceneManager.cpp">
-      <Filter>Source Files\Objects 3D</Filter>
     </ClCompile>
     <ClCompile Include="CCameraComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
@@ -198,6 +189,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CGameplayManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLayoutManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTempLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

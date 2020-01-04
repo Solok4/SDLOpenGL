@@ -8,7 +8,7 @@
 
 CLayout::CLayout()
 {
-
+	this->RefreshWindowData();
 }
 
 
@@ -24,19 +24,32 @@ void CLayout::RefreshWindowData()
 
 void CLayout::PrepareToLoop()
 {
-	for(auto it = Objects2D.begin();it != Objects2D.end();++it)
+	for (auto a : Objects2D)
+	{
+		a->Prepare();
+	}
+	/*for(auto it = Objects2D.begin();it != Objects2D.end();++it)
 	{
 		for (auto o : it->second)
 		{
 			o->Prepare();
 		}
-	}
+	}*/
 }
 
 void CLayout::Draw()
 {
 	glDisable(GL_CULL_FACE);
-	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+
+	for (auto a : Objects2D)
+	{
+		a->PreDraw();
+		OpenGL->SetModelMatrixLayout(a->GetModelMatrix());
+		OpenGL->SetColorMaskLayout(a->GetColorMask());
+		a->Draw();
+		a->PostDraw();
+	}
+	/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{	
 		for (auto o : it->second)
 		{
@@ -55,7 +68,7 @@ void CLayout::Draw()
 				temp->GetLabel()->PostDraw();
 			}
 		}
-	}
+	}*/
 	glEnable(GL_CULL_FACE);
 }
 
@@ -79,13 +92,14 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 	std::map<int, std::vector<std::shared_ptr<CObject2D>>>::iterator it;
 	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
 	{
-		std::shared_ptr<CLabel> temp(new CLabel);
+		std::shared_ptr<CLabel> temp = std::make_shared<CLabel>();
 		temp->SetPosition(pos);
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_LABEL);
 		
-		it = Objects2D.find(Object2DType::OBJECT2D_LABEL);
+		Objects2D.push_back(temp);
+		/*it = Objects2D.find(Object2DType::OBJECT2D_LABEL);
 		if (it != Objects2D.end())
 		{
 			it->second.push_back(temp);
@@ -94,16 +108,18 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		{
 
 			Objects2D.emplace(Object2DType::OBJECT2D_LABEL,std::vector<std::shared_ptr<CObject2D>>(1,temp));
-		}
+		}*/
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
-		std::shared_ptr<CImage> temp(new CImage);
+		std::shared_ptr<CImage> temp = std::make_shared<CImage>();
 		temp->SetPosition(pos);
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_IMAGE);
-		it = Objects2D.find(Object2DType::OBJECT2D_IMAGE);
+
+		Objects2D.push_back(temp);
+		/*it = Objects2D.find(Object2DType::OBJECT2D_IMAGE);
 		if (it != Objects2D.end())
 		{
 			it->second.push_back(temp);
@@ -111,17 +127,30 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		else
 		{
 			Objects2D.emplace(Object2DType::OBJECT2D_IMAGE, std::vector<std::shared_ptr<CObject2D>>(1, temp));
-		}
+		}*/
 	}
-	else if (id == Object2DType::OBJECT2D_BUTTON)
+	else if (id == Object2DType::OBJECT2D_BUTTON)	//Button
 	{
-		std::shared_ptr<CButton> temp(new CButton);
+		char LabelName[64];
+		std::shared_ptr<CButton> temp = std::make_shared<CButton>();
 		temp->SetPosition(pos);
 		temp->SetSize(size);
 		temp->SetName(name);
 		temp->SetID(Object2DType::OBJECT2D_BUTTON);
+
+		std::shared_ptr<CLabel> ButtonLabel = std::make_shared<CLabel>();
+		sprintf_s(LabelName, "%s%s", name, "_Label");
+		ButtonLabel->SetName(LabelName);
+		ButtonLabel->BindParrentObject(temp);
+		ButtonLabel->MoveObjectLayerUp();
+		ButtonLabel->SetPosition(glm::vec2(temp->GetSize().x / 4, temp->GetSize().y / 4));
+		ButtonLabel->SetID(Object2DType::OBJECT2D_LABEL);
+		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
-		it = Objects2D.find(Object2DType::OBJECT2D_BUTTON);
+
+		temp->SetLabel(ButtonLabel);
+		Objects2D.push_back(ButtonLabel);
+		/*it = Objects2D.find(Object2DType::OBJECT2D_BUTTON);
 		if (it != Objects2D.end())
 		{
 			it->second.push_back(temp);
@@ -129,31 +158,20 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		else
 		{
 			Objects2D.emplace(Object2DType::OBJECT2D_BUTTON, std::vector<std::shared_ptr<CObject2D>>(1, temp));
-		}
-		//it = Objects2D.find(Object2DType::OBJECT2D_LABEL);
-		//if (it != Objects2D.end())
-		//{
-		//	it->second.push_back(temp->Label);
-		//}
-		//else
-		//{
-		//	Objects2D.emplace(Object2DType::OBJECT2D_LABEL, std::vector<CObject2D*>(1, temp->Label));
-		//}
+		}*/
 	}
-
-
 }
 
 std::vector<std::shared_ptr<CObject2D>> CLayout::GetObjectByType(int type)
 {
 	std::vector<CObject2D> List;
-	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+	/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
 		if (it->first == type)
 		{
 			return it->second;
 		}
-	}
+	}*/
 	return {};
 }
 
@@ -180,18 +198,22 @@ void CLayout::SetName(const char* name)
 void CLayout::Tick(double delta)
 {
 	Event->GetMouseMotion(this->MousePosX, this->MousePosY);
-	for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+	for (auto a : Objects2D)
+	{
+		a->Tick(delta);
+	}
+	/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 	{
 		for (auto o : it->second)
 		{
 			o->Tick(delta);
 		}
-	}
+	}*/
 	auto buttons = this->GetButtons();
 	for (auto b : buttons)
 	{
 		auto butt = std::dynamic_pointer_cast<CButton>(b);
-		if (butt != NULL)
+		if (butt != nullptr)
 		{
 			butt->IsClicked(Event->GetMouseData());
 		}

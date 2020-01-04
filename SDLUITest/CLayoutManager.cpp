@@ -15,12 +15,12 @@ CLayoutManager::~CLayoutManager()
 	CLog::MyLog(LogType::Log, "LayoutManagerDestructor");
 }
 
-void CLayoutManager::AddNewLayout(const char* name)
+std::shared_ptr<CLayout> CLayoutManager::AddNewLayout(const char* name)
 {
-	std::shared_ptr<CLayout> temp(new CLayout);
+	std::shared_ptr<CLayout> temp = std::make_shared<CLayout>();
 	temp->SetName(name);
-
 	this->Layouts.push_back(temp);
+	return temp;
 }
 
 std::shared_ptr<CLayout> CLayoutManager::GetLayoutByName(const char* name)
@@ -41,14 +41,43 @@ void CLayoutManager::ChangeCurrentLayout(const char* name)
 	{
 		if (strcmp(o->GetName(), name) == 0)
 		{
-			this->CurrentLayout = o;
+			this->ActiveLayouts.clear();
+			this->ActiveLayouts.push_back(o);
 		}
+	}
+}
+
+void CLayoutManager::Draw()
+{
+	for (int i = 0; i < this->ActiveLayouts.size(); i++)
+	{
+		this->ActiveLayouts[i]->Draw();
 	}
 }
 
 std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
 {
-	return this->CurrentLayout;
+	if(!this->ActiveLayouts.empty())
+		return this->ActiveLayouts[this->ActiveLayouts.size()-1];
+}
+
+void CLayoutManager::PushActiveLayout(const char* name)
+{
+	for (auto a : Layouts)
+	{
+		if (strcmp(name, a->GetName()) == 0)
+		{
+			this->ActiveLayouts.push_back(a);
+		}
+	}
+}
+
+void CLayoutManager::PopActiveLayout()
+{
+	if (!this->ActiveLayouts.empty())
+	{
+		this->ActiveLayouts.erase((this->ActiveLayouts.begin()+this->ActiveLayouts.size()-1));
+	}
 }
 
 void CLayoutManager::RefreshWindowData()

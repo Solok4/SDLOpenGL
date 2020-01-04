@@ -20,6 +20,8 @@ public:
 	void PrepareToLoop();
 	void Draw();
 
+	virtual void InitalizeLayout() {};
+
 	void SetFont(const char* font);
 	TTF_Font* GetFont();
 
@@ -27,7 +29,14 @@ public:
 	template<typename T>
 	std::shared_ptr<T> FindObjectByName(const char* name)
 	{
-		for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+		for (auto a : Objects2D)
+		{
+			if (strcmp(name, a->GetName()) == 0)
+			{
+				return std::dynamic_pointer_cast<T>(a);
+			}
+		}
+		/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
 		{
 			for (auto o : it->second)
 			{
@@ -36,8 +45,8 @@ public:
 					return std::dynamic_pointer_cast<T>(o);
 				}
 			}
-		}
-		return NULL;
+		}*/
+		return nullptr;
 	}
 	std::vector<std::shared_ptr<CObject2D>> GetObjectByType(int type);
 
@@ -47,7 +56,7 @@ public:
 	const char* GetName();
 	void SetName(const char* name);
 
-	void Tick(double delta);
+	virtual void Tick(double delta);
 
 	std::shared_ptr<WindowInfo> WNDInfo;
 
@@ -59,15 +68,10 @@ public:
 	GLuint* ShaderProgram;
 	TTF_Font* Font;
 
-	std::map<int,std::vector<std::shared_ptr<CObject2D>>> Objects2D;
+	//std::map<int,std::vector<std::shared_ptr<CObject2D>>> Objects2D;
+	std::vector<std::shared_ptr<CObject2D>> Objects2D;
 	std::vector<std::shared_ptr<CObject2D>> Buttons;
 
 };
 
-enum Object2DType
-{
-	OBJECT2D_LABEL=0,
-	OBJECT2D_IMAGE,
-	OBJECT2D_BUTTON
-};
 
