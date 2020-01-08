@@ -9,7 +9,7 @@ CObject3D::CObject3D()
 	this->BindRootComponent("root");
 }
 
-CObject3D::CObject3D(const CObject3D& obj):CObject3D()
+CObject3D::CObject3D(const CObject3D& obj)
 {
 	this->Name = obj.Name;
 	if (obj._Components.size() != 0)
@@ -40,9 +40,71 @@ CObject3D::CObject3D(const CObject3D& obj):CObject3D()
 	}
 }
 
-CObject3D::CObject3D(const std::shared_ptr<CObject3D>& obj) :CObject3D()
+CObject3D::CObject3D(const std::shared_ptr<CObject3D>& obj)
 {
 	this->Name = obj->Name;
+	if (obj->_Components.size() != 0)
+	{
+		for (int i = 0; i < obj->_Components.size(); i++)
+		{
+			if (obj->_Components[i]->GetType() == CAMERA_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj->_Components[i]);
+				this->AddComponent(temp);
+			}
+			else if (obj->_Components[i]->GetType() == STATIC_MESH_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CStaticMeshComponent>(obj->_Components[i]);
+				this->AddComponent(temp);
+			}
+			else if (obj->_Components[i]->GetType() == MOVEMENT_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CMovementComponent>(obj->_Components[i]);
+				this->AddComponent(temp);
+			}
+			else if (obj->_Components[i]->GetType() == LIGHT_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CLightComponent>(obj->_Components[i]);
+				this->AddComponent(temp);
+			}
+		}
+	}
+}
+
+CObject3D::CObject3D(const CObject3D& obj,char* name):CObject3D()
+{
+	this->Name = name;
+	if (obj._Components.size() != 0)
+	{
+		for (int i = 0; i < obj._Components.size(); i++)
+		{
+			if (obj._Components[i]->GetType() == CAMERA_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj._Components[i]);
+				this->AddComponent(temp);
+			}
+			else if (obj._Components[i]->GetType() == STATIC_MESH_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CStaticMeshComponent>(obj._Components[i]);
+				this->AddComponent(temp);
+			}
+			else if (obj._Components[i]->GetType() == MOVEMENT_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CMovementComponent>(obj._Components[i]);
+				this->AddComponent(temp);
+			}
+			else if (obj._Components[i]->GetType() == LIGHT_COMPONENT)
+			{
+				auto temp = std::dynamic_pointer_cast<CLightComponent>(obj._Components[i]);
+				this->AddComponent(temp);
+			}
+		}
+	}
+}
+
+CObject3D::CObject3D(const std::shared_ptr<CObject3D>& obj,char* name) :CObject3D()
+{
+	this->Name = name;
 	if (obj->_Components.size() != 0)
 	{
 		for (int i = 0; i < obj->_Components.size(); i++)

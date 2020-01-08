@@ -15,11 +15,11 @@ std::unique_ptr<COpengl> OpenGL;
 
 COpengl::COpengl()
 {
-	this->AspectRatio = 0;
+	/*this->AspectRatio = 0;
+	this->WindowH = 0;
+	this->WindowW = 0;*/
 	this->FinalVao = 0;
 	this->FinalVbo = 0;
-	this->WindowH = 0;
-	this->WindowW = 0;
 }
 
 
@@ -59,7 +59,8 @@ bool COpengl::Create(SDL_Window* Window)
 		CLog::MyLog(LogType::Error, "Failed to init GLEW");
 		return false;
 	}
-	this->SetAspectRatio(Window);
+	this->WndInfo = Renderer->GetWindowInfo();
+	//this->SetAspectRatio(Window);
 	return true;
 }
 
@@ -282,7 +283,7 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 	if (Camera != nullptr)
 	{
 		ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetPosition()+ Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->AspectRatio, 0.1f, 100.0f);
+		glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->WndInfo->ScreenAspectRatio, 0.1f, 100.0f);
 		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 		glUniform1f(Shaders.GetUniformByNameStruct("Default", "FarPlane"), FARPLANE);
@@ -301,23 +302,12 @@ Sets viewport for gui elements
 void COpengl::PreLoopOrtho()
 {
 	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WindowW, (float)this->WindowH, 0.0f, -0.1f, 1000.0f);
+	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WndInfo->ScreenWidth, (float)this->WndInfo->ScreenHeight, 0.0f, -0.1f, 1000.0f);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 
 
 }
-
-
-void COpengl::SetAspectRatio(SDL_Window * Window)
-{
-	int w, h;
-	SDL_GetWindowSize(Window, &w, &h);
-	this->WindowW = w;
-	this->WindowH = h;
-	this->AspectRatio = (float)w / (float)h;
-}
-
 /*
 Creates new framebuffer for drawing. Creates framebuffer and renderbuffer
 */
@@ -331,7 +321,7 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 	glGenTextures(1, &FboStruct.CBuffer);	
 	glBindTexture(GL_TEXTURE_2D, FboStruct.CBuffer);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->WindowW, this->WindowH, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->WndInfo->ScreenWidth, this->WndInfo->ScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -342,8 +332,8 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName)
 
 	glGenRenderbuffers(1, &FboStruct.RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, FboStruct.RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WindowW, this->WindowH);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, this->WindowW, this->WindowH);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WndInfo->ScreenWidth, this->WndInfo->ScreenHeight);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_STENCIL, this->WndInfo->ScreenWidth, this->WndInfo->ScreenHeight);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, FboStruct.RBO);
 
@@ -665,7 +655,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	{
 #ifndef __EMSCRIPTEN__
 		Shaders.SetCurrentShaderProgram("PointShad");
-		//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
 #endif
 	}
 	else

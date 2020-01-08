@@ -59,6 +59,8 @@ std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
 {
 	if(!this->ActiveLayouts.empty())
 		return this->ActiveLayouts[this->ActiveLayouts.size()-1];
+	CLog::MyLog(LogType::Error, "There isn't any active layout");
+	return nullptr;
 }
 
 void CLayoutManager::PushActiveLayout(const char* name)

@@ -24,6 +24,7 @@ struct WindowInfo
 	int ScreenHeight;
 	int ScreenPosX;
 	int ScreenPosY;
+	float ScreenAspectRatio;
 	uint32_t WindowFlags;
 
 	std::chrono::duration<double> Delta;
@@ -40,10 +41,15 @@ public:
 	CRenderer();
 	~CRenderer();
 
+	//Initalizes window
 	void Init();
+	//Destroys Window
 	void Destroy();
+	//Change size of the window
 	void Resize(int w, int h);
+	//Returns SDL_Window 
 	SDL_Window* GetWindow();
+	//Returns window information struct
 	std::shared_ptr<WindowInfo> GetWindowInfo();
 
 
@@ -53,7 +59,6 @@ private:
 	Uint32 Flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	int ScreenWidth = 1280;
 	int ScreenHeight = 720;
-	TTF_Font* Font;
 	std::shared_ptr<WindowInfo> WInfo;
 
 };

@@ -104,6 +104,7 @@ void CModelManager::LoadOBJ(const char * path)
 			//fs >> Texcord.x >> Texcord.y;
 			fscanf_s(file, "%f %f", &Texcord.x, &Texcord.y);
 #endif
+			Texcord.y = 1.f - Texcord.y;
 			temp_Texcords.push_back(Texcord);
 		}
 		else if (strcmp(LineHeader, "vn") == 0)
@@ -472,9 +473,35 @@ void CModelManager::LoadTexture(const char* path)
 	{
 		GLint Format;
 		Format = GL_RGBA;
-		SDL_Surface* Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
-		SDL_FreeSurface(Tex);
-		FinishSurface(Finish);
+		SDL_Surface* Finish;
+		if (Tex->format->BitsPerPixel == 24)
+		{
+			if (Tex->format->Rshift != 0)
+			{
+				Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGB24, 0);
+				SDL_FreeSurface(Tex);
+			}	
+			else
+			{
+				Finish = Tex;
+			}
+			Format = GL_RGB;
+			
+		}
+		else //if (Tex->format->BitsPerPixel == 32)
+		{
+			if (Tex->format->Rshift != 0)
+			{
+				Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
+				SDL_FreeSurface(Tex);
+			}
+			else
+			{
+				Finish = Tex;
+			}
+			Format = GL_RGBA;
+		}
+		//FinishSurface(Finish);
 
 		GLuint TexID;
 		glGenTextures(1, &TexID);

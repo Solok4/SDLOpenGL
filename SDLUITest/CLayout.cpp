@@ -28,13 +28,6 @@ void CLayout::PrepareToLoop()
 	{
 		a->Prepare();
 	}
-	/*for(auto it = Objects2D.begin();it != Objects2D.end();++it)
-	{
-		for (auto o : it->second)
-		{
-			o->Prepare();
-		}
-	}*/
 }
 
 void CLayout::Draw()
@@ -49,42 +42,7 @@ void CLayout::Draw()
 		a->Draw();
 		a->PostDraw();
 	}
-	/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
-	{	
-		for (auto o : it->second)
-		{
-			o->PreDraw();
-			OpenGL->SetModelMatrixLayout(o->GetModelMatrix());
-			OpenGL->SetColorMaskLayout(o->GetColorMask());
-			o->Draw();
-			o->PostDraw();
-			if (o->GetID() == Object2DType::OBJECT2D_BUTTON)
-			{
-				auto temp = std::dynamic_pointer_cast<CButton>(o);
-				
-				temp->GetLabel()->PreDraw();
-				OpenGL->SetModelMatrixLayout(temp->GetLabel()->GetModelMatrix());
-				temp->GetLabel()->Draw();
-				temp->GetLabel()->PostDraw();
-			}
-		}
-	}*/
 	glEnable(GL_CULL_FACE);
-}
-
-void CLayout::SetFont(const char* font)
-{
-	this->Font = TTF_OpenFont(font, 32);
-	if (!this->Font)
-	{
-		CLog::MyLog(LogType::Error, "Failed to load font %s",font);
-		return;
-	}
-}
-
-TTF_Font* CLayout::GetFont()
-{
-	return this->Font;
 }
 
 void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
@@ -99,16 +57,6 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		temp->SetID(Object2DType::OBJECT2D_LABEL);
 		
 		Objects2D.push_back(temp);
-		/*it = Objects2D.find(Object2DType::OBJECT2D_LABEL);
-		if (it != Objects2D.end())
-		{
-			it->second.push_back(temp);
-		}
-		else
-		{
-
-			Objects2D.emplace(Object2DType::OBJECT2D_LABEL,std::vector<std::shared_ptr<CObject2D>>(1,temp));
-		}*/
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
@@ -119,15 +67,6 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		temp->SetID(Object2DType::OBJECT2D_IMAGE);
 
 		Objects2D.push_back(temp);
-		/*it = Objects2D.find(Object2DType::OBJECT2D_IMAGE);
-		if (it != Objects2D.end())
-		{
-			it->second.push_back(temp);
-		}
-		else
-		{
-			Objects2D.emplace(Object2DType::OBJECT2D_IMAGE, std::vector<std::shared_ptr<CObject2D>>(1, temp));
-		}*/
 	}
 	else if (id == Object2DType::OBJECT2D_BUTTON)	//Button
 	{
@@ -150,29 +89,17 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 
 		temp->SetLabel(ButtonLabel);
 		Objects2D.push_back(ButtonLabel);
-		/*it = Objects2D.find(Object2DType::OBJECT2D_BUTTON);
-		if (it != Objects2D.end())
-		{
-			it->second.push_back(temp);
-		}
-		else
-		{
-			Objects2D.emplace(Object2DType::OBJECT2D_BUTTON, std::vector<std::shared_ptr<CObject2D>>(1, temp));
-		}*/
 	}
-}
-
-std::vector<std::shared_ptr<CObject2D>> CLayout::GetObjectByType(int type)
-{
-	std::vector<CObject2D> List;
-	/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
+	else if (id == Object2DType::OBJECT2D_CONTAINER)	//CContainer
 	{
-		if (it->first == type)
-		{
-			return it->second;
-		}
-	}*/
-	return {};
+		std::shared_ptr<CContainer> temp = std::make_shared<CContainer>();
+		temp->SetPosition(pos);
+		temp->SetSize(size);
+		temp->SetName(name);
+		temp->SetID(Object2DType::OBJECT2D_CONTAINER);
+
+		Objects2D.push_back(temp);
+	}
 }
 
 std::vector<std::shared_ptr<CObject2D>> CLayout::GetButtons()
@@ -202,13 +129,6 @@ void CLayout::Tick(double delta)
 	{
 		a->Tick(delta);
 	}
-	/*for (auto it = Objects2D.begin(); it != Objects2D.end(); ++it)
-	{
-		for (auto o : it->second)
-		{
-			o->Tick(delta);
-		}
-	}*/
 	auto buttons = this->GetButtons();
 	for (auto b : buttons)
 	{

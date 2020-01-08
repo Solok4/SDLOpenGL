@@ -165,13 +165,11 @@ void PreLoop()
 
 		auto Layout = LayoutManager->AddNewLayout("Default");
 		LayoutManager->ChangeCurrentLayout("Default");
-		//Layout->SetWindowData(Renderer->GetWindow());
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "TestLabel", vec2(20.f, 20.f), vec2(40.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "FpsCounter", vec2(20.f, 50.f), vec2(40.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
-		Layout->SetFont("Assets/Fonts/Raleway-Black.ttf");
 		Layout->PrepareToLoop();
 
 		auto TempImage = Layout->FindObjectByName<CImage>("TestImage");
@@ -179,15 +177,15 @@ void PreLoop()
 
 		auto TempButton = Layout->FindObjectByName<CButton>("TestButton");
 		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
-		TempButton->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
-		TempButton->Label->SetText("First Button");
+		TempButton->GetLabel()->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->GetLabel()->SetText("First Button");
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); });
 
 		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
 		TempButton2->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
 		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); });
-		TempButton2->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
-		TempButton2->Label->SetText("ASDF");
+		TempButton2->GetLabel()->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton2->GetLabel()->SetText("ASDF");
 
 		auto TempLabel = Layout->FindObjectByName<CLabel>("TestLabel");
 		TempLabel->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
@@ -214,8 +212,8 @@ void PreLoop()
 		
 		auto TempButton = SecondLayout->FindObjectByName<CButton>("TestButtonSecond");
 		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
-		TempButton->Label->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
-		TempButton->Label->SetText("SecondLay Button");
+		TempButton->GetLabel()->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->GetLabel()->SetText("SecondLay Button");
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); });
 
 		//LayoutManager->PushActiveLayout("DoubleTest");
@@ -298,7 +296,7 @@ void PreLoop()
 
 	SceneManager->SetCurrentScene("Default");
 
-	SetFPSLock(60);
+	SetFPSLock(90);
 	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_1, true);
 
 	auto gameplay = GameplayManager->AddNewGameplay("Default");

@@ -20,13 +20,14 @@ void CRenderer::Init()
 	this->WInfo = std::make_shared<WindowInfo>();
 	this->WInfo->ScreenHeight = this->ScreenHeight;
 	this->WInfo->ScreenWidth = this->ScreenWidth;
+	this->WInfo->ScreenAspectRatio = (float)this->ScreenWidth / this->ScreenHeight;
 	this->WInfo->WindowFlags = this->Flags;
 	this->WInfo->BeginingOfTheFrame = std::chrono::system_clock::now();
 	this->WInfo->EndOfTheFrame = std::chrono::system_clock::now();
 	this->WInfo->Delta = this->WInfo->EndOfTheFrame- this->WInfo->BeginingOfTheFrame;
 	this->WInfo->FPSLock = 60;
 
-	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ScreenWidth, ScreenHeight, Flags);
+	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->WInfo->ScreenWidth, this->WInfo->ScreenHeight, Flags);
 	if (Window == nullptr)
 	{
 		CLog::MyLog(LogType::Error, "Failed to create window: %s",SDL_GetError());

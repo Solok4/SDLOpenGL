@@ -22,9 +22,31 @@ CBaseComponent::CBaseComponent(const CBaseComponent& comp)
 	this->_PosOffset = comp._PosOffset;
 }
 
+CBaseComponent::CBaseComponent(const CBaseComponent& comp, char* name)
+{
+	this->_Name = name;
+	this->_Type = comp._Type;
+	this->_Position = comp._Position;
+	this->_Rotation = comp._Rotation;
+	this->_Scale = comp._Scale;
+	this->_RotOffset = comp._RotOffset;
+	this->_PosOffset = comp._PosOffset;
+}
+
 CBaseComponent::CBaseComponent(const std::shared_ptr<CBaseComponent>& obj)
 {
 	this->_Name = obj->_Name;
+	this->_Type = obj->_Type;
+	this->_Position = obj->_Position;
+	this->_Rotation = obj->_Rotation;
+	this->_Scale = obj->_Scale;
+	this->_RotOffset = obj->_RotOffset;
+	this->_PosOffset = obj->_PosOffset;
+}
+
+CBaseComponent::CBaseComponent(const std::shared_ptr<CBaseComponent>& obj, char* name)
+{
+	this->_Name = name;
 	this->_Type = obj->_Type;
 	this->_Position = obj->_Position;
 	this->_Rotation = obj->_Rotation;

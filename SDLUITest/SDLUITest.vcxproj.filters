@@ -117,9 +117,6 @@
     <ClInclude Include="CLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTempLayout.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -201,9 +198,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLayoutManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CTempLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

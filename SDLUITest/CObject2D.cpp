@@ -12,7 +12,6 @@ CObject2D::CObject2D()
 {
 	this->ModelMatrix = glm::mat4(1.0f);
 	this->_VAO = 0;
-	this->_VBO.clear();
 	this->Layer = 0;
 	this->SetPosition(glm::vec2(0.0f, 0.0f));
 	this->SetSize(glm::vec2(1.0f, 1.0f));
@@ -76,8 +75,6 @@ void CObject2D::Prepare()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
-	this->_VBO.push_back(VBO[0]);
-	this->_VBO.push_back(VBO[1]);
 
 }
 

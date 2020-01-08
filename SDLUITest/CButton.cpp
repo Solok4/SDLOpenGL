@@ -73,15 +73,6 @@ void CButton::OnMiss()
 }
 
 
-void CButton::Prepare()
-{
-	CObject2D::Prepare();
-	/*Label->Prepare();
-	Label->MoveObjectLayerUp();
-	Label->BindParrentObject(std::make_shared<CObject2D>(*this));
-	Label->SetPosition(glm::vec2(this->_Size.x/4,this->_Size.y/4));*/
-}
-
 void CButton::SetLabel(std::shared_ptr<CLabel> label)
 {
 	if (label->GetID() == Object2DType::OBJECT2D_LABEL)

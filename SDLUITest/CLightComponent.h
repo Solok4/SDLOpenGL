@@ -35,15 +35,21 @@ public:
 	CLightComponent(const CLightComponent& light);
 	CLightComponent(std::shared_ptr<CLightComponent>& obj);
 	~CLightComponent();
-
+	//Function called every frame.
 	void Tick(double delta) override;
+	//Sets light colour.
 	void SetLightColor(glm::vec3 Color);
+	//Sets Ambient, diffuse and specular elements of light.
 	void SetLightBaseData(glm::vec3 Ambient, glm::vec3 Diffuse, glm::vec3 Specular);
+	//Sets point light data.
 	void SetLightPointLightData(float constant, float linear, float quadriatic);
+	//Sets point light data.
 	void SetLightDistanceCutOff(float CutOffDistance);
+	//Set the light type.
 	void SetLightType(LightType type);
+	//Returns Light data struct.
 	Light GetLightStruct();
-
+private:
 	Light Light;
 };
 
