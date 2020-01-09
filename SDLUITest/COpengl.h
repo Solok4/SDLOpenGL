@@ -114,6 +114,8 @@ private:
 	std::vector<MyLightFramebuffer> LightFramebuffers;
 	GLuint FinalVao;
 	GLuint FinalVbo;
+	//GLuint FinalEbo;
+	//GLuint FinalVbo[2];
 	glm::mat4 ViewMatrix;
 };
 

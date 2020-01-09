@@ -192,7 +192,17 @@ void PreLoop()
 		TempLabel->SetText("FrameTime: ");
 		TempLabel->BindTickFunction([&,TempLabel](double delta)
 			{
-				TempLabel->SetText("FrameTime: %.2f",delta);
+				static int FrameCount = 0;
+				FrameCount++;
+				static double Time = 0;
+				Time += delta;
+				if (Time >= 1000)
+				{
+					TempLabel->SetText("FrameTime: %.2f", Time/FrameCount);
+					FrameCount = 0;
+					Time = 0;
+				}
+				
 			});
 
 		auto TempLabel2 = Layout->FindObjectByName<CLabel>("FpsCounter");
@@ -200,7 +210,17 @@ void PreLoop()
 		TempLabel2->SetText("Fps: ");
 		TempLabel2->BindTickFunction([&, TempLabel2](double delta)
 			{
-				TempLabel2->SetText("Fps: %.2f",1000/delta);
+				static int FrameCount = 0;
+				FrameCount++;
+				static double Time = 0;
+				Time += delta;
+				if (Time >= 1000)
+				{
+					TempLabel2->SetText("Fps: %.2f", 1000/(Time/FrameCount));
+					FrameCount = 0;
+					Time = 0;
+				}
+				
 			});
 
 	}

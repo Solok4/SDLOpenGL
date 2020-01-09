@@ -82,7 +82,8 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		ButtonLabel->SetName(LabelName);
 		ButtonLabel->BindParrentObject(temp);
 		ButtonLabel->MoveObjectLayerUp();
-		ButtonLabel->SetPosition(glm::vec2(temp->GetSize().x / 4, temp->GetSize().y / 4));
+		ButtonLabel->SetAligment(Object2DAligment::CENTER);
+		ButtonLabel->SetPosition(glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2));
 		ButtonLabel->SetID(Object2DType::OBJECT2D_LABEL);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);

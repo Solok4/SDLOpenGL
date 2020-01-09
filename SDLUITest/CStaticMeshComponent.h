@@ -2,6 +2,7 @@
 #include "CBaseComponent.h"
 #include "CModelManager.h"
 #include "IDraw.h"
+#include "Shared.h"
 
 class CStaticMeshComponent :
 	public CBaseComponent,public IDraw

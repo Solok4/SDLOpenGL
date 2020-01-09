@@ -199,7 +199,9 @@
     <ClInclude Include="CModelManager.h" />
     <ClInclude Include="IDraw.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Primitives.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="Shared.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CApp.cpp" />

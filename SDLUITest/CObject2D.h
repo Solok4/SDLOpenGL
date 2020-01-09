@@ -16,6 +16,19 @@ enum Object2DType
 	OBJECT2D_CONTAINER,
 };
 
+enum Object2DAligment
+{
+	LEFT_TOP,
+	TOP,
+	RIGHT_TOP,
+	LEFT,
+	CENTER,
+	RIGHT,
+	LEFT_BOTTOM,
+	BOTTOM,
+	RIGHT_BOTTOM,
+};
+
 class CObject2D
 {
 public:
@@ -32,6 +45,8 @@ public:
 	void SetRotation(vec3 vec);
 	//Sets size object on the screen.
 	void SetSize(vec2 vec);
+
+	void SetAligment(Object2DAligment Aligment);
 
 	//Returns vec2 position vector.
 	vec2 GetPosition() { return this->_Position; };
@@ -107,6 +122,7 @@ protected:
 	vec2 _Size;
 	vec3 _Rotation;
 	vec2 _LocalOffset;
+	Object2DAligment ObjectAligment;
 	std::shared_ptr<CObject2D> ParrentObject;
 	std::vector<std::shared_ptr<CObject2D>> ParrentOf;
 	int Layer;

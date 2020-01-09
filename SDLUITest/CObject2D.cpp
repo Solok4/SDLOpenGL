@@ -6,6 +6,7 @@
 #include <fstream>
 #include "SDL_image.h"
 #include "CLog.h"
+#include "Primitives.h"
 
 
 CObject2D::CObject2D()
@@ -19,6 +20,7 @@ CObject2D::CObject2D()
 	this->ParrentObject = nullptr;
 	this->ColorMask = vec4(1.0f);
 	this->_LocalOffset = vec2(0.f);
+	this->ObjectAligment = Object2DAligment::LEFT_TOP;
 }
 
 
@@ -29,24 +31,31 @@ CObject2D::~CObject2D()
 
 void CObject2D::Prepare()
 {
-	float vertices[] = {
+	/*float vertices[] = {
 		-0.5f,	0.5f,	0.0f,
 		0.5f,	0.5f,	0.0f,
 		0.5f,	-0.5f,	0.0f,
 		-0.5f,	-0.5f,	0.0f,
-	};
+	};*/
 
-	float TexCords[] = {
-		0.0f,0.0f,
-		1.0f,0.0f,
-		1.0f,1.0f,
-		0.0f,1.0f,
-	};
+	//float vertices[] = {
+	//	0.0f,	1.0f,	0.0f,
+	//	1.0f,	1.0f,	0.0f,
+	//	1.0f,	0.0f,	0.0f,
+	//	0.0f,	0.0f,	0.0f,
+	//};
 
-	int Indices[] = {
-		0,1,3,
-		1,2,3
-	};
+	//float TexCords[] = {
+	//	0.0f,0.0f,
+	//	1.0f,0.0f,
+	//	1.0f,1.0f,
+	//	0.0f,1.0f,
+	//};
+
+	//int Indices[] = {
+	//	0,1,3,
+	//	1,2,3
+	//};
 
 
 	glGenVertexArrays(1, &this->_VAO);
@@ -58,16 +67,19 @@ void CObject2D::Prepare()
 	glGenBuffers(1, &EBO);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Plane_Indices), Plane_Indices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane_Vertices), Plane_Vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(TexCords), TexCords, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(TexCords), TexCords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane_TexCords), Plane_TexCords, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glDisableVertexAttribArray(1);
@@ -122,9 +134,72 @@ void CObject2D::SetRotation(vec3 vec)
 void CObject2D::SetSize(vec2 vec)
 {
 	this->_Size = vec;
-	this->_LocalOffset.x = vec.x / 2;
-	this->_LocalOffset.y = vec.y / 2;
+	switch (this->ObjectAligment)
+	{
+		case LEFT_TOP:
+		{
+			this->_LocalOffset.x = 0;
+			this->_LocalOffset.y = 0;
+			break;
+		}
+		case TOP:
+		{
+			this->_LocalOffset.x = -this->_Size.x/2;
+			this->_LocalOffset.y = 0;
+			break;
+		}
+		case RIGHT_TOP:
+		{
+			this->_LocalOffset.x = -this->_Size.x;
+			this->_LocalOffset.y = 0;
+			break;
+		}
+		case LEFT:
+		{
+			this->_LocalOffset.x = 0;
+			this->_LocalOffset.y = this->_Size.y/2;
+			break;
+		}
+		case CENTER:
+		{
+			this->_LocalOffset.x = -this->_Size.x/2;
+			this->_LocalOffset.y = this->_Size.y/2;
+			break;
+		}
+		case RIGHT:
+		{
+			this->_LocalOffset.x = -this->_Size.x;
+			this->_LocalOffset.y = this->_Size.y/2;
+			break;
+		}
+		case LEFT_BOTTOM:
+		{
+			this->_LocalOffset.x = 0;
+			this->_LocalOffset.y = this->_Size.y;
+			break;
+		}
+		case BOTTOM:
+		{
+			this->_LocalOffset.x = -this->_Size.x/2;
+			this->_LocalOffset.y = this->_Size.y;
+			break;
+		}
+		case RIGHT_BOTTOM:
+		{
+			this->_LocalOffset.x = -this->_Size.x;
+			this->_LocalOffset.y = this->_Size.y;
+			break;
+		}
+		default:
+			break;
+	}
 	this->RefreshModelMatrix();
+}
+
+void CObject2D::SetAligment(Object2DAligment Aligment)
+{
+	this->ObjectAligment = Aligment;
+	this->SetSize(this->_Size);
 }
 
 void CObject2D::PreDraw()

@@ -1,10 +1,6 @@
 #pragma once
 #include<string>
 
-#ifndef __EMSCRIPTEN__
-#define HD4850
-#endif
-
 
 enum LogType
 {

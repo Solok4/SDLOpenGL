@@ -11,6 +11,7 @@
 #include "SDL.h"
 #endif // __EMSCRIPTEN__
 #include "glm/glm.hpp"
+#include "Shared.h"
 
 
 

@@ -9,17 +9,16 @@
 #include "COpengl.h"
 #include <fstream>
 #include "CSceneManager.h"
+#include "Primitives.h"
 
 
 std::unique_ptr<COpengl> OpenGL;
 
 COpengl::COpengl()
 {
-	/*this->AspectRatio = 0;
-	this->WindowH = 0;
-	this->WindowW = 0;*/
+
 	this->FinalVao = 0;
-	this->FinalVbo = 0;
+	//this->FinalVbo = 0;
 }
 
 
@@ -60,7 +59,6 @@ bool COpengl::Create(SDL_Window* Window)
 		return false;
 	}
 	this->WndInfo = Renderer->GetWindowInfo();
-	//this->SetAspectRatio(Window);
 	return true;
 }
 
@@ -112,7 +110,7 @@ void COpengl::PrepareToLoop()
 
 	glClearColor(0, 0, 0, 1);
 
-	// Panel vertices
+	//Panel vertices
 	GLfloat panelVertices[] = {
 		-1.0f,  -1.0f,  0.0f, 0.0f,
 		 1.0f,  -1.0f,  1.0f, 0.0f,
@@ -136,6 +134,34 @@ void COpengl::PrepareToLoop()
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	/*glGenVertexArrays(1, &this->FinalVao);
+	glBindVertexArray(this->FinalVao);
+
+	glGenBuffers(2, this->FinalVbo);
+	glGenBuffers(1, &this->FinalEbo);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->FinalEbo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Plane_Indices), Plane_Indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, this->FinalVbo[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane_Vertices), Plane_Vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, this->FinalVbo[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TexCords), TexCords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane_TexCords), Plane_TexCords, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);*/
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -305,8 +331,7 @@ void COpengl::PreLoopOrtho()
 	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WndInfo->ScreenWidth, (float)this->WndInfo->ScreenHeight, 0.0f, -0.1f, 1000.0f);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Projection"), 1, GL_FALSE, &Projection[0][0]);
-
-
+	glCullFace(GL_BACK);
 }
 /*
 Creates new framebuffer for drawing. Creates framebuffer and renderbuffer
@@ -544,6 +569,7 @@ void COpengl::FinalDraw()
 	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("Default").CBuffer);
 	glUniform1i(glGetUniformLocation(Shaders.GetCurrentShaderProgram(), "Base"),0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
