@@ -86,6 +86,8 @@ public:
 	//Clears all framebuffers including the light ones.
 	void ClearFramebuffers();
 
+	void DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list, std::shared_ptr<CCameraComponent> camera);
+
 	//Creates new framebuffer that is used to determine distances from the light source to the nearby objects. Size means framebuffer size.
 	void AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int size);
 	//Changes current drawing light framebuffer.

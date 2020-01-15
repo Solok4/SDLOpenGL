@@ -13,6 +13,8 @@ CLightComponent::CLightComponent()
 	this->Light.Quadratic = 0.f;
 	this->Light.CutoutDist = 9999.f;
 	this->Light.LightType = LightType::Directional;
+
+	this->_Scale = glm::vec3(0.5f);
 }
 
 CLightComponent::CLightComponent(const CLightComponent& light) :CBaseComponent(light)

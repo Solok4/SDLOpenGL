@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CEvent.h"
+#include "CRenderer.h"
 
 std::unique_ptr<CEvent> Event;
 
@@ -53,6 +54,40 @@ void CEvent::PollEvents()
 			break;
 		default:
 			break;
+		}
+		if (this->_Event.type == SDL_WINDOWEVENT)
+		{
+			switch (this->_Event.window.event)
+			{
+			case SDL_WINDOWEVENT_SHOWN:
+			{
+				CLog::MyLog(LogType::Log, "Window shown");
+				break;
+			}
+			case SDL_WINDOWEVENT_HIDDEN:
+			{
+				CLog::MyLog(LogType::Log, "Window hidden");
+				break;
+			}
+			case SDL_WINDOWEVENT_RESIZED:
+			{
+				CLog::MyLog(LogType::Log, "Window resized");
+				break;
+			}
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+			{
+				CLog::MyLog(LogType::Log, "Window size changed");
+				Renderer->Resize(this->_Event.window.data1, this->_Event.window.data2);
+				break;
+			}
+			case SDL_WINDOWEVENT_MOVED:
+			{
+				Renderer->OnWindowMove();
+				break;
+			}
+			default:
+				break;
+			}
 		}
 	}
 }

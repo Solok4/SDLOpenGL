@@ -238,6 +238,12 @@
     <ClCompile Include="Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Shaders\DebugLights.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\DebugLights.vert">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\final.frag">
       <FileType>Script</FileType>
     </None>

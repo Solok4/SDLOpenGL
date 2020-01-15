@@ -47,6 +47,8 @@ public:
 	void Destroy();
 	//Change size of the window
 	void Resize(int w, int h);
+	//Called on window move event
+	void OnWindowMove();
 	//Returns SDL_Window 
 	SDL_Window* GetWindow();
 	//Returns window information struct

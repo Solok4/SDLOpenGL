@@ -274,5 +274,11 @@
     <None Include="Assets\Shaders\Shadowse.vert">
       <Filter>_Shaders</Filter>
     </None>
+    <None Include="Assets\Shaders\DebugLights.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\DebugLights.vert">
+      <Filter>_Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

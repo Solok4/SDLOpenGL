@@ -22,10 +22,11 @@ flat out int LCount;
 
 
   
-void main(){
+void main()
+{
   // Output position of the vertex, in clip space : MVP * position
   mat4 MVP = Projection * View * Model;
-  gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
+  gl_Position =  MVP * vec4(vertexPosition_modelspace,1.);
   LCount = LightCount;
   UV = vertexUV;
   NormalVec = mat3(NormalMatrix)*vertexNormal;
@@ -33,6 +34,6 @@ void main(){
   CameraP = CameraPos;
     for(int i=0;i<LightCount;i++)
   {
-	LightMVP[i] = depthMVP[i] * vec4(FragPos,1);
+	LightMVP[i] = depthMVP[i] * vec4(FragPos,1.);
   }
 }

@@ -106,6 +106,9 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/PointShad.geom", ShaderType::Geometry);
 	Shaders.CreateShader("Assets/Shaders/PointShad.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("PointShad",true);
+	Shaders.CreateShader("Assets/Shaders/DebugLights.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/DebugLights.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("DebugLights", false);
 #endif // __EMSCRIPTEN__
 
 	glClearColor(0, 0, 0, 1);
@@ -243,6 +246,11 @@ void COpengl::PrepareToLoop()
 		Shaders.AddUniformToShaderStruct("PointShad", "ShadowMatrices[" + std::to_string(i) + "]");
 	}
 #endif
+
+	Shaders.AddUniformToShaderStruct("DebugLights", "Projection");
+	Shaders.AddUniformToShaderStruct("DebugLights", "View");
+	Shaders.AddUniformToShaderStruct("DebugLights", "Model");
+	Shaders.AddUniformToShaderStruct("DebugLights", "Color");
 	
 }
 
@@ -313,6 +321,8 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
 		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 		glUniform1f(Shaders.GetUniformByNameStruct("Default", "FarPlane"), FARPLANE);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "Projection"), 1, GL_FALSE, &Projection[0][0]);
 		glCullFace(GL_BACK);
 	}
 	else
@@ -554,6 +564,54 @@ void COpengl::ClearFramebuffers()
 			glDeleteFramebuffers(1, &o.FBO);
 		}
 	}
+}
+
+void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list, std::shared_ptr<CCameraComponent> camera)
+{
+	Shaders.SetCurrentShaderProgram("DebugLights");
+	if (camera != nullptr)
+	{
+		ViewMatrix = glm::lookAt(camera->GetPosition(), camera->GetPosition() + camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 Projection = glm::perspective(glm::radians(camera->GetFov()), this->WndInfo->ScreenAspectRatio, 0.1f, 100.0f);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
+		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+	}
+	else
+	{
+		CLog::MyLog(LogType::Warning, "Passed camera doesn't exist");
+	}
+	auto model = ModelManager->GetModelByName("Cube.obj");
+	glBindVertexArray(model->VAO);
+#ifdef HD4850
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(1);
+#else
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+#endif
+	glm::vec3 Color;
+	for (auto a : list)
+	{
+		if (a->IsActive())
+		{
+			glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "Model"), 1, GL_FALSE, &a->GetModelMatrix()[0][0]);
+			Color = glm::vec3(a->GetLightStruct().Color.r, a->GetLightStruct().Color.g, a->GetLightStruct().Color.b);
+			glUniform3f(Shaders.GetUniformByNameStruct("DebugLights", "Color"), Color.r,Color.g,Color.b);
+			glDrawArrays(GL_TRIANGLES, 0, model->IndicesCount);
+		}
+	}
+#ifdef HD4850
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(0);
+#else
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(0);
+#endif
+	glBindVertexArray(0);
 }
 
 /*

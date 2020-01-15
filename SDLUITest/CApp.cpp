@@ -110,7 +110,9 @@ void Loop()
 		OpenGL->UseFramebuffer("Default");
 		OpenGL->PreLoopPerspective(CurrentScene->GetCamera());
 		CurrentScene->Draw(DrawType::FullDraw);
-
+		//Lights Debug position
+		OpenGL->DrawDebugLights(CurrentScene->GetLightObjects(),CurrentScene->GetCamera());
+		//
 		OpenGL->UseFramebuffer("0");
 		OpenGL->FinalDraw();
 
@@ -160,6 +162,7 @@ void PreLoop()
 
 	ModelManager->LoadTexture("Assets/Textures/Tex.tga");
 	ModelManager->LoadTexture("Assets/Textures/TestTex.bmp");
+	ModelManager->LoadOBJ("Assets/Models/Cube.obj");
 
 	{
 
@@ -287,7 +290,7 @@ void PreLoop()
 		tempLight->SetRotation(glm::vec3(10.1f, 50.f, 0.f));
 		auto light = tempLight->GetComponentByName<CLightComponent>("OrangeLight");
 		light->SetLightType(LightType::Directional);
-		light->SetLightBaseData(glm::vec3(0.1f), glm::vec3(0.7f), glm::vec3(0.8f));
+		light->SetLightBaseData(glm::vec3(0.2f), glm::vec3(0.9f), glm::vec3(0.5f));
 		light->SetLightColor(vec3(1.0f,1.f,1.f));
 		tempScene->AddLightToScene(tempLight);
 

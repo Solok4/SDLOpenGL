@@ -59,6 +59,11 @@ void CRenderer::Resize(int w, int h)
 	ScreenHeight = h;
 }
 
+void CRenderer::OnWindowMove()
+{
+	SDL_GetWindowPosition(this->Window, &this->WInfo->ScreenPosX, &this->WInfo->ScreenPosY);
+}
+
 
 SDL_Window* CRenderer::GetWindow()
 {
