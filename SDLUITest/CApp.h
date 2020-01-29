@@ -25,18 +25,16 @@
 #include "CSceneManager.h"
 #include "CKeyboardConf.h"
 #include "CGameplayManager.h"
+#include "CInitialSetup.h"
 
 
-	bool Init();
+	bool Init(int argc, char* argv);
 	void Destroy();
 	void Loop();
 	void PollEvents();
 	void PreLoop();
 	//void SetMouseLock(bool lock);
-	void ResizeWindow(int w, int h);
-	void SetFPSLock(int FPS);
-
-	void KeyEvents(array<bool,322> keys);
-
+	//void ResizeWindow(int w, int h);
+	//void SetFPSLock(int FPS);
 
 #endif // !CAPP

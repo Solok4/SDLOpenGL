@@ -54,6 +54,8 @@ public:
 	//Returns window information struct
 	std::shared_ptr<WindowInfo> GetWindowInfo();
 
+	void SetFrameLock(int frames);
+
 
 private:
 

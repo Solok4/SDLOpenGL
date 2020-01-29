@@ -479,7 +479,7 @@ void COpengl::UseLightFramebuffer(std::string name)
 				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
 				glClearColor(0.f, 0.f, 0.f, 1.0f);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				glCullFace(GL_FRONT);
+				//glCullFace(GL_FRONT);
 				return;
 			}
 		}
@@ -565,7 +565,9 @@ void COpengl::ClearFramebuffers()
 		}
 	}
 }
-
+/*
+Draws on the scene positions of the current active lights as a box colored in lights colour
+*/
 void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list, std::shared_ptr<CCameraComponent> camera)
 {
 	Shaders.SetCurrentShaderProgram("DebugLights");

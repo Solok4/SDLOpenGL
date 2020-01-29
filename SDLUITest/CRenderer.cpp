@@ -74,3 +74,8 @@ std::shared_ptr<WindowInfo> CRenderer::GetWindowInfo()
 {
 	return this->WInfo;
 }
+
+void CRenderer::SetFrameLock(int frames)
+{
+	this->WInfo->FPSLock = frames;
+}

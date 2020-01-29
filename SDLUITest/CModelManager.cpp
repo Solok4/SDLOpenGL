@@ -16,32 +16,32 @@ CModelManager::~CModelManager()
 	CLog::MyLog(LogType::Log, "ModelManagerDestructor");
 }
 
-void FinishSurface(SDL_Surface* Surface)
-{
-	SDL_LockSurface(Surface);
-
-	unsigned int* Pixels = (unsigned int*)Surface->pixels;
-	unsigned int* FinalPixels = (unsigned int*)malloc(Surface->pitch*Surface->h);
-	//size_t PixLen = strlen((char*)Pixels);
-	//size_t FPixLen = strlen((char*)FinalPixels);
-
-	for (int y = 0; y < Surface->h; y++)
-	{
-		for (int x = 0; x < Surface->w; x++)
-		{
-			FinalPixels[y*Surface->w + x] = Pixels[(Surface->h - y)*Surface->w + x];
-		}
-	}
-	for (int y = 0; y < Surface->h; y++)
-	{
-		for (int x = 0; x < Surface->w; x++)
-		{
-			Pixels[y*Surface->w + x] = FinalPixels[y*Surface->w + x];
-		}
-	}
-	SDL_UnlockSurface(Surface);
-	free(FinalPixels);
-}
+//void FinishSurface(SDL_Surface* Surface)
+//{
+//	SDL_LockSurface(Surface);
+//
+//	unsigned int* Pixels = (unsigned int*)Surface->pixels;
+//	unsigned int* FinalPixels = (unsigned int*)malloc(Surface->pitch*Surface->h);
+//	//size_t PixLen = strlen((char*)Pixels);
+//	//size_t FPixLen = strlen((char*)FinalPixels);
+//
+//	for (int y = 0; y < Surface->h; y++)
+//	{
+//		for (int x = 0; x < Surface->w; x++)
+//		{
+//			FinalPixels[y*Surface->w + x] = Pixels[(Surface->h - y)*Surface->w + x];
+//		}
+//	}
+//	for (int y = 0; y < Surface->h; y++)
+//	{
+//		for (int x = 0; x < Surface->w; x++)
+//		{
+//			Pixels[y*Surface->w + x] = FinalPixels[y*Surface->w + x];
+//		}
+//	}
+//	SDL_UnlockSurface(Surface);
+//	free(FinalPixels);
+//}
 
 void CModelManager::LoadOBJ(const char * path)
 {

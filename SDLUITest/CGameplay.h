@@ -17,9 +17,12 @@ public:
 	bool GetMouseLock();
 	virtual void Tick(double delta);
 	virtual void KeyEvents(std::array<bool, 322> keys);
+	void SetFrameLimit(int frames) { this->FrameLimit = frames; };
+	int GetFrameLimit() { return this->FrameLimit; };
 
 	const char* Name;
 	float TimeScale;
 	bool MouseLock = false;
+	int FrameLimit;
 };
 

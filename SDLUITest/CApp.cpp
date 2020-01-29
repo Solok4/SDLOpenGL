@@ -13,8 +13,9 @@
 
 
 
-bool Init()
+bool Init(int argc, char* argv)
 {
+	InitialSetup = std::make_unique<CInitialSetup>(argc,argv);
 	OpenGL = std::make_unique<COpengl>();
 	Renderer = std::make_unique<CRenderer>();
 	Event = std::make_unique<CEvent>();
@@ -56,6 +57,7 @@ void Loop()
 		CurrentLayout = LayoutManager->GetCurrentLayout();
 		CurrentGameplay = GameplayManager->GetCurrentGameplay();
 		CurrentScene = SceneManager->GetCurrentScene();
+		WInfo->FPSLock = CurrentGameplay->GetFrameLimit();
 
 		PollEvents();
 
@@ -319,21 +321,22 @@ void PreLoop()
 
 	SceneManager->SetCurrentScene("Default");
 
-	SetFPSLock(90);
 	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_1, true);
 
 	auto gameplay = GameplayManager->AddNewGameplay("Default");
 	gameplay->SetTimescale(1.0f);
+	gameplay->SetFrameLimit(80);
 	GameplayManager->SelectCurrentGameplay("Default");
+	
 }
 
-void ResizeWindow(int w, int h)
-{
-	Renderer->Resize(w, h);
-	LayoutManager->RefreshWindowData();
-}
-
-void SetFPSLock(int FPS)
-{
-	Renderer->GetWindowInfo()->FPSLock = FPS;
-}
+//void ResizeWindow(int w, int h)
+//{
+//	Renderer->Resize(w, h);
+//	LayoutManager->RefreshWindowData();
+//}
+//
+//void SetFPSLock(int FPS)
+//{
+//	Renderer->GetWindowInfo()->FPSLock = FPS;
+//}

@@ -120,6 +120,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +163,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\3rd Party\SDL2-2.0.8\include;..\3rd Party\SDL2_ttf-2.0.14\include;..\3rd Party\SDL2_image-2.0.4\include;..\3rd Party\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -177,11 +179,13 @@
     <ClInclude Include="CBaseComponent.h" />
     <ClInclude Include="CButton.h" />
     <ClInclude Include="CCameraComponent.h" />
+    <ClInclude Include="CConsole.h" />
     <ClInclude Include="CContainer.h" />
     <ClInclude Include="CEvent.h" />
     <ClInclude Include="CGameplay.h" />
     <ClInclude Include="CGameplayManager.h" />
     <ClInclude Include="CImage.h" />
+    <ClInclude Include="CInitialSetup.h" />
     <ClInclude Include="CKeyboardConf.h" />
     <ClInclude Include="CLabel.h" />
     <ClInclude Include="CLayout.h" />
@@ -197,6 +201,7 @@
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
+    <ClInclude Include="CVar.h" />
     <ClInclude Include="IDraw.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Primitives.h" />
@@ -208,11 +213,13 @@
     <ClCompile Include="CBaseComponent.cpp" />
     <ClCompile Include="CButton.cpp" />
     <ClCompile Include="CCameraComponent.cpp" />
+    <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CContainer.cpp" />
     <ClCompile Include="CEvent.cpp" />
     <ClCompile Include="CGameplay.cpp" />
     <ClCompile Include="CGameplayManager.cpp" />
     <ClCompile Include="CImage.cpp" />
+    <ClCompile Include="CInitialSetup.cpp" />
     <ClCompile Include="CKeyboardConf.cpp" />
     <ClCompile Include="CLabel.cpp" />
     <ClCompile Include="CLayout.cpp" />
@@ -228,6 +235,7 @@
     <ClCompile Include="CStaticMeshComponent.cpp" />
     <ClCompile Include="CLayoutManager.cpp" />
     <ClCompile Include="CModelManager.cpp" />
+    <ClCompile Include="CVar.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

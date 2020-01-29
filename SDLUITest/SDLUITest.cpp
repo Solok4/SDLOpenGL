@@ -11,10 +11,10 @@
 #endif
 
 
-int main()
+int main(int argc, char* argv)
 {
 
-	if (!Init())
+	if (!Init(argc,argv))
 	{
 		Destroy();
 	}

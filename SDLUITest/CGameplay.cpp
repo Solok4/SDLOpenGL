@@ -4,6 +4,7 @@
 #include "CSceneManager.h"
 #include "CLayoutManager.h"
 #include "CKeyboardConf.h"
+#include "CRenderer.h"
 
 
 CGameplay::CGameplay()
@@ -117,3 +118,4 @@ void CGameplay::KeyEvents(std::array<bool, 322> keys)
 		LayoutManager->ChangeCurrentLayout("Blank");
 	}
 }
+
