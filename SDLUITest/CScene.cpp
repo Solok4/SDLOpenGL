@@ -163,9 +163,12 @@ void CScene::Draw(DrawType DType)
 				}
 				else if (DType == DrawType::VerticesOnly)
 				{
-					sm->CalculateMatrix();
-					OpenGL->SetModelMatrix(sm->GetModelMatrix());
-					c->Draw(DType);
+					if (sm->GetCastShadow())
+					{
+						sm->CalculateMatrix();
+						OpenGL->SetModelMatrix(sm->GetModelMatrix());
+						c->Draw(DType);
+					}
 				}
 			}
 

@@ -120,8 +120,6 @@ glm::vec3 CBaseComponent::GetForwardVector()
 	FV.x = (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
 	FV.y = sin(glm::radians(this->_Rotation.x));
 	FV.z = (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y)));
-
-	//CLog::MyLog(0, "x=" + std::to_string(FV.x) + " y=" + std::to_string(FV.y) + " z=" + std::to_string(FV.z));
 	return FV;
 }
 
@@ -131,7 +129,6 @@ glm::vec3 CBaseComponent::GetRightVector()
 	RV.x = (cos(glm::radians(this->_Rotation.z))*cos(glm::radians(this->_Rotation.y+90.f)));
 	RV.y = sin(glm::radians(this->_Rotation.z));
 	RV.z = (cos(glm::radians(this->_Rotation.z))*sin(glm::radians(this->_Rotation.y+90.f)));
-	//CLog::MyLog(0, "RVector x=%f y=%f z=%f",RV.x,RV.y,RV.z);
 	return RV;
 }
 

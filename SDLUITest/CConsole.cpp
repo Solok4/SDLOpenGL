@@ -27,14 +27,48 @@ std::shared_ptr<CVar> CConsole::GetCommandByName(std::string name)
 	return {};
 }
 
-//void CConsole::ChangeValueOfGivenCommand(std::string name, std::variant<bool, int, float> value)
-//{
-//	auto Command = this->GetCommandByName(name);
-//	if (Command != nullptr)
-//	{
-//		Command->SetCurrentValue(value);
-//	}
-//}
+void CConsole::ChangeValueOfGivenCommand(std::string name, int value)
+{
+	auto command = CConsole::GetCommandByName(name);
+	if (command != nullptr)
+	{
+		if (command->GetDataType() == CvarType::CVAR_INTEGER)
+		{
+			command->SetCurrentValue(value);
+			return;
+		}
+	}
+	CLog::MyLog(LogType::Error, "Console command named %s not found", name);
+}
+
+void CConsole::ChangeValueOfGivenCommand(std::string name, double value)
+{
+	auto command = CConsole::GetCommandByName(name);
+	if (command != nullptr)
+	{
+		if (command->GetDataType() == CvarType::CVAR_DOUBLE)
+		{
+			command->SetCurrentValue(value);
+			return;
+		}
+	}
+	CLog::MyLog(LogType::Error, "Console command named %s not found", name);
+}
+
+void CConsole::ChangeValueOfGivenCommand(std::string name, std::string value)
+{
+	auto command = CConsole::GetCommandByName(name);
+	if (command != nullptr)
+	{
+		if (command->GetDataType() == CvarType::CVAR_STRING)
+		{
+			command->SetCurrentValue(value);
+			return;
+		}
+	}
+	CLog::MyLog(LogType::Error, "Console command named %s not found", name);
+}
+
 
 void CConsole::AddCommand(std::shared_ptr<CVar> Command)
 {

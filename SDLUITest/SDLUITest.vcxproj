@@ -198,6 +198,7 @@
     <ClInclude Include="CRenderer.h" />
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneManager.h" />
+    <ClInclude Include="CSpriteComponent.h" />
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="CRenderer.cpp" />
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneManager.cpp" />
+    <ClCompile Include="CSpriteComponent.cpp" />
     <ClCompile Include="CStaticMeshComponent.cpp" />
     <ClCompile Include="CLayoutManager.cpp" />
     <ClCompile Include="CModelManager.cpp" />

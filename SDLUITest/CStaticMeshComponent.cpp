@@ -9,6 +9,7 @@
 
 CStaticMeshComponent::CStaticMeshComponent()
 {
+	this->_CastShadow = true;
 }
 
 CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& mesh):CBaseComponent(mesh)

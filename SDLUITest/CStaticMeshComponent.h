@@ -16,10 +16,12 @@ public:
 	void BindModel(std::shared_ptr<Model> model);
 	std::shared_ptr<Model> GetModel();
 	void Draw(DrawType) override;
-
+	void SetCastShadow(bool value) { this->_CastShadow = value; };
+	bool GetCastShadow() { return this->_CastShadow; };
 
 private:
 
 	std::shared_ptr<Model> _Model;
+	bool _CastShadow;
 };
 

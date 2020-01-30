@@ -252,7 +252,7 @@ void PreLoop()
 		auto tempStaticMeshComponent = tempObject3D->GetComponentByName<CStaticMeshComponent>("Mesh");
 		tempStaticMeshComponent->BindModel(ModelManager->GetModelByName("PiernikNorm.obj"));
 		tempStaticMeshComponent->SetPosition(vec3(0.f));
-		tempStaticMeshComponent->SetRotation(vec3(0.f, 0.f, 0.f));
+		tempStaticMeshComponent->SetRotation(vec3(0.f, 45.f, 0.f));
 		tempStaticMeshComponent->AttachParrentObject(tempObject3D->GetRootComponent());
 	}
 	{

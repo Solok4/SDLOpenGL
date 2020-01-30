@@ -2,71 +2,72 @@
 
 #include <functional>
 #include <string>
-#include <variant>
+//#include <variant>
 
 enum CvarType
 {
 	CVAR_VOID=0,
-	CVAR_BOOL,
 	CVAR_INTEGER,
-	CVAR_FLOAT,
+	CVAR_DOUBLE,
 	CVAR_STRING,
 	CVAR_MAX,
 };
 
-//class ICvar
-//{
-//public:
-//	virtual CvarType GetDataType() {};
-//	virtual char* GetName() {};
-//	virtual char* GetHint() {};
-//	virtual void SetCurrentValue(std::string value) {};
-//};
-//
-//template <class T>
+union CVarValue
+{
+	CVarValue() { IntValue = 0; };
+	int IntValue;
+	double DoubleValue;
+	char* StringValue;
+	~CVarValue() {};
+};
+
 class CVar
 {
 public:
 	CVar()=delete;
-	//CVar(char* name,std::variant<bool,int,float> defaultvalue, char* hint) :_Name(name), _DefaultValue(defaultvalue), _Hint(hint)
-	//{
-	//	if (std::holds_alternative<bool>(defaultvalue))
-	//	{
-	//		this->_Type = CvarType::CVAR_BOOL;
-	//		return;
-	//	}
-	//	if (std::holds_alternative<int>(defaultvalue))
-	//	{
-	//		this->_Type = CvarType::CVAR_INTEGER;
-	//		return;
-	//	}
+	CVar(const char* name, int defaultvalue, const char* hint) :_Name(name),  _Hint(hint)
+	{
+		this->_Type = CVAR_INTEGER;
+		this->_DefaultValue = std::make_shared<CVarValue>();
+		this->_CurrentValue = std::make_shared<CVarValue>();
+		this->_DefaultValue->IntValue = defaultvalue;
+		this->_CurrentValue->IntValue = defaultvalue;
+	};
 
-	//	if (std::holds_alternative<float>(defaultvalue))
-	//	{
-	//		this->_Type = CvarType::CVAR_FLOAT;
-	//		return;
-	//	}
-	//	/*if (std::holds_alternative<char*>(defaultvalue))
-	//	{
-	//		this->_Type = CvarType::CVAR_STRING;
-	//		return;
-	//	}*/
-	//	this->_Type = CvarType::CVAR_VOID;
-	//};
-	//void AttachFunction(std::function<void(std::variant<bool, int, float>)> func) { this->_ChangeValueFunc = func; };
+	CVar(const char* name, double defaultvalue, const char* hint) :_Name(name), _Hint(hint)
+	{
+		this->_Type = CVAR_DOUBLE;
+		this->_DefaultValue = std::make_shared<CVarValue>();
+		this->_CurrentValue = std::make_shared<CVarValue>();
+		this->_DefaultValue->DoubleValue = defaultvalue;
+		this->_CurrentValue->DoubleValue = defaultvalue;
+	};
+
+	CVar(const char* name, std::string defaultvalue, const char* hint) :_Name(name), _Hint(hint)
+	{
+		this->_Type = CVAR_STRING;
+		this->_DefaultValue = std::make_shared<CVarValue>();
+		this->_CurrentValue = std::make_shared<CVarValue>();
+		this->_DefaultValue->StringValue = (char*)defaultvalue.c_str();
+		this->_CurrentValue->StringValue = (char*)defaultvalue.c_str();
+	};
+	void AttachFunction(std::function<void(CVar)> func) { this->_ChangeValueFunc = func; };
 	virtual inline CvarType GetDataType() { return this->_Type; };
-	virtual inline char* GetName() { return this->_Name; };
-	virtual inline char* GetHint() { return this->_Hint; };
-	//virtual void SetCurrentValue(std::variant<bool, int, float> value);
+	virtual inline const char* GetName() { return this->_Name; };
+	virtual inline const char* GetHint() { return this->_Hint; };
+	virtual void SetCurrentValue(int value);
+	virtual void SetCurrentValue(double value);
+	virtual void SetCurrentValue(std::string value);
 	~CVar();
 
 private:
 
-	char* _Name;
+	const char* _Name;
 	CvarType _Type;
-	//std::variant<bool, int, float>_DefaultValue, _CurrentValue;
-	char* _Hint;
+	std::shared_ptr<CVarValue> _DefaultValue, _CurrentValue;
+	const char* _Hint;
 
-	//std::function<void(std::variant<bool, int, float>)> _ChangeValueFunc;
+	std::function<void(CVar)> _ChangeValueFunc;
 };
 

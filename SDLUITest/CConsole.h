@@ -1,5 +1,4 @@
-//#pragma once
-//#include <vector>
+#pragma once
 #include <memory>
 #include <deque>
 #include <cstring>
@@ -14,7 +13,9 @@ public:
 	CConsole();
 	~CConsole();
 	std::shared_ptr<CVar> GetCommandByName(std::string name);
-	//void ChangeValueOfGivenCommand(std::string name, std::variant<bool,int,float> value);
+	void ChangeValueOfGivenCommand(std::string name, int value);
+	void ChangeValueOfGivenCommand(std::string name, double value);
+	void ChangeValueOfGivenCommand(std::string name, std::string value);
 	void AddCommand(std::shared_ptr<CVar> Command);
 
 private:

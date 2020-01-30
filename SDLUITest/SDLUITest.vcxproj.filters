@@ -132,6 +132,9 @@
     <ClInclude Include="CVar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CSpriteComponent.h">
+      <Filter>Header Files\Objects 3D\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="CVar.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSpriteComponent.cpp">
+      <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
