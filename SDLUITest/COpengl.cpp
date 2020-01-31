@@ -89,6 +89,9 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/Shadowse.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/Shadowse.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Shadows", false);
+	Shaders.CreateShader("Assets/Shaders/DebugLightse.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/DebugLightse.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("DebugLights", false);
 #else
 	Shaders.CreateShader("Assets/Shaders/Gui.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/Gui.frag", ShaderType::Fragment);
@@ -584,15 +587,15 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 	}
 	auto model = ModelManager->GetModelByName("Cube.obj");
 	glBindVertexArray(model->VAO);
-#ifdef HD4850
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(1);
-#else
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-#endif
+//#ifdef HD4850
+	glEnableVertexAttribArray(MODEL_MESHBUFFER);
+//	glEnableVertexAttribArray(2);
+//	glEnableVertexAttribArray(1);
+//#else
+//	glEnableVertexAttribArray(0);
+//	glEnableVertexAttribArray(1);
+//	glEnableVertexAttribArray(2);
+//#endif
 	glm::vec3 Color;
 	for (auto a : list)
 	{
@@ -604,15 +607,15 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 			glDrawArrays(GL_TRIANGLES, 0, model->IndicesCount);
 		}
 	}
-#ifdef HD4850
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(0);
-#else
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
-#endif
+//#ifdef HD4850
+	glDisableVertexAttribArray(MODEL_MESHBUFFER);
+//	glDisableVertexAttribArray(2);
+//	glDisableVertexAttribArray(0);
+//#else
+//	glDisableVertexAttribArray(2);
+//	glDisableVertexAttribArray(1);
+//	glDisableVertexAttribArray(0);
+//#endif
 	glBindVertexArray(0);
 }
 

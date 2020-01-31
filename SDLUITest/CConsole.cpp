@@ -18,7 +18,11 @@ std::shared_ptr<CVar> CConsole::GetCommandByName(std::string name)
 	{
 		for (auto a : this->ConsoleCommands)
 		{
+#ifndef __EMSCRIPTEN__
 			if (_strcmpi(a->GetName(), name.c_str()) == 0)
+#else
+			if (strcmp(a->GetName(), name.c_str()) == 0)
+#endif
 			{
 				return a;
 			}
@@ -38,7 +42,7 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, int value)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Console command named %s not found", name);
+	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
 }
 
 void CConsole::ChangeValueOfGivenCommand(std::string name, double value)
@@ -52,7 +56,7 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, double value)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Console command named %s not found", name);
+	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
 }
 
 void CConsole::ChangeValueOfGivenCommand(std::string name, std::string value)
@@ -66,7 +70,7 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, std::string value)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Console command named %s not found", name);
+	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
 }
 
 
@@ -77,7 +81,11 @@ void CConsole::AddCommand(std::shared_ptr<CVar> Command)
 		bool found = false;
 		for (auto a : this->ConsoleCommands)
 		{
+#ifndef __EMSCRIPTEN__
 			if (_strcmpi(Command->GetName(), a->GetName()) == 0)
+#else
+			if (strcmp(Command->GetName(), a->GetName()) == 0)
+#endif
 			{
 				CLog::MyLog(LogType::Error, "Console command named %s already exists", a->GetName());
 				found = true;

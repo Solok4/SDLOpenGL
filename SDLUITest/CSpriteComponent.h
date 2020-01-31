@@ -36,6 +36,5 @@ public:
 private:
 	SpriteBehaviour _SpBehaviour;
 	SpriteEightDirections _SpDirection;
-	GLuint _SpritePlane;
 };
 

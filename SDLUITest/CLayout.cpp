@@ -78,7 +78,11 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		temp->SetID(Object2DType::OBJECT2D_BUTTON);
 
 		std::shared_ptr<CLabel> ButtonLabel = std::make_shared<CLabel>();
+#ifndef __EMSCRIPTEN__
 		sprintf_s(LabelName, "%s%s", name, "_Label");
+#else
+		sprintf(LabelName, "%s%s", name, "_Label");
+#endif
 		ButtonLabel->SetName(LabelName);
 		ButtonLabel->BindParrentObject(temp);
 		ButtonLabel->MoveObjectLayerUp();

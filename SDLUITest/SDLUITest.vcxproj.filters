@@ -304,5 +304,11 @@
     <None Include="Assets\Shaders\DebugLights.vert">
       <Filter>_Shaders</Filter>
     </None>
+    <None Include="Assets\Shaders\DebugLightse.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\DebugLightse.vert">
+      <Filter>_Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

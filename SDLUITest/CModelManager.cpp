@@ -16,32 +16,6 @@ CModelManager::~CModelManager()
 	CLog::MyLog(LogType::Log, "ModelManagerDestructor");
 }
 
-//void FinishSurface(SDL_Surface* Surface)
-//{
-//	SDL_LockSurface(Surface);
-//
-//	unsigned int* Pixels = (unsigned int*)Surface->pixels;
-//	unsigned int* FinalPixels = (unsigned int*)malloc(Surface->pitch*Surface->h);
-//	//size_t PixLen = strlen((char*)Pixels);
-//	//size_t FPixLen = strlen((char*)FinalPixels);
-//
-//	for (int y = 0; y < Surface->h; y++)
-//	{
-//		for (int x = 0; x < Surface->w; x++)
-//		{
-//			FinalPixels[y*Surface->w + x] = Pixels[(Surface->h - y)*Surface->w + x];
-//		}
-//	}
-//	for (int y = 0; y < Surface->h; y++)
-//	{
-//		for (int x = 0; x < Surface->w; x++)
-//		{
-//			Pixels[y*Surface->w + x] = FinalPixels[y*Surface->w + x];
-//		}
-//	}
-//	SDL_UnlockSurface(Surface);
-//	free(FinalPixels);
-//}
 
 void CModelManager::LoadOBJ(const char * path)
 {
@@ -391,56 +365,56 @@ void CModelManager::LoadOBJ(const char * path)
 	glGenVertexArrays(1, &tempModel->VAO);
 	glBindVertexArray(tempModel->VAO);
 	glGenBuffers(3, tempModel->VBOs);
-
-#ifdef HD4850 
-	glEnableVertexAttribArray(1);
+//
+//#ifdef HD4850 
+	glEnableVertexAttribArray(MODEL_MESHBUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
 	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(MODEL_MESHBUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	if (tempModel->HasTexcords)
 	{
-		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
 		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
 		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec2), &out_Texcords[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glDisableVertexAttribArray(2);
+		glVertexAttribPointer(MODEL_TEXCORDBUFFER, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
 	}
 
 	if (tempModel->HasNormals)
 	{
-		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(MODEL_NORMALBUFFER);
 		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
 		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glDisableVertexAttribArray(0);
+		glVertexAttribPointer(MODEL_NORMALBUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glDisableVertexAttribArray(MODEL_NORMALBUFFER);
 	}
-	glDisableVertexAttribArray(1);
-#else
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	if (tempModel->HasTexcords)
-	{
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
-		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec2), &out_Texcords[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glDisableVertexAttribArray(1);
-	}
-
-	if (tempModel->HasNormals)
-	{
-		glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
-		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glDisableVertexAttribArray(2);
-	}
-	glDisableVertexAttribArray(0);
-#endif
+	glDisableVertexAttribArray(MODEL_MESHBUFFER);
+//#else
+//	glEnableVertexAttribArray(0);
+//	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
+//	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);
+//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//
+//	if (tempModel->HasTexcords)
+//	{
+//		glEnableVertexAttribArray(1);
+//		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
+//		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec2), &out_Texcords[0], GL_STATIC_DRAW);
+//		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+//		glDisableVertexAttribArray(1);
+//	}
+//
+//	if (tempModel->HasNormals)
+//	{
+//		glEnableVertexAttribArray(2);
+//		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
+//		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
+//		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//		glDisableVertexAttribArray(2);
+//	}
+//	glDisableVertexAttribArray(0);
+//#endif
 	
 
 

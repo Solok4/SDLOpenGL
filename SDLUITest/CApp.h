@@ -28,7 +28,7 @@
 #include "CInitialSetup.h"
 
 
-	bool Init(int argc, char* argv);
+	bool Init(int argc, char** argv);
 	void Destroy();
 	void Loop();
 	void PollEvents();

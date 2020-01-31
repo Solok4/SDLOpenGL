@@ -13,7 +13,7 @@
 
 
 
-bool Init(int argc, char* argv)
+bool Init(int argc, char** argv)
 {
 	InitialSetup = std::make_unique<CInitialSetup>(argc,argv);
 	OpenGL = std::make_unique<COpengl>();

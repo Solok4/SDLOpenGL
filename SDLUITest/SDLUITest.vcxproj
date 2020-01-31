@@ -254,6 +254,12 @@
     <None Include="Assets\Shaders\DebugLights.vert">
       <FileType>Script</FileType>
     </None>
+    <None Include="Assets\Shaders\DebugLightse.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\DebugLightse.vert">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\final.frag">
       <FileType>Script</FileType>
     </None>

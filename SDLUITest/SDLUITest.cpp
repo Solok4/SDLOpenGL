@@ -11,7 +11,7 @@
 #endif
 
 
-int main(int argc, char* argv)
+int main(int argc, char** argv)
 {
 
 	if (!Init(argc,argv))
