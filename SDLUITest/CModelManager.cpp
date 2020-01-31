@@ -8,6 +8,7 @@ std::unique_ptr<CModelManager> ModelManager;
 
 CModelManager::CModelManager()
 {
+
 }
 
 

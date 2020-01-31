@@ -26,6 +26,7 @@
 #include "CKeyboardConf.h"
 #include "CGameplayManager.h"
 #include "CInitialSetup.h"
+#include "CFontManager.h"
 
 
 	bool Init(int argc, char** argv);

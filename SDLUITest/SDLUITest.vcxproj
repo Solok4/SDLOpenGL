@@ -182,6 +182,7 @@
     <ClInclude Include="CConsole.h" />
     <ClInclude Include="CContainer.h" />
     <ClInclude Include="CEvent.h" />
+    <ClInclude Include="CFontManager.h" />
     <ClInclude Include="CGameplay.h" />
     <ClInclude Include="CGameplayManager.h" />
     <ClInclude Include="CImage.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="CConsole.cpp" />
     <ClCompile Include="CContainer.cpp" />
     <ClCompile Include="CEvent.cpp" />
+    <ClCompile Include="CFontManager.cpp" />
     <ClCompile Include="CGameplay.cpp" />
     <ClCompile Include="CGameplayManager.cpp" />
     <ClCompile Include="CImage.cpp" />

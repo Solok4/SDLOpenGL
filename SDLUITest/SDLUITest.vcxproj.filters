@@ -34,6 +34,12 @@
     <Filter Include="_Shaders">
       <UniqueIdentifier>{9ebbdb0e-ec51-4f63-a650-e9d5b26e346f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\AssetManagers">
+      <UniqueIdentifier>{0f9bc784-5cfe-40c1-a951-2a32b5d1e4d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AssetManagers">
+      <UniqueIdentifier>{8aef664a-02f9-401a-9a6a-c1843b1e9d06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -74,9 +80,6 @@
     </ClInclude>
     <ClInclude Include="CImage.h">
       <Filter>Header Files\Objects 2D</Filter>
-    </ClInclude>
-    <ClInclude Include="CModelManager.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CCameraComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
@@ -135,6 +138,12 @@
     <ClInclude Include="CSpriteComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
+    <ClInclude Include="CFontManager.h">
+      <Filter>Header Files\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="CModelManager.h">
+      <Filter>Header Files\AssetManagers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -178,9 +187,6 @@
     </ClCompile>
     <ClCompile Include="CImage.cpp">
       <Filter>Source Files\Objects 2D</Filter>
-    </ClCompile>
-    <ClCompile Include="CModelManager.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CCameraComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
@@ -229,6 +235,12 @@
     </ClCompile>
     <ClCompile Include="CSpriteComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CFontManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CModelManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

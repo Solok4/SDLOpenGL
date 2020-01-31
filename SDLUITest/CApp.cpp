@@ -24,6 +24,7 @@ bool Init(int argc, char** argv)
 	SceneManager = std::make_unique<CSceneManager>();
 	KeyboardConf = std::make_unique<CKeyboardConf>();
 	GameplayManager = std::make_unique<CGameplayManager>();
+	FontManager = std::make_unique<CFontManager>();
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
@@ -166,6 +167,12 @@ void PreLoop()
 	ModelManager->LoadTexture("Assets/Textures/TestTex.bmp");
 	ModelManager->LoadOBJ("Assets/Models/Cube.obj");
 
+	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 10);
+	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 16);
+
+	auto Font10 = FontManager->GetFontByName("Raleway-Black.ttf", 10);
+	auto Font16 = FontManager->GetFontByName("Raleway-Black.ttf", 16);
+
 	{
 
 		auto Layout = LayoutManager->AddNewLayout("Default");
@@ -177,23 +184,25 @@ void PreLoop()
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->PrepareToLoop();
 
+		
+
 		auto TempImage = Layout->FindObjectByName<CImage>("TestImage");
 		TempImage->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
 
 		auto TempButton = Layout->FindObjectByName<CButton>("TestButton");
 		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
-		TempButton->GetLabel()->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("First Button");
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); });
 
 		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
 		TempButton2->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
 		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); });
-		TempButton2->GetLabel()->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton2->GetLabel()->SetFont(Font10);
 		TempButton2->GetLabel()->SetText("ASDF");
 
 		auto TempLabel = Layout->FindObjectByName<CLabel>("TestLabel");
-		TempLabel->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
+		TempLabel->SetFont(Font16);
 		TempLabel->SetText("FrameTime: ");
 		TempLabel->BindTickFunction([&,TempLabel](double delta)
 			{
@@ -211,7 +220,7 @@ void PreLoop()
 			});
 
 		auto TempLabel2 = Layout->FindObjectByName<CLabel>("FpsCounter");
-		TempLabel2->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 16));
+		TempLabel2->SetFont(Font16);
 		TempLabel2->SetText("Fps: ");
 		TempLabel2->BindTickFunction([&, TempLabel2](double delta)
 			{
@@ -237,7 +246,7 @@ void PreLoop()
 		
 		auto TempButton = SecondLayout->FindObjectByName<CButton>("TestButtonSecond");
 		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
-		TempButton->GetLabel()->SetFont(TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 10));
+		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("SecondLay Button");
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); });
 
