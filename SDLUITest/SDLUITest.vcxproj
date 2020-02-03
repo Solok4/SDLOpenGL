@@ -192,6 +192,7 @@
     <ClInclude Include="CLayout.h" />
     <ClInclude Include="CLightComponent.h" />
     <ClInclude Include="CLog.h" />
+    <ClInclude Include="CMaterialManager.h" />
     <ClInclude Include="CMovementComponent.h" />
     <ClInclude Include="CObject2D.h" />
     <ClInclude Include="CObject3D.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
+    <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="CVar.h" />
     <ClInclude Include="IDraw.h" />
     <ClInclude Include="pch.h" />
@@ -228,6 +230,7 @@
     <ClCompile Include="CLayout.cpp" />
     <ClCompile Include="CLightComponent.cpp" />
     <ClCompile Include="CLog.cpp" />
+    <ClCompile Include="CMaterialManager.cpp" />
     <ClCompile Include="CMovementComponent.cpp" />
     <ClCompile Include="CObject2D.cpp" />
     <ClCompile Include="CObject3D.cpp" />
@@ -239,6 +242,7 @@
     <ClCompile Include="CStaticMeshComponent.cpp" />
     <ClCompile Include="CLayoutManager.cpp" />
     <ClCompile Include="CModelManager.cpp" />
+    <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="CVar.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -391,34 +391,7 @@ void CModelManager::LoadOBJ(const char * path)
 		glDisableVertexAttribArray(MODEL_NORMALBUFFER);
 	}
 	glDisableVertexAttribArray(MODEL_MESHBUFFER);
-//#else
-//	glEnableVertexAttribArray(0);
-//	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
-//	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//
-//	if (tempModel->HasTexcords)
-//	{
-//		glEnableVertexAttribArray(1);
-//		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
-//		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec2), &out_Texcords[0], GL_STATIC_DRAW);
-//		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-//		glDisableVertexAttribArray(1);
-//	}
-//
-//	if (tempModel->HasNormals)
-//	{
-//		glEnableVertexAttribArray(2);
-//		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
-//		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
-//		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//		glDisableVertexAttribArray(2);
-//	}
-//	glDisableVertexAttribArray(0);
-//#endif
 	
-
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
@@ -430,156 +403,11 @@ void CModelManager::LoadOBJ(const char * path)
 	this->Models.push_back(tempModel);
 }
 
-
-void CModelManager::Load(const char * path, const char * tex)
-{
-}
-
-void CModelManager::LoadTexture(const char* path)
-{
-	SDL_Surface* Tex = IMG_Load(path);
-	std::shared_ptr<Texture> tempTex = std::make_shared<Texture>();
-	if (!Tex)
-	{
-		CLog::MyLog(LogType::Error, "Failed to load a texture %s",path);
-		return;
-	}
-	else
-	{
-		GLint Format;
-		Format = GL_RGBA;
-		SDL_Surface* Finish;
-		if (Tex->format->BitsPerPixel == 24)
-		{
-			if (Tex->format->Rshift != 0)
-			{
-				Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGB24, 0);
-				SDL_FreeSurface(Tex);
-			}	
-			else
-			{
-				Finish = Tex;
-			}
-			Format = GL_RGB;
-			
-		}
-		else //if (Tex->format->BitsPerPixel == 32)
-		{
-			if (Tex->format->Rshift != 0)
-			{
-				Finish = SDL_ConvertSurfaceFormat(Tex, SDL_PIXELFORMAT_RGBA32, 0);
-				SDL_FreeSurface(Tex);
-			}
-			else
-			{
-				Finish = Tex;
-			}
-			Format = GL_RGBA;
-		}
-		//FinishSurface(Finish);
-
-		GLuint TexID;
-		glGenTextures(1, &TexID);
-		glBindTexture(GL_TEXTURE_2D, TexID);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, Format, Finish->w, Finish->h, 0, Format, GL_UNSIGNED_BYTE, Finish->pixels);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		tempTex->Texture = TexID;
-		SDL_FreeSurface(Finish);
-	}
-
-
-	const char* name(path);
-	const char* slash = strrchr(name, '/');
-	const char* JustName(slash + 1);
-	tempTex->Name = JustName;
-	this->Textures.push_back(tempTex);
-}
-
-GLuint CModelManager::GetImageByName(const char * name)
-{
-	for (auto o : this->Textures)
-	{
-		if (strcmp(name, o->Name) == 0)
-		{
-			return o->Texture;
-		}
-	}
-	return -1;
-}
-
-void CModelManager::CreateMaterial(const char * name)
-{
-	std::shared_ptr<Material> temp = std::make_shared<Material>();
-	temp->Name = name;
-	this->Materials.push_back(temp);
-}
-
-std::shared_ptr<Material> CModelManager::GetMaterialByName(const char * name)
-{
-	for (auto o : this->Materials)
-	{
-		if (strcmp(name, o->Name) == 0)
-		{
-			return o;
-		}
-	}
-	return nullptr;
-}
-
-void CModelManager::BindTextureToMaterial(const char * MaterialName, const char * TextureName, TextureTypes TextureType)
-{
-	std::shared_ptr<Material> temp = this->GetMaterialByName(MaterialName);
-	if (temp == nullptr)
-	{
-		CLog::MyLog(LogType::Error, "Material named %s don't exist\n", MaterialName);
-		return;
-	}
-	GLuint tempTex = this->GetImageByName(TextureName);
-	if (tempTex == -1)
-	{
-		CLog::MyLog(LogType::Error, "Texture named %s don't exist\n", TextureName);
-		return;
-	}
-	GLubyte index = temp->Tex.size();
-	temp->Tex.push_back(tempTex);
-	switch (TextureType)
-	{
-	case BaseTex:
-		temp->BaseTexIndex = index;
-		break;
-	case NormalMap:
-		temp->NormalMapIndex = index;
-		break;
-	case SpecularMap:
-		temp->SpecularMapIndex = index;
-		break;
-	}
-}
-
-
 std::shared_ptr<Model> CModelManager::GetModelByName(std::string name)
 {
 	for (auto o : this->Models)
 	{
 		if (strcmp(o->Name, name.c_str()) == 0)
-		{
-			return o;
-		}
-	}
-	return {};
-}
-
-std::shared_ptr<Texture> CModelManager::GetTextureByName(const char* name)
-{
-	for (auto o : this->Textures)
-	{
-		if (strcmp(o->Name, name) == 0)
 		{
 			return o;
 		}

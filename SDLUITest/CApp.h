@@ -27,6 +27,8 @@
 #include "CGameplayManager.h"
 #include "CInitialSetup.h"
 #include "CFontManager.h"
+#include "CTextureManager.h"
+#include "CMaterialManager.h"
 
 
 	bool Init(int argc, char** argv);

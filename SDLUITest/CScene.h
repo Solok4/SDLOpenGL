@@ -31,7 +31,7 @@ public:
 
 	void Tick(double delta);
 
-	void SetSkyBox(SkyboxType type, Texture texture);
+	//void SetSkyBox(SkyboxType type, Texture texture);
 
 	void Prepare();
 

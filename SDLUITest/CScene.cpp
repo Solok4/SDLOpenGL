@@ -151,14 +151,17 @@ void CScene::Draw(DrawType DType)
 					OpenGL->SetModelMatrix(sm->GetModelMatrix());
 					OpenGL->SetNormalMatrix(sm->GetModelMatrix());
 					auto material = sm->GetModel()->Mat;
-					glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
-						material->LM.Ambient.x, material->LM.Ambient.y, material->LM.Ambient.z);
-					glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
-						material->LM.Diffuse.x, material->LM.Diffuse.y, material->LM.Diffuse.z);
-					glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
-						material->LM.Specular.x, material->LM.Specular.y, material->LM.Specular.z);
-					glUniform1f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
-						material->LM.Shininess);
+					if (material != nullptr)
+					{
+						glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
+							material->GetLightMaterial()->Ambient.x, material->GetLightMaterial()->Ambient.y, material->GetLightMaterial()->Ambient.z);
+						glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
+							material->GetLightMaterial()->Diffuse.x, material->GetLightMaterial()->Diffuse.y, material->GetLightMaterial()->Diffuse.z);
+						glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
+							material->GetLightMaterial()->Specular.x, material->GetLightMaterial()->Specular.y, material->GetLightMaterial()->Specular.z);
+						glUniform1f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
+							material->GetLightMaterial()->Shininess);
+					}
 					c->Draw(DType);
 				}
 				else if (DType == DrawType::VerticesOnly)
@@ -189,66 +192,66 @@ void CScene::Tick(double delta)
 	}
 }
 
-void CScene::SetSkyBox(SkyboxType type, Texture texture)
-{
-	glGenVertexArrays(1, &this->SkyboxVAO);
-	glBindVertexArray(this->SkyboxVAO);
-	glGenBuffers(2, this->SkyboxVBOs);
-
-	if (type == SkyboxType::CubeType)
-	{
-		this->Skyboxtype = type;
-		float skyboxVertices[] = {
-			// positions          
-			-1.0f,  1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
-
-			-1.0f, -1.0f,  1.0f,
-			-1.0f, -1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f, -1.0f,
-			-1.0f,  1.0f,  1.0f,
-			-1.0f, -1.0f,  1.0f,
-
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-
-			-1.0f, -1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f, -1.0f,  1.0f,
-			-1.0f, -1.0f,  1.0f,
-
-			-1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f, -1.0f,
-			 1.0f,  1.0f,  1.0f,
-			 1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f,  1.0f,
-			-1.0f,  1.0f, -1.0f,
-
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f,  1.0f,
-			 1.0f, -1.0f, -1.0f,
-			 1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f,  1.0f,
-			 1.0f, -1.0f,  1.0f
-		};
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, this->SkyboxVBOs[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glDisableVertexAttribArray(0);
-	}
-}
+//void CScene::SetSkyBox(SkyboxType type, Texture texture)
+//{
+//	glGenVertexArrays(1, &this->SkyboxVAO);
+//	glBindVertexArray(this->SkyboxVAO);
+//	glGenBuffers(2, this->SkyboxVBOs);
+//
+//	if (type == SkyboxType::CubeType)
+//	{
+//		this->Skyboxtype = type;
+//		float skyboxVertices[] = {
+//			// positions          
+//			-1.0f,  1.0f, -1.0f,
+//			-1.0f, -1.0f, -1.0f,
+//			 1.0f, -1.0f, -1.0f,
+//			 1.0f, -1.0f, -1.0f,
+//			 1.0f,  1.0f, -1.0f,
+//			-1.0f,  1.0f, -1.0f,
+//
+//			-1.0f, -1.0f,  1.0f,
+//			-1.0f, -1.0f, -1.0f,
+//			-1.0f,  1.0f, -1.0f,
+//			-1.0f,  1.0f, -1.0f,
+//			-1.0f,  1.0f,  1.0f,
+//			-1.0f, -1.0f,  1.0f,
+//
+//			 1.0f, -1.0f, -1.0f,
+//			 1.0f, -1.0f,  1.0f,
+//			 1.0f,  1.0f,  1.0f,
+//			 1.0f,  1.0f,  1.0f,
+//			 1.0f,  1.0f, -1.0f,
+//			 1.0f, -1.0f, -1.0f,
+//
+//			-1.0f, -1.0f,  1.0f,
+//			-1.0f,  1.0f,  1.0f,
+//			 1.0f,  1.0f,  1.0f,
+//			 1.0f,  1.0f,  1.0f,
+//			 1.0f, -1.0f,  1.0f,
+//			-1.0f, -1.0f,  1.0f,
+//
+//			-1.0f,  1.0f, -1.0f,
+//			 1.0f,  1.0f, -1.0f,
+//			 1.0f,  1.0f,  1.0f,
+//			 1.0f,  1.0f,  1.0f,
+//			-1.0f,  1.0f,  1.0f,
+//			-1.0f,  1.0f, -1.0f,
+//
+//			-1.0f, -1.0f, -1.0f,
+//			-1.0f, -1.0f,  1.0f,
+//			 1.0f, -1.0f, -1.0f,
+//			 1.0f, -1.0f, -1.0f,
+//			-1.0f, -1.0f,  1.0f,
+//			 1.0f, -1.0f,  1.0f
+//		};
+//		glEnableVertexAttribArray(0);
+//		glBindBuffer(GL_ARRAY_BUFFER, this->SkyboxVBOs[0]);
+//		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+//		glDisableVertexAttribArray(0);
+//	}
+//}
 
 void CScene::Prepare()
 {

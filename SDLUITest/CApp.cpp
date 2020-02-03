@@ -25,6 +25,8 @@ bool Init(int argc, char** argv)
 	KeyboardConf = std::make_unique<CKeyboardConf>();
 	GameplayManager = std::make_unique<CGameplayManager>();
 	FontManager = std::make_unique<CFontManager>();
+	TextureManager = std::make_unique<CTextureManager>();
+	MaterialManager = std::make_unique<CMaterialManager>();
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
@@ -154,21 +156,33 @@ void PreLoop()
 	OpenGL->AddNewFramebuffer("Default","Default");
 
 	ModelManager->LoadOBJ("Assets/Models/PiernikNorm.obj");
-	ModelManager->CreateMaterial("Piernik");
-	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
-	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_NM.png");
-	ModelManager->LoadTexture("Assets/Textures/gingerbreadhouse_Spec.png");
-	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_tex.png", TextureTypes::BaseTex);
-	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_NM.png", TextureTypes::NormalMap);
-	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);
-	ModelManager->GetModelByName("PiernikNorm.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
+	//ModelManager->CreateMaterial("Piernik");
+	TextureManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
+	TextureManager->LoadTexture("Assets/Textures/gingerbreadhouse_NM.png");
+	TextureManager->LoadTexture("Assets/Textures/gingerbreadhouse_Spec.png");
 
-	ModelManager->LoadTexture("Assets/Textures/Tex.tga");
-	ModelManager->LoadTexture("Assets/Textures/TestTex.bmp");
+	auto PierMat = MaterialManager->CreateNewMaterial("Piernik");
+	PierMat->AddTextureToMaterial("gingerbreadhouse_tex.png", TextureTypes::BaseTex);
+	PierMat->AddTextureToMaterial("gingerbreadhouse_NM.png", TextureTypes::NormalMap);
+	PierMat->AddTextureToMaterial("gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);
+
+	ModelManager->GetModelByName("PiernikNorm.obj")->Mat = PierMat;
+
+	/*ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_tex.png", TextureTypes::BaseTex);
+	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_NM.png", TextureTypes::NormalMap);
+	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);*/
+	//ModelManager->GetModelByName("PiernikNorm.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
+
+	//ModelManager->LoadTexture("Assets/Textures/Tex.tga");
+	//ModelManager->LoadTexture("Assets/Textures/TestTex.bmp");
 	ModelManager->LoadOBJ("Assets/Models/Cube.obj");
 
 	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 10);
 	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 16);
+
+	TextureManager->LoadTexture("Assets/Textures/Tex.tga");
+	TextureManager->LoadTexture("Assets/Textures/TestTex.bmp");
+	TextureManager->GetTextureByName("Tex.tga");
 
 	auto Font10 = FontManager->GetFontByName("Raleway-Black.ttf", 10);
 	auto Font16 = FontManager->GetFontByName("Raleway-Black.ttf", 16);
@@ -187,16 +201,16 @@ void PreLoop()
 		
 
 		auto TempImage = Layout->FindObjectByName<CImage>("TestImage");
-		TempImage->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
+		TempImage->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 
 		auto TempButton = Layout->FindObjectByName<CButton>("TestButton");
-		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
+		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
 		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("First Button");
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); });
 
 		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
-		TempButton2->BindTexture(ModelManager->GetImageByName("TestTex.bmp"));
+		TempButton2->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); });
 		TempButton2->GetLabel()->SetFont(Font10);
 		TempButton2->GetLabel()->SetText("ASDF");
@@ -245,7 +259,7 @@ void PreLoop()
 		SecondLayout->PrepareToLoop();
 		
 		auto TempButton = SecondLayout->FindObjectByName<CButton>("TestButtonSecond");
-		TempButton->BindTexture(ModelManager->GetImageByName("Tex.tga"));
+		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
 		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("SecondLay Button");
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); });

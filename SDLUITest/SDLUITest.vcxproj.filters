@@ -144,6 +144,12 @@
     <ClInclude Include="CModelManager.h">
       <Filter>Header Files\AssetManagers</Filter>
     </ClInclude>
+    <ClInclude Include="CTextureManager.h">
+      <Filter>Header Files\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="CMaterialManager.h">
+      <Filter>Header Files\AssetManagers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -240,6 +246,12 @@
       <Filter>Source Files\AssetManagers</Filter>
     </ClCompile>
     <ClCompile Include="CModelManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CTextureManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CMaterialManager.cpp">
       <Filter>Source Files\AssetManagers</Filter>
     </ClCompile>
   </ItemGroup>
