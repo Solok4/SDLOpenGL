@@ -150,6 +150,9 @@
     <ClInclude Include="CMaterialManager.h">
       <Filter>Header Files\AssetManagers</Filter>
     </ClInclude>
+    <ClInclude Include="CTextBox.h">
+      <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -253,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="CMaterialManager.cpp">
       <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CTextBox.cpp">
+      <Filter>Source Files\Objects 2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

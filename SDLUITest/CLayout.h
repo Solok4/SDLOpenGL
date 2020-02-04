@@ -1,16 +1,19 @@
 #pragma once
 
 #include <map>
-#include "CObject2D.h"
 #include "SDL.h"
 #include "SDL_ttf.h"
+
+#include "COpengl.h"
+#include "CRenderer.h"
+#include "CLog.h"
+
+#include "CObject2D.h"
 #include "CButton.h"
 #include "CLabel.h"
 #include "CImage.h"
 #include "CContainer.h"
-#include "CLog.h"
-#include "COpengl.h"
-#include "CRenderer.h"
+#include "CTextBox.h"
 
 class CLayout
 {
@@ -58,6 +61,7 @@ private:
 	std::vector<std::shared_ptr<CObject2D>> Objects2D;
 	std::vector<std::shared_ptr<CObject2D>> Buttons;
 
+	std::shared_ptr<CTextBox> UsedTestBox;
 };
 
 

@@ -9,19 +9,19 @@
 #include "Primitives.h"
 
 
-CObject2D::CObject2D()
-{
-	this->ModelMatrix = glm::mat4(1.0f);
-	this->_VAO = 0;
-	this->Layer = 0;
-	this->SetPosition(glm::vec2(0.0f, 0.0f));
-	this->SetSize(glm::vec2(1.0f, 1.0f));
-	this->SetRotation(glm::vec3(0.f, 0.f, 0.f));
-	this->ParrentObject = nullptr;
-	this->ColorMask = vec4(1.0f);
-	this->_LocalOffset = vec2(0.f);
-	this->ObjectAligment = Object2DAligment::LEFT_TOP;
-}
+//CObject2D::CObject2D()
+//{
+//	this->ModelMatrix = glm::mat4(1.0f);
+//	this->_VAO = 0;
+//	this->Layer = 0;
+//	this->SetPosition(glm::vec2(0.0f, 0.0f));
+//	this->SetSize(glm::vec2(1.0f, 1.0f));
+//	this->SetRotation(glm::vec3(0.f, 0.f, 0.f));
+//	this->ParrentObject = nullptr;
+//	this->ColorMask = vec4(1.0f);
+//	this->_LocalOffset = vec2(0.f);
+//	this->ObjectAligment = Object2DAligment::LEFT_TOP;
+//}
 
 
 CObject2D::~CObject2D()
@@ -31,33 +31,7 @@ CObject2D::~CObject2D()
 
 void CObject2D::Prepare()
 {
-	/*float vertices[] = {
-		-0.5f,	0.5f,	0.0f,
-		0.5f,	0.5f,	0.0f,
-		0.5f,	-0.5f,	0.0f,
-		-0.5f,	-0.5f,	0.0f,
-	};*/
-
-	//float vertices[] = {
-	//	0.0f,	1.0f,	0.0f,
-	//	1.0f,	1.0f,	0.0f,
-	//	1.0f,	0.0f,	0.0f,
-	//	0.0f,	0.0f,	0.0f,
-	//};
-
-	//float TexCords[] = {
-	//	0.0f,0.0f,
-	//	1.0f,0.0f,
-	//	1.0f,1.0f,
-	//	0.0f,1.0f,
-	//};
-
-	//int Indices[] = {
-	//	0,1,3,
-	//	1,2,3
-	//};
-
-
+	
 	glGenVertexArrays(1, &this->_VAO);
 	glBindVertexArray(this->_VAO);
 
@@ -202,41 +176,12 @@ void CObject2D::SetAligment(Object2DAligment Aligment)
 	this->SetSize(this->_Size);
 }
 
-void CObject2D::PreDraw()
-{
-	if (this->_IsVisible)
-	{
-		glBindVertexArray(this->_VAO);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glActiveTexture(GL_TEXTURE0);
-	}
-
-}
-
-void CObject2D::Draw()
-{
-	if (this->_IsVisible)
-	{
-		glBindTexture(GL_TEXTURE_2D, this->TextureID);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}
-}
-
-void CObject2D::PostDraw()
-{
-	if (this->_IsVisible)
-	{
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(0);
-		glBindVertexArray(0);
-	}
-}
 
 void CObject2D::BindParrentObject(std::shared_ptr<CObject2D> obj)
 {
 	this->ParrentObject = obj;
 	obj->AddToParrentOfTable(std::make_shared<CObject2D>(*this));
+	this->SetPosition(this->_Position);
 }
 
 std::shared_ptr<CObject2D> CObject2D::GetParrentObject() const
@@ -339,11 +284,6 @@ void CObject2D::Tick(double delta)
 	this->TickFunc(delta);
 }
 
-void CObject2D::BindTexture(GLuint Tex)
-{
-	this->TextureID = Tex;
-}
-
 void CObject2D::SetName(const char* name)
 {
 	this->_Name = name;
@@ -351,7 +291,7 @@ void CObject2D::SetName(const char* name)
 
 const char* CObject2D::GetName() const
 {
-	return this->_Name;
+	return this->_Name.c_str();
 }
 
 void CObject2D::SetID(int id)

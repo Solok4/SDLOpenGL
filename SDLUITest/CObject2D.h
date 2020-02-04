@@ -3,9 +3,12 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <functional>
+
 #include "glm/glm.hpp"
 #include "GL/glew.h"
-#include <functional>
+//#include "CLayout.h"
+
 using namespace glm;
 
 enum Object2DType
@@ -14,6 +17,7 @@ enum Object2DType
 	OBJECT2D_IMAGE,
 	OBJECT2D_BUTTON,
 	OBJECT2D_CONTAINER,
+	OBJECT2D_TEXTBOX,
 };
 
 enum Object2DAligment
@@ -32,7 +36,12 @@ enum Object2DAligment
 class CObject2D
 {
 public:
-	CObject2D();
+	CObject2D()=delete;
+	CObject2D(const char* name, /*CLayout* ref,*/glm::vec2 position,glm::vec2 objsize) 
+		:_Name(std::string(name)),/*LayoutRef(std::make_shared<CLayout>(ref)),*/_Position(position),_Size(objsize),Layer(0),ObjectAligment(Object2DAligment::LEFT_TOP),
+		_LocalOffset(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f) {
+		this->RefreshModelMatrix();
+	};
 	~CObject2D();
 
 	//Prepares geometry to being used by opengl.
@@ -56,11 +65,11 @@ public:
 	vec2 GetSize() { return this->_Size; };
 
 	//Prepares object to draw.
-	virtual void PreDraw();
+	virtual void PreDraw() {};
 	//Draws the object. Should be used after PreDraw func.
-	virtual void Draw();
+	virtual void Draw() {};
 	//Cleans up things after drawing.
-	virtual void PostDraw();
+	virtual void PostDraw() {};
 
 	//Binds the object to other one.
 	void BindParrentObject(std::shared_ptr<CObject2D> obj);
@@ -99,8 +108,6 @@ public:
 	vec4 GetColorMask() const;
 	//Function being called every frame.
 	virtual void Tick(double delta);
-	//Bind texture to the object.
-	void BindTexture(GLuint Tex);
 	//Set name of the object.
 	void SetName(const char* name);
 	//Returns name of the object.
@@ -116,7 +123,6 @@ public:
 
 
 protected:
-
 	int _ID;
 	vec2 _Position;
 	vec2 _Size;
@@ -130,8 +136,8 @@ protected:
 	bool _IsVisible = true;
 	std::function<void(double)> TickFunc = nullptr;
 	vec4 ColorMask;
-	const char* _Name;
+	std::string _Name;
 	mat4 ModelMatrix;
-	GLuint TextureID;
 	GLuint _VAO;
+	//std::shared_ptr<CLayout> LayoutRef;
 };

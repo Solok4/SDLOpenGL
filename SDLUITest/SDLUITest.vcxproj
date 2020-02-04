@@ -204,6 +204,7 @@
     <ClInclude Include="CStaticMeshComponent.h" />
     <ClInclude Include="CLayoutManager.h" />
     <ClInclude Include="CModelManager.h" />
+    <ClInclude Include="CTextBox.h" />
     <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="CVar.h" />
     <ClInclude Include="IDraw.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="CStaticMeshComponent.cpp" />
     <ClCompile Include="CLayoutManager.cpp" />
     <ClCompile Include="CModelManager.cpp" />
+    <ClCompile Include="CTextBox.cpp" />
     <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="CVar.cpp" />
     <ClCompile Include="pch.cpp">

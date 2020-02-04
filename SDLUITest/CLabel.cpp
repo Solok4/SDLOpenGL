@@ -5,14 +5,14 @@
 #include <stdarg.h>
 
 
-CLabel::CLabel() : CObject2D()
-{
-	this->_Size = glm::vec2(200.0f, 100.0f);
-	this->_Rotation = vec3(180.f, 0.0f, 0.0f);
-	this->Font = TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 20);
-	//this->SetText("Default");
-	this->ColorMask = vec4(1.0f);
-}
+//CLabel::CLabel() : CObject2D()
+//{
+//	this->_Size = glm::vec2(200.0f, 100.0f);
+//	this->_Rotation = vec3(180.f, 0.0f, 0.0f);
+//	this->Font = TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 20);
+//	//this->SetText("Default");
+//	this->ColorMask = vec4(1.0f);
+//}
 
 
 CLabel::~CLabel()
@@ -69,5 +69,36 @@ TTF_Font * CLabel::GetFont()
 void CLabel::SetColorSDL(SDL_Color Col)
 {
 	this->SetColor(vec3(Col.b/255,Col.g/255,Col.r/255)) ;
+}
+
+void CLabel::PreDraw()
+{
+	if (this->_IsVisible)
+	{
+		glBindVertexArray(this->_VAO);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glActiveTexture(GL_TEXTURE0);
+	}
+
+}
+
+void CLabel::Draw()
+{
+	if (this->_IsVisible)
+	{
+		glBindTexture(GL_TEXTURE_2D, this->TextureID);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+}
+
+void CLabel::PostDraw()
+{
+	if (this->_IsVisible)
+	{
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
+	}
 }
 

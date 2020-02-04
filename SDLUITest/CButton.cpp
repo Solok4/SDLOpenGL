@@ -4,13 +4,13 @@
 #include "CLog.h"
 
 
-CButton::CButton() : CObject2D()
-{
-	this->_Size = vec2(1.0f);
-	this->_Position = vec3(0.0f);
-	this->_Rotation = vec3(0.f);
-	this->ColorMask = vec4(1.f);
-}
+//CButton::CButton() : CImage()
+//{
+//	this->_Size = vec2(1.0f);
+//	this->_Position = vec3(0.0f);
+//	this->_Rotation = vec3(0.f);
+//	this->ColorMask = vec4(1.f);
+//}
 
 
 CButton::~CButton()

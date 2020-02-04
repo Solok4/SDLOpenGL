@@ -36,8 +36,5 @@
 	void Loop();
 	void PollEvents();
 	void PreLoop();
-	//void SetMouseLock(bool lock);
-	//void ResizeWindow(int w, int h);
-	//void SetFPSLock(int FPS);
 
 #endif // !CAPP

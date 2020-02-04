@@ -1,5 +1,5 @@
 #pragma once
-#include "CObject2D.h"
+#include "CImage.h"
 #include "CLabel.h"
 #include <SDL.h>
 #include <functional>
@@ -12,10 +12,11 @@ extern "C"
 }
 
 class CButton :
-	public CObject2D
+	public CImage
 {
 public:
-	CButton();
+	CButton()=delete;
+	CButton(const char* name, /*CLayout* ref,*/ glm::vec2 position, glm::vec2 objsize) :CImage(name, /*ref,*/ position, objsize) { this->_ID = Object2DType::OBJECT2D_BUTTON; };
 	~CButton();
 	//Checks if button is clicked, is being hovered or not. Calls aprioprate functions.
 	void IsClicked(SDL_MouseButtonEvent MouseData);
@@ -30,14 +31,14 @@ public:
 	//Returns label object if exists
 	std::shared_ptr<CLabel> GetLabel();
 	//Function being called when the button is clicked.
-	std::function<void()> Func;
 
-private:
+protected:
 	bool Pressed = false;
 	int LastMouseX = 0;
 	int LastMouseY = 0;
 	int ScreenWidth=0;
 	int ScreenHeight=0;
 	std::shared_ptr<CLabel> Label;
+	std::function<void()> Func;
 };
 
