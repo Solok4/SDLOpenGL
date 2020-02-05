@@ -79,7 +79,10 @@ void CButton::IsClicked(SDL_MouseButtonEvent MouseData)
 		}
 		else
 		{
-			this->IsLastHit = false;
+			if (MouseData.button == SDL_BUTTON_LEFT && MouseData.type == SDL_MOUSEBUTTONDOWN)
+			{
+				this->IsLastHit = false;
+			}
 			this->IsHitPPM = false;
 			this->IsHitLPM = false;
 			this->OnMiss();

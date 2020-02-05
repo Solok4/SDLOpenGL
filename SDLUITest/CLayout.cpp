@@ -71,6 +71,7 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		std::shared_ptr<CLabel> ButtonLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2),glm::vec2(1.f), this);
 		ButtonLabel->BindParrentObject(temp);
 		ButtonLabel->MoveObjectLayerUp();
+		ButtonLabel->SetPadding(glm::vec2(10.f));
 		ButtonLabel->SetAligment(Object2DAligment::CENTER);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
@@ -83,7 +84,7 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		std::shared_ptr<CContainer> temp = std::make_shared<CContainer>(name, pos, size, this);
 		Objects2D.push_back(temp);
 	}
-	else if (id == Object2DType::OBJECT2D_TEXTBOX)
+	else if (id == Object2DType::OBJECT2D_TEXTBOX)		//CTextBox
 	{
 		char LabelName[64];
 		std::shared_ptr<CTextBox> temp = std::make_shared<CTextBox>(name, pos, size, this);
@@ -95,6 +96,7 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 		std::shared_ptr<CLabel> TextBoxLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2), glm::vec2(1.f), this);
 		TextBoxLabel->BindParrentObject(temp);
 		TextBoxLabel->MoveObjectLayerUp();
+		TextBoxLabel->SetPadding(glm::vec2(10.f));
 		TextBoxLabel->SetAligment(Object2DAligment::CENTER);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);

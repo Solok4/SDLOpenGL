@@ -33,15 +33,30 @@ void CTextBox::SetValue(std::string value)
 	{
 		return;
 	}
-
-	if (this->Value.length() > 0)
+	int labelWidth = (int)this->Label->GetSize().x;
+	if (this->_Size.x >= (this->Label->GetSize().x+(this->GetPadding().x)*2))
 	{
-		label->SetText(value.c_str());
-		this->Label->SetVisibility(true);
+		if (this->Value.length() > 0)
+		{
+			label->SetText(value.c_str());
+			this->Label->SetVisibility(true);
+		}
+		else
+		{
+			this->Label->SetVisibility(false);
+		}
 	}
 	else
 	{
-		this->Label->SetVisibility(false);
+		static int MaxLength = 0;
+		if (MaxLength == 0)
+		{
+			MaxLength = this->Value.length();
+		}
+		if (MaxLength > this->Value.length())
+		{
+			label->SetText(value.c_str());
+		}
 	}
 }
 

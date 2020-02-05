@@ -52,6 +52,8 @@ public:
 	//Sets size object on the screen.
 	void SetSize(vec2 vec);
 
+	void SetPadding(vec2 vec) { this->_Padding = vec; }
+
 	void SetAligment(Object2DAligment Aligment);
 
 	//Returns vec2 position vector.
@@ -60,6 +62,8 @@ public:
 	vec2 GetRotaton() { return this->_Rotation; };
 	//returns vec2 size vector.
 	vec2 GetSize() { return this->_Size; };
+
+	vec2 GetPadding() { return this->_Padding; };
 
 	//Prepares object to draw.
 	virtual void PreDraw() {};
@@ -128,6 +132,7 @@ protected:
 	vec2 _Size;
 	vec3 _Rotation;
 	vec2 _LocalOffset;
+	vec2 _Padding;
 	Object2DAligment ObjectAligment;
 	std::shared_ptr<CObject2D> ParrentObject;
 	std::vector<std::shared_ptr<CObject2D>> ParrentOf;
