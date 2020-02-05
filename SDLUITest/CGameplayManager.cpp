@@ -23,7 +23,7 @@ void CGameplayManager::DeleteGameplay(const char* name)
 {
 	for (int i = 0; i < this->GameplayConfigurations.size(); i++)
 	{
-		if (strcmp(this->GameplayConfigurations[i]->Name, name) == 0)
+		if (strcmp(this->GameplayConfigurations[i]->Name.c_str(), name) == 0)
 		{
 			this->GameplayConfigurations.erase(this->GameplayConfigurations.begin() + i);
 			return;
@@ -36,7 +36,7 @@ void CGameplayManager::SelectCurrentGameplay(const char* name)
 {
 	for (auto a : this->GameplayConfigurations)
 	{
-		if (strcmp(a->Name, name) == 0)
+		if (strcmp(a->Name.c_str(), name) == 0)
 		{
 			this->CurrentGameplay = a;
 			return;

@@ -7,7 +7,7 @@ class CGameplay
 {
 public:
 	CGameplay();
-	CGameplay(const char* name) :Name(name) { this->TimeScale = 1.f; };
+	CGameplay(const char* name) :Name(std::string(name)) { this->TimeScale = 1.f; };
 	~CGameplay();
 	
 	void SetTimescale(float timescale);
@@ -20,7 +20,7 @@ public:
 	void SetFrameLimit(int frames) { this->FrameLimit = frames; };
 	int GetFrameLimit() { return this->FrameLimit; };
 
-	const char* Name;
+	std::string Name;
 	float TimeScale;
 	bool MouseLock = false;
 	int FrameLimit;

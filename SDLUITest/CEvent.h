@@ -23,6 +23,8 @@ public:
 	SDL_MouseButtonEvent GetMouseData();
 	array<bool,322> GetKeyboardData();
 	SDL_Event GetEvent();
+	uint32_t GetRawKey() { return this->RawKey; };
+	bool GetIsEditing() { return this->IsEditing; };
 
 
 private:
@@ -36,7 +38,8 @@ private:
 
 	SDL_KeyboardEvent KeyboardEvent;
 	SDL_MouseButtonEvent MouseEvent;
-
+	uint32_t RawKey;
+	bool IsEditing = false;
 	bool _IsRunning = true;
 };
 

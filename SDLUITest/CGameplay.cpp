@@ -51,71 +51,68 @@ void CGameplay::Tick(double delta)
 
 void CGameplay::KeyEvents(std::array<bool, 322> keys)
 {
-	if (keys[SDL_SCANCODE_1])
+	if (!LayoutManager->GetCurrentLayout()->GetIsEditingLayout())
 	{
-		//CLog::MyLog(LogType::Log, "Pressed 1");
-		this->ToggleMouseLock();
-		//MouseLock = !MouseLock;
-	}
-	if (keys[SDL_SCANCODE_T])
-	{
-		LayoutManager->ChangeCurrentLayout("Default");
-	}
-	if (keys[SDL_SCANCODE_Y])
-	{
-		LayoutManager->ChangeCurrentLayout("Blank");
-	}
-	if (keys[SDL_SCANCODE_W])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(false);
-	}
-	if (keys[SDL_SCANCODE_S])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(false);
-	}
-	if (keys[SDL_SCANCODE_A])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(false);
-	}
-	if (keys[SDL_SCANCODE_D])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(false);
-	}
-	if (keys[SDL_SCANCODE_SPACE])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(false);
-	}
-	if (keys[SDL_SCANCODE_LSHIFT])
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(true);
-	}
-	else
-	{
-		SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(false);
-	}
-	if (keys[SDL_SCANCODE_Y])
-	{
-		LayoutManager->ChangeCurrentLayout("Blank");
+		if (keys[SDL_SCANCODE_1])
+		{
+			this->ToggleMouseLock();
+		}
+		if (keys[SDL_SCANCODE_T])
+		{
+			LayoutManager->ChangeCurrentLayout("Default");
+		}
+		if (keys[SDL_SCANCODE_Y])
+		{
+			LayoutManager->ChangeCurrentLayout("Blank");
+		}
+		if (keys[SDL_SCANCODE_W])
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(true);
+		}
+		else
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(false);
+		}
+		if (keys[SDL_SCANCODE_S])
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(true);
+		}
+		else
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveBackwards(false);
+		}
+		if (keys[SDL_SCANCODE_A])
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(true);
+		}
+		else
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveLeft(false);
+		}
+		if (keys[SDL_SCANCODE_D])
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(true);
+		}
+		else
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveRight(false);
+		}
+		if (keys[SDL_SCANCODE_SPACE])
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(true);
+		}
+		else
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveUp(false);
+		}
+		if (keys[SDL_SCANCODE_LSHIFT])
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(true);
+		}
+		else
+		{
+			SceneManager->GetCurrentScene()->GetMovementObject()->MoveDown(false);
+		}
 	}
 }
 

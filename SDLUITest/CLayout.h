@@ -53,6 +53,11 @@ public:
 	//Function called every frame
 	virtual void Tick(double delta);
 
+	void ProcessTextEditing();
+
+	void SetUsedTextBox(CTextBox* tbox);
+	bool GetIsEditingLayout() { return this->LayoutIsEditing; };
+
 private:
 	int MousePosX;
 	int MousePosY;
@@ -60,8 +65,8 @@ private:
 	std::shared_ptr<WindowInfo> WNDInfo;
 	std::vector<std::shared_ptr<CObject2D>> Objects2D;
 	std::vector<std::shared_ptr<CObject2D>> Buttons;
-
-	std::shared_ptr<CTextBox> UsedTestBox;
+	bool LayoutIsEditing = false;
+	CTextBox* UsedTestBox;
 };
 
 

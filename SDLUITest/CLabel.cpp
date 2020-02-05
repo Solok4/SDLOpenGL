@@ -27,7 +27,7 @@ void CLabel::SetFont(TTF_Font* font)
 
 void CLabel::SetText(const char* format, ...)
 {
-	char Text[512];
+	char Text[256];
 	va_list vl;
 	va_start(vl, format);
 #ifdef __EMSCRIPTEN__
@@ -35,7 +35,8 @@ void CLabel::SetText(const char* format, ...)
 #else
 	vsprintf_s(Text, format, vl);
 #endif
-	if (!(TextSurface = TTF_RenderText_Blended(this->Font, Text, {255,255,255})))
+	this->Value = std::string(Text);
+	if (!(TextSurface = TTF_RenderText_Blended(this->Font, this->Value.c_str(), {255,255,255})))
 	{
 		CLog::MyLog(LogType::Error, "Failed to create text surface: %s",TTF_GetError());
 		return;

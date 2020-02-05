@@ -196,6 +196,7 @@ void PreLoop()
 		Layout->AddItem(Object2DType::OBJECT2D_LABEL, "FpsCounter", vec2(20.f, 50.f), vec2(40.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
+		Layout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "TestTextBox", vec2(300.f, 500.f), vec2(100.f, 20.f));
 		Layout->PrepareToLoop();
 
 		
@@ -207,13 +208,17 @@ void PreLoop()
 		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
 		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("First Button");
-		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); });
+		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); },MouseButton::LEFTMOUSEBUTTON);
 
 		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
 		TempButton2->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
-		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); });
+		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); }, MouseButton::LEFTMOUSEBUTTON);
 		TempButton2->GetLabel()->SetFont(Font10);
 		TempButton2->GetLabel()->SetText("ASDF");
+
+		auto TestTextBox = Layout->FindObjectByName<CTextBox>("TestTextBox");
+		TestTextBox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+		TestTextBox->GetLabel()->SetFont(Font16);
 
 		auto TempLabel = Layout->FindObjectByName<CLabel>("FrameTimeCounter");
 		TempLabel->SetFont(Font16);
@@ -262,7 +267,7 @@ void PreLoop()
 		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
 		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("SecondLay Button");
-		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); });
+		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); }, MouseButton::LEFTMOUSEBUTTON);
 
 		//LayoutManager->PushActiveLayout("DoubleTest");
 	}

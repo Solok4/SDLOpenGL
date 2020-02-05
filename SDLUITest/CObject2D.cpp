@@ -7,22 +7,16 @@
 #include "SDL_image.h"
 #include "CLog.h"
 #include "Primitives.h"
+#include "CLayout.h"
 
 
-//CObject2D::CObject2D()
-//{
-//	this->ModelMatrix = glm::mat4(1.0f);
-//	this->_VAO = 0;
-//	this->Layer = 0;
-//	this->SetPosition(glm::vec2(0.0f, 0.0f));
-//	this->SetSize(glm::vec2(1.0f, 1.0f));
-//	this->SetRotation(glm::vec3(0.f, 0.f, 0.f));
-//	this->ParrentObject = nullptr;
-//	this->ColorMask = vec4(1.0f);
-//	this->_LocalOffset = vec2(0.f);
-//	this->ObjectAligment = Object2DAligment::LEFT_TOP;
-//}
-
+CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref)
+	:_Name(std::string(name)), _Position(position), _Size(objsize), Layer(0), ObjectAligment(Object2DAligment::LEFT_TOP),
+	_LocalOffset(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f)
+{
+	this->RefreshModelMatrix();
+	this->SetLayoutReference(ref);
+};
 
 CObject2D::~CObject2D()
 {
@@ -312,4 +306,9 @@ mat4 CObject2D::GetModelMatrix()
 void CObject2D::BindTickFunction(std::function<void(double)> func)
 {
 	this->TickFunc = func;
+}
+
+void CObject2D::SetLayoutReference(CLayout* Layout)
+{
+	this->LayoutRef = Layout;
 }

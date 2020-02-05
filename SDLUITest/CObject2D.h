@@ -32,16 +32,13 @@ enum Object2DAligment
 	BOTTOM,
 	RIGHT_BOTTOM,
 };
+class CLayout;
 
 class CObject2D
 {
 public:
 	CObject2D()=delete;
-	CObject2D(const char* name, /*CLayout* ref,*/glm::vec2 position,glm::vec2 objsize) 
-		:_Name(std::string(name)),/*LayoutRef(std::make_shared<CLayout>(ref)),*/_Position(position),_Size(objsize),Layer(0),ObjectAligment(Object2DAligment::LEFT_TOP),
-		_LocalOffset(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f) {
-		this->RefreshModelMatrix();
-	};
+	CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref);
 	~CObject2D();
 
 	//Prepares geometry to being used by opengl.
@@ -121,6 +118,9 @@ public:
 	//Binds func that will be called in tick func.
 	void BindTickFunction(std::function<void(double)> func);
 
+	void SetLayoutReference(CLayout* Layout);
+	CLayout* GetLayoutReference() { return this->LayoutRef; };
+
 
 protected:
 	int _ID;
@@ -139,5 +139,5 @@ protected:
 	std::string _Name;
 	mat4 ModelMatrix;
 	GLuint _VAO;
-	//std::shared_ptr<CLayout> LayoutRef;
+	CLayout* LayoutRef;
 };

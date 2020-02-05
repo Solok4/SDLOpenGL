@@ -19,47 +19,89 @@ CButton::~CButton()
 
 void CButton::IsClicked(SDL_MouseButtonEvent MouseData)
 {
-
-	//if (this->_Position.x-(this->_Size.x/2)<MouseData.x &&this->_Position.x + (this->_Size.x / 2) >MouseData.x && this->_Position.y - (this->_Size.y / 2) <MouseData.y && this->_Position.y + (this->_Size.y / 2) >MouseData.y)
-	if (this->_Position.x < MouseData.x && this->_Position.x + this->_Size.x > MouseData.x && this->_Position.y < MouseData.y && this->_Position.y + this->_Size.y > MouseData.y)
+	if (this->_IsActive)
 	{
-		if (this->_IsActive)
+		if (this->_Position.x < MouseData.x && this->_Position.x + this->_Size.x > MouseData.x && this->_Position.y < MouseData.y && this->_Position.y + this->_Size.y > MouseData.y)
 		{
-
 			if (MouseData.button == SDL_BUTTON_LEFT && MouseData.type == SDL_MOUSEBUTTONDOWN)
 			{
-				if (!this->Pressed)
-				{
-					this->Pressed = true;
-					this->SetColor(vec3(1.0f));
-				}
+				this->IsHitLPM = true;
+				this->IsLastHit = true;
+				this->SetColor(vec3(1.0f));
+				return;
 			}
 			else if (MouseData.button == SDL_BUTTON_LEFT && MouseData.type == SDL_MOUSEBUTTONUP)
 			{
-				if (this->Pressed)
+				if (this->IsHitLPM)
 				{
-					this->Pressed = false;
-					this->Func();
-					this->OnHover();
+					this->IsHitLPM = false;
+					this->CallFunction(MouseButton::LEFTMOUSEBUTTON);
 				}
 			}
 			else
 			{
-				if (!this->Pressed)
+				if (!this->IsHitLPM)
+				{
 					this->OnHover();
+				}
+				else
+				{
+					this->IsHitLPM = !this->IsHitLPM;
+				}
 			}
+
+			if (MouseData.button == SDL_BUTTON_RIGHT && MouseData.type == SDL_MOUSEBUTTONDOWN)
+			{
+				this->IsHitPPM = true;
+				this->IsLastHit = true;
+				this->SetColor(vec3(1.0f));
+				return;
+			}
+			else if (MouseData.button == SDL_BUTTON_RIGHT && MouseData.type == SDL_MOUSEBUTTONUP)
+			{
+				if (this->IsHitPPM)
+				{
+					this->IsHitPPM = false;
+					this->CallFunction(MouseButton::RIGTHTMOUSEBUTTON);
+				}
+			}
+			else
+			{
+				if (!this->IsHitPPM)
+				{
+					this->OnHover();
+				}
+				else
+				{
+					this->IsHitPPM = !this->IsHitPPM;
+				}
+			}
+		}
+		else
+		{
+			this->IsLastHit = false;
+			this->IsHitPPM = false;
+			this->IsHitLPM = false;
+			this->OnMiss();
 		}
 	}
 	else
 	{
-		this->Pressed = false;
 		this->OnMiss();
 	}
 }
 
-void CButton::AttachFunc(std::function<void()> func)
+void CButton::AttachFunc(std::function<void()> func,MouseButton button)
 {
-	this->Func = func;
+	for (int i = 0; i < this->Funcs.size(); i++)
+	{
+		if (button == this->Funcs[i]->button)
+		{
+			this->Funcs.erase(this->Funcs.begin() + i);
+			this->Funcs.push_back(std::make_shared<MouseFunc>(button, func));
+			return;
+		}
+	}
 }
 
 void CButton::OnHover()
@@ -85,4 +127,15 @@ void CButton::SetLabel(std::shared_ptr<CLabel> label)
 std::shared_ptr<CLabel> CButton::GetLabel()
 {
 	return this->Label;
+}
+
+void CButton::CallFunction(MouseButton button)
+{
+	for (auto a : this->Funcs)
+	{
+		if (a->button == button)
+		{
+			a->func();
+		}
+	}
 }

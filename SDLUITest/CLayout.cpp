@@ -9,6 +9,7 @@
 CLayout::CLayout()
 {
 	this->RefreshWindowData();
+	this->UsedTestBox = nullptr;
 }
 
 
@@ -49,25 +50,25 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 {
 	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
 	{
-		std::shared_ptr<CLabel> temp = std::make_shared<CLabel>(name,pos,size);
+		std::shared_ptr<CLabel> temp = std::make_shared<CLabel>(name,pos,size,this);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
-		std::shared_ptr<CImage> temp = std::make_shared<CImage>(name, pos, size);
+		std::shared_ptr<CImage> temp = std::make_shared<CImage>(name, pos, size,this);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_BUTTON)	//Button
 	{
 		char LabelName[64];
-		std::shared_ptr<CButton> temp = std::make_shared<CButton>(name, pos, size);
+		std::shared_ptr<CButton> temp = std::make_shared<CButton>(name, pos, size, this);
 
 #ifndef __EMSCRIPTEN__
 		sprintf_s(LabelName, "%s%s", name, "_Label");
 #else
 		sprintf(LabelName, "%s%s", name, "_Label");
 #endif
-		std::shared_ptr<CLabel> ButtonLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2),glm::vec2(1.f));
+		std::shared_ptr<CLabel> ButtonLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2),glm::vec2(1.f), this);
 		ButtonLabel->BindParrentObject(temp);
 		ButtonLabel->MoveObjectLayerUp();
 		ButtonLabel->SetAligment(Object2DAligment::CENTER);
@@ -79,14 +80,27 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 	}
 	else if (id == Object2DType::OBJECT2D_CONTAINER)	//CContainer
 	{
-		std::shared_ptr<CContainer> temp = std::make_shared<CContainer>(name,pos,size);
+		std::shared_ptr<CContainer> temp = std::make_shared<CContainer>(name, pos, size, this);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_TEXTBOX)
 	{
-		std::shared_ptr<CTextBox> temp = std::make_shared<CTextBox>(name, pos, size);
+		char LabelName[64];
+		std::shared_ptr<CTextBox> temp = std::make_shared<CTextBox>(name, pos, size, this);
+#ifndef __EMSCRIPTEN__
+		sprintf_s(LabelName, "%s%s", name, "_Label");
+#else
+		sprintf(LabelName, "%s%s", name, "_Label");
+#endif
+		std::shared_ptr<CLabel> TextBoxLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2), glm::vec2(1.f), this);
+		TextBoxLabel->BindParrentObject(temp);
+		TextBoxLabel->MoveObjectLayerUp();
+		TextBoxLabel->SetAligment(Object2DAligment::CENTER);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
+
+		temp->SetLabel(TextBoxLabel);
+		Objects2D.push_back(TextBoxLabel);
 	}
 }
 
@@ -136,5 +150,60 @@ void CLayout::Tick(double delta)
 		{
 			butt->IsClicked(Event->GetMouseData());
 		}
+	}
+	this->ProcessTextEditing();
+}
+
+void CLayout::ProcessTextEditing()
+{
+	if (this->UsedTestBox == nullptr)
+	{
+		return;
+	}
+	if (this->LayoutIsEditing)
+	{
+
+		bool bChanged = false;
+		uint32_t SingleKey = Event->GetRawKey();
+		std::string Text = this->UsedTestBox->GetValue();
+		if (SingleKey == SDLK_BACKSPACE && Text.length() > 0)
+		{
+			Text.pop_back();
+			bChanged = true;
+		}
+		else if (SingleKey == SDLK_c && SDL_GetModState() & KMOD_CTRL)
+		{
+			SDL_SetClipboardText(Text.c_str());
+		}
+		else if (SingleKey == SDLK_v && SDL_GetModState() & KMOD_CTRL)
+		{
+			Text = SDL_GetClipboardText();
+		}
+
+		if (Event->GetIsEditing())
+		{
+			Text.push_back(SingleKey);
+			bChanged = true;
+		}
+		if (bChanged)
+		{
+			this->UsedTestBox->SetValue(Text);
+		}
+	}
+}
+
+void CLayout::SetUsedTextBox(CTextBox* tbox)
+{
+	if (tbox != nullptr)
+	{
+		SDL_StartTextInput();
+		this->UsedTestBox = tbox;
+		this->LayoutIsEditing = true;
+	}
+	else
+	{
+		SDL_StopTextInput();
+		this->UsedTestBox = nullptr;
+		this->LayoutIsEditing = false;
 	}
 }

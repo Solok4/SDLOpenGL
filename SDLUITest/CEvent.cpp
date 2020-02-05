@@ -20,6 +20,8 @@ CEvent::~CEvent()
 
 void CEvent::PollEvents()
 {
+	this->IsEditing = false;
+	this->RawKey = 0;
 	while (SDL_PollEvent(&this->_Event))
 	{
 		if (this->_Event.type == SDL_MOUSEMOTION)
@@ -48,9 +50,15 @@ void CEvent::PollEvents()
 		{
 		case SDL_KEYDOWN:
 			Keys[this->_Event.key.keysym.scancode] = true;
+			RawKey = this->_Event.key.keysym.sym;
 			break;
 		case SDL_KEYUP:
 			Keys[this->_Event.key.keysym.scancode] = false;
+			break;
+		case SDL_TEXTINPUT:
+			this->IsEditing = true;
+			break;
+		case SDL_TEXTEDITING:
 			break;
 		default:
 			break;
