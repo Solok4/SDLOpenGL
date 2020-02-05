@@ -2,15 +2,8 @@
 #include "CButton.h"
 #include <SDL.h>
 #include "CLog.h"
+#include "COpengl.h"
 
-
-//CButton::CButton() : CImage()
-//{
-//	this->_Size = vec2(1.0f);
-//	this->_Position = vec3(0.0f);
-//	this->_Rotation = vec3(0.f);
-//	this->ColorMask = vec4(1.f);
-//}
 
 
 CButton::~CButton()
@@ -140,5 +133,21 @@ void CButton::CallFunction(MouseButton button)
 		{
 			a->func();
 		}
+	}
+}
+
+void CButton::PostDraw()
+{
+	if (this->_IsVisible)
+	{
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
+
+		this->Label->PreDraw();
+		OpenGL->SetModelMatrixLayout(this->Label->GetModelMatrix());
+		OpenGL->SetColorMaskLayout(this->Label->GetColorMask());
+		this->Label->Draw();
+		this->Label->PostDraw();
 	}
 }

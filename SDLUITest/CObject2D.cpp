@@ -170,25 +170,24 @@ void CObject2D::SetAligment(Object2DAligment Aligment)
 	this->SetSize(this->_Size);
 }
 
-
-void CObject2D::BindParrentObject(std::shared_ptr<CObject2D> obj)
+void CObject2D::BindParrentObject(CObject2D* obj)
 {
 	this->ParrentObject = obj;
-	obj->AddToParrentOfTable(std::make_shared<CObject2D>(*this));
+	obj->AddToParrentOfTable(this);
 	this->SetPosition(this->_Position);
 }
 
-std::shared_ptr<CObject2D> CObject2D::GetParrentObject() const
+CObject2D* CObject2D::GetParrentObject() const
 {
 	return this->ParrentObject;
 }
 
-void CObject2D::AddToParrentOfTable(std::shared_ptr<CObject2D> obj)
+void CObject2D::AddToParrentOfTable(CObject2D* obj)
 {
 	this->ParrentOf.push_back(obj);
 }
 
-std::vector<std::shared_ptr<CObject2D>> CObject2D::GetParentOfTable() const
+std::vector<CObject2D*> CObject2D::GetParentOfTable() const
 {
 	return this->ParrentOf;
 }

@@ -168,13 +168,6 @@ void PreLoop()
 
 	ModelManager->GetModelByName("PiernikNorm.obj")->Mat = PierMat;
 
-	/*ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_tex.png", TextureTypes::BaseTex);
-	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_NM.png", TextureTypes::NormalMap);
-	ModelManager->BindTextureToMaterial("Piernik", "gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);*/
-	//ModelManager->GetModelByName("PiernikNorm.obj")->Mat = ModelManager->GetMaterialByName("Piernik");
-
-	//ModelManager->LoadTexture("Assets/Textures/Tex.tga");
-	//ModelManager->LoadTexture("Assets/Textures/TestTex.bmp");
 	ModelManager->LoadOBJ("Assets/Models/Cube.obj");
 
 	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 10);
@@ -197,9 +190,8 @@ void PreLoop()
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "TestTextBox", vec2(300.f, 500.f), vec2(100.f, 20.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LISTBOX, "TestListBox", vec2(800.f, 200.f), vec2(300.f, 300.f));
 		Layout->PrepareToLoop();
-
-		
 
 		auto TempImage = Layout->FindObjectByName<CImage>("TestImage");
 		TempImage->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
@@ -219,6 +211,12 @@ void PreLoop()
 		auto TestTextBox = Layout->FindObjectByName<CTextBox>("TestTextBox");
 		TestTextBox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 		TestTextBox->GetLabel()->SetFont(Font16);
+
+		auto TestListBox = Layout->FindObjectByName<CListBox>("TestListBox");
+		TestListBox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+		TestListBox->CreateLabels(8);
+		TestListBox->SetFont(Font10);
+		TestListBox->SetText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.");
 
 		auto TempLabel = Layout->FindObjectByName<CLabel>("FrameTimeCounter");
 		TempLabel->SetFont(Font16);

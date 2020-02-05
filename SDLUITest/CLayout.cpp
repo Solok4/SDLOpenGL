@@ -60,24 +60,9 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 	}
 	else if (id == Object2DType::OBJECT2D_BUTTON)	//Button
 	{
-		char LabelName[64];
 		std::shared_ptr<CButton> temp = std::make_shared<CButton>(name, pos, size, this);
-
-#ifndef __EMSCRIPTEN__
-		sprintf_s(LabelName, "%s%s", name, "_Label");
-#else
-		sprintf(LabelName, "%s%s", name, "_Label");
-#endif
-		std::shared_ptr<CLabel> ButtonLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2),glm::vec2(1.f), this);
-		ButtonLabel->BindParrentObject(temp);
-		ButtonLabel->MoveObjectLayerUp();
-		ButtonLabel->SetPadding(glm::vec2(10.f));
-		ButtonLabel->SetAligment(Object2DAligment::CENTER);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
-
-		temp->SetLabel(ButtonLabel);
-		Objects2D.push_back(ButtonLabel);
 	}
 	else if (id == Object2DType::OBJECT2D_CONTAINER)	//CContainer
 	{
@@ -86,23 +71,14 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 	}
 	else if (id == Object2DType::OBJECT2D_TEXTBOX)		//CTextBox
 	{
-		char LabelName[64];
 		std::shared_ptr<CTextBox> temp = std::make_shared<CTextBox>(name, pos, size, this);
-#ifndef __EMSCRIPTEN__
-		sprintf_s(LabelName, "%s%s", name, "_Label");
-#else
-		sprintf(LabelName, "%s%s", name, "_Label");
-#endif
-		std::shared_ptr<CLabel> TextBoxLabel = std::make_shared<CLabel>(LabelName, glm::vec2(temp->GetSize().x / 2, temp->GetSize().y / 2), glm::vec2(1.f), this);
-		TextBoxLabel->BindParrentObject(temp);
-		TextBoxLabel->MoveObjectLayerUp();
-		TextBoxLabel->SetPadding(glm::vec2(10.f));
-		TextBoxLabel->SetAligment(Object2DAligment::CENTER);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
-
-		temp->SetLabel(TextBoxLabel);
-		Objects2D.push_back(TextBoxLabel);
+	}
+	else if (id == Object2DType::OBJECT2D_LISTBOX)
+	{
+		std::shared_ptr<CListBox> temp = std::make_shared<CListBox>(name, pos, size, this);
+		Objects2D.push_back(temp);
 	}
 }
 
@@ -184,6 +160,22 @@ void CLayout::ProcessTextEditing()
 
 		if (Event->GetIsEditing())
 		{
+			if (SDL_GetModState() & KMOD_CAPS)
+			{
+					SingleKey -= 32;
+			}
+			if (SDL_GetModState() & KMOD_SHIFT)
+			{
+				if (SingleKey >= 97 && SingleKey <= 122)
+				{
+					SingleKey -= 32;
+				}
+				else if (SingleKey >= 65 && SingleKey <= 90)
+				{
+					SingleKey += 32;
+				}
+			}
+				
 			Text.push_back(SingleKey);
 			bChanged = true;
 		}

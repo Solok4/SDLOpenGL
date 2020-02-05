@@ -18,6 +18,7 @@ enum Object2DType
 	OBJECT2D_BUTTON,
 	OBJECT2D_CONTAINER,
 	OBJECT2D_TEXTBOX,
+	OBJECT2D_LISTBOX
 };
 
 enum Object2DAligment
@@ -73,14 +74,21 @@ public:
 	virtual void PostDraw() {};
 
 	//Binds the object to other one.
-	void BindParrentObject(std::shared_ptr<CObject2D> obj);
+	/*void BindParrentObject(std::shared_ptr<CObject2D> obj);*/
+	void BindParrentObject(CObject2D* obj);
+
 	//Returns parent object.
-	std::shared_ptr<CObject2D> GetParrentObject() const;
+	//std::shared_ptr<CObject2D> GetParrentObject() const;
+	CObject2D* GetParrentObject() const;
 
 	//Adds other object as child of the object.
-	void AddToParrentOfTable(std::shared_ptr<CObject2D> obj);
+	//void AddToParrentOfTable(std::shared_ptr<CObject2D> obj);
+	void AddToParrentOfTable(CObject2D* obj);
+
 	//Returns list of child objects of this object.
-	std::vector<std::shared_ptr<CObject2D>> GetParentOfTable() const;
+	//std::vector<std::shared_ptr<CObject2D>> GetParentOfTable() const;
+	std::vector<CObject2D*> GetParentOfTable() const;
+
 	//Returns forward vector of the object.
 	vec3 GetForwardVector() const;
 	//Moves object one step front.
@@ -134,8 +142,10 @@ protected:
 	vec2 _LocalOffset;
 	vec2 _Padding;
 	Object2DAligment ObjectAligment;
-	std::shared_ptr<CObject2D> ParrentObject;
-	std::vector<std::shared_ptr<CObject2D>> ParrentOf;
+	//std::shared_ptr<CObject2D> ParrentObject;
+	//std::vector<std::shared_ptr<CObject2D>> ParrentOf;
+	CObject2D* ParrentObject;
+	std::vector<CObject2D*> ParrentOf;
 	int Layer;
 	bool _IsActive = true;
 	bool _IsVisible = true;

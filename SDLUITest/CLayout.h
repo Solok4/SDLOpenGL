@@ -14,6 +14,7 @@
 #include "CImage.h"
 #include "CContainer.h"
 #include "CTextBox.h"
+#include "CListBox.h"
 
 class CLayout
 {

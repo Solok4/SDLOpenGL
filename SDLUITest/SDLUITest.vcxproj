@@ -191,6 +191,7 @@
     <ClInclude Include="CLabel.h" />
     <ClInclude Include="CLayout.h" />
     <ClInclude Include="CLightComponent.h" />
+    <ClInclude Include="CListBox.h" />
     <ClInclude Include="CLog.h" />
     <ClInclude Include="CMaterialManager.h" />
     <ClInclude Include="CMovementComponent.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="CLabel.cpp" />
     <ClCompile Include="CLayout.cpp" />
     <ClCompile Include="CLightComponent.cpp" />
+    <ClCompile Include="CListBox.cpp" />
     <ClCompile Include="CLog.cpp" />
     <ClCompile Include="CMaterialManager.cpp" />
     <ClCompile Include="CMovementComponent.cpp" />

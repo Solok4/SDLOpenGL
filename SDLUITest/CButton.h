@@ -36,6 +36,19 @@ public:
 		this->Funcs.push_back(std::make_shared<MouseFunc>(MouseButton::LEFTMOUSEBUTTON, []() {}));
 		this->Funcs.push_back(std::make_shared<MouseFunc>(MouseButton::RIGTHTMOUSEBUTTON, []() {}));
 		this->Funcs.push_back(std::make_shared<MouseFunc>(MouseButton::MIDDLEMOUSEBUTTON, []() {}));
+
+		char LabelName[64];
+#ifndef __EMSCRIPTEN__
+		sprintf_s(LabelName, "%s%s", name, "_Label");
+#else
+		sprintf(LabelName, "%s%s", name, "_Label");
+#endif
+		this->Label = std::make_shared<CLabel>(LabelName, glm::vec2(this->GetSize().x / 2, this->GetSize().y / 2), glm::vec2(1.f), this->LayoutRef);
+		this->Label->BindParrentObject(this);
+		this->Label->MoveObjectLayerUp();
+		this->Label->SetPadding(glm::vec2(10.f));
+		this->Label->SetAligment(Object2DAligment::CENTER);
+		this->Label->Prepare();
 	};
 	~CButton();
 	//Checks if button is clicked, is being hovered or not. Calls aprioprate functions.
@@ -52,6 +65,9 @@ public:
 	std::shared_ptr<CLabel> GetLabel();
 	//Function being called when the button is clicked.
 	void CallFunction(MouseButton button);
+
+	//Cleans up things after drawing.
+	virtual void PostDraw() override;
 
 	bool GetIsLastHit() { return this->IsLastHit; };
 
