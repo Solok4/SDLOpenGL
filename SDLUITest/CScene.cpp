@@ -190,6 +190,7 @@ void CScene::Tick(double delta)
 	{
 		o->Tick(delta);
 	}
+	this->Camera->CastRay();
 }
 
 //void CScene::SetSkyBox(SkyboxType type, Texture texture)

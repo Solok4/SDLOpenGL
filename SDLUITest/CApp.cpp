@@ -121,7 +121,6 @@ void Loop()
 		OpenGL->UseFramebuffer("0");
 		OpenGL->FinalDraw();
 
-		OpenGL->GetShadersClass().SetCurrentShaderProgram("Gui");
 		OpenGL->PreLoopOrtho();
 		LayoutManager->Draw();	
 

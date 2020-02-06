@@ -2,6 +2,7 @@
 
 #include "CLog.h"
 #include "GL/glew.h"
+#include "glm/glm.hpp"
 #include <vector>
 #include <memory>
 
@@ -41,6 +42,12 @@ public:
 	void AddUniformToShaderStruct(std::string ProgramName, std::string UnifromName);
 	GLuint GetUniformByNameStruct(std::string ProgramName, std::string UniformName);
 	
+	void UniformMat4f(glm::mat4 matrix,const char* uniformName, const char* Shader = "");
+	void Uniform1f(float value, const char* uniformName, const char* Shader = "");
+	void Uniform3f(glm::vec3 value, const char* uniformName, const char* Shader = "");
+	void Uniform1i(int value, const char* uniformName, const char* Shader = "");
+
+	GLuint GetUniformFromCurrentProgram(const char* name);
 
 
 private:

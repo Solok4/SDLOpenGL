@@ -38,7 +38,8 @@ void CLayout::Draw()
 	for (auto a : Objects2D)
 	{
 		a->PreDraw();
-		OpenGL->SetModelMatrixLayout(a->GetModelMatrix());
+		//OpenGL->SetModelMatrixLayout(a->GetModelMatrix());
+		OpenGL->SetModelMatrix(a->GetModelMatrix());
 		OpenGL->SetColorMaskLayout(a->GetColorMask());
 		a->Draw();
 		a->PostDraw();

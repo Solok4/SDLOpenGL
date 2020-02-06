@@ -90,9 +90,6 @@
     <ClInclude Include="CLightComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
-    <ClInclude Include="CKeyboardConf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CMovementComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
@@ -102,9 +99,6 @@
     <ClInclude Include="CGameplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CGameplayManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IDraw.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
     </ClInclude>
@@ -112,9 +106,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CSceneManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CLayoutManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CLayout.h">
@@ -155,6 +146,15 @@
     </ClInclude>
     <ClInclude Include="CListBox.h">
       <Filter>Header Files\Objects 2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameplayManager.h">
+      <Filter>Header Files\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="CLayoutManager.h">
+      <Filter>Header Files\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="CKeyboardConf.h">
+      <Filter>Header Files\AssetManagers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,9 +209,6 @@
     <ClCompile Include="CLightComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
-    <ClCompile Include="CKeyboardConf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CMovementComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
     </ClCompile>
@@ -221,19 +218,10 @@
     <ClCompile Include="CGameplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CGameplayManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CSceneManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CLayoutManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CInitialSetup.cpp">
@@ -265,6 +253,18 @@
     </ClCompile>
     <ClCompile Include="CListBox.cpp">
       <Filter>Source Files\Objects 2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameplayManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CLayoutManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneManager.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyboardConf.cpp">
+      <Filter>Source Files\AssetManagers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

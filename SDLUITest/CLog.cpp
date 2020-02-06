@@ -31,6 +31,22 @@ void CLog::MyLog(LogType type, const char* Message,...)
 	#endif
 			break;
 		}
+
+
+		case LogType::Debug: {
+#ifdef NDEBUG
+			return;
+#else
+			//Debug
+#ifdef __EMSCRIPTEN__
+			strncpy(Final, "[Debug]: ", 10);
+#else
+			strncpy_s(Final, "[Debug]: ", 10);
+#endif
+			break;
+#endif // DEBUG
+		}
+
 		case LogType::Error:
 		{
 	#ifdef __EMSCRIPTEN__
@@ -52,7 +68,9 @@ void CLog::MyLog(LogType type, const char* Message,...)
 		}
 
 		default:
-		{}
+		{
+			break;
+		}
 	}
 	va_list vl;
 	va_start(vl, Message);

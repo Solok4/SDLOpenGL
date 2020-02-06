@@ -362,12 +362,11 @@ void CModelManager::LoadOBJ(const char * path)
 	
 	tempModel->IndicesCount = VertexIndices.size();
 
-	// Changed indexes for 4850
+
 	glGenVertexArrays(1, &tempModel->VAO);
 	glBindVertexArray(tempModel->VAO);
 	glGenBuffers(3, tempModel->VBOs);
-//
-//#ifdef HD4850 
+
 	glEnableVertexAttribArray(MODEL_MESHBUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
 	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);

@@ -155,6 +155,7 @@ void Shaders::SetCurrentShaderProgram(std::string name)
 		{
 			this->CurrentShaderProgram = o;
 			glUseProgram(o->Program);
+			return;
 		}
 	}
 }
@@ -217,6 +218,78 @@ GLuint Shaders::GetUniformByNameStruct(std::string ProgramName, std::string Unif
 		if (o->name == UniformName)
 		{
 			return o->Uni;
+		}
+	}
+	return -1;
+}
+
+void Shaders::UniformMat4f(glm::mat4 matrix, const char* uniformName, const char* Shader)
+{
+	if (strcmp(Shader, "") == 0)
+	{
+		glUniformMatrix4fv(GetUniformFromCurrentProgram(uniformName), 1, GL_FALSE, &matrix[0][0]);
+	}
+	else
+	{
+		auto PastProgram = this->CurrentShaderProgram;
+		this->SetCurrentShaderProgram(Shader);
+		glUniformMatrix4fv(GetUniformFromCurrentProgram(uniformName), 1, GL_FALSE, &matrix[0][0]);
+		this->SetCurrentShaderProgram(PastProgram->name);
+	}
+}
+
+void Shaders::Uniform1f(float value, const char* uniformName, const char* Shader)
+{
+	if (strcmp(Shader, "") == 0)
+	{
+		glUniform1f(GetUniformFromCurrentProgram(uniformName),value);
+	}
+	else
+	{
+		auto PastProgram = this->CurrentShaderProgram;
+		this->SetCurrentShaderProgram(Shader);
+		glUniform1f(GetUniformFromCurrentProgram(uniformName), value);
+		this->SetCurrentShaderProgram(PastProgram->name);
+	}
+}
+
+void Shaders::Uniform3f(glm::vec3 value, const char* uniformName, const char* Shader)
+{
+	if (strcmp(Shader, "") == 0)
+	{
+		glUniform3f(GetUniformFromCurrentProgram(uniformName), value.x, value.y, value.z);
+	}
+	else
+	{
+		auto PastProgram = this->CurrentShaderProgram;
+		this->SetCurrentShaderProgram(Shader);
+		glUniform3f(GetUniformFromCurrentProgram(uniformName), value.x, value.y, value.z);
+		this->SetCurrentShaderProgram(PastProgram->name);
+	}
+}
+
+void Shaders::Uniform1i(int value, const char* uniformName, const char* Shader)
+{
+	if (strcmp(Shader, "") == 0)
+	{
+		glUniform1i(GetUniformFromCurrentProgram(uniformName), value);
+	}
+	else
+	{
+		auto PastProgram = this->CurrentShaderProgram;
+		this->SetCurrentShaderProgram(Shader);
+		glUniform1i(GetUniformFromCurrentProgram(uniformName), value);
+		this->SetCurrentShaderProgram(PastProgram->name);
+	}
+}
+
+GLuint Shaders::GetUniformFromCurrentProgram(const char* name)
+{
+	for (auto a : this->CurrentShaderProgram->Uniforms)
+	{
+		if (strcmp(a->name.c_str(), name) == 0)
+		{
+			return a->Uni;
 		}
 	}
 	return -1;

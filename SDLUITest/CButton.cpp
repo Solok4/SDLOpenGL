@@ -145,7 +145,7 @@ void CButton::PostDraw()
 		glBindVertexArray(0);
 
 		this->Label->PreDraw();
-		OpenGL->SetModelMatrixLayout(this->Label->GetModelMatrix());
+		OpenGL->SetModelMatrix(this->Label->GetModelMatrix());
 		OpenGL->SetColorMaskLayout(this->Label->GetColorMask());
 		this->Label->Draw();
 		this->Label->PostDraw();

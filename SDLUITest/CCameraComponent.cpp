@@ -153,3 +153,27 @@ void CCameraComponent::Tick(double delta)
 			this->_Position.x+this->_PosOffset.x, this->_Position.y+ this->_PosOffset.y, this->_Position.z+ this->_PosOffset.z);
 	}
 }
+
+glm::vec3 CCameraComponent::CastRay()
+{
+	int MouseX;
+	int MouseY;
+	Event->GetMouseMotion(MouseX, MouseY);
+
+	float NormalizedX = (2.f * MouseX) / Renderer->GetWindowInfo()->ScreenWidth - 1.f;
+	float NormalizedY = 1.0f -(2.f * MouseY) / Renderer->GetWindowInfo()->ScreenHeight;
+
+	glm::vec3 NormalizedCords = glm::vec3(NormalizedX, NormalizedY, -1.f);
+
+	glm::vec4 HomogenousClip = glm::vec4(NormalizedCords.x, NormalizedCords.y, -1.f, 1.f);
+
+	glm::mat4 PerspectiveMatrix = glm::perspective(glm::radians(this->FOV), Renderer->GetWindowInfo()->ScreenAspectRatio, 0.1f, 1000.f);
+	glm::vec4 RayEyeSpace = glm::inverse(PerspectiveMatrix)* HomogenousClip;
+	RayEyeSpace = glm::vec4(RayEyeSpace.x, RayEyeSpace.y, -1.f, 0.f);
+
+	glm::mat4 ViewMatrix = glm::lookAt(this->_Position, this->_Position+this->GetForwardVector(), glm::vec3(0.0f, 1.f, 0.f));
+	glm::vec3 RayWorld = (glm::inverse(ViewMatrix) * RayEyeSpace);
+	this->LastRay = RayWorld;
+	//CLog::MyLog(LogType::Debug, "RayCast x: %f y: %f z: %f", RayWorld.x, RayWorld.y, RayWorld.z);
+	return RayWorld;
+}

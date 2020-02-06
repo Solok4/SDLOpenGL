@@ -48,8 +48,6 @@ void CListBox::SetText(std::string val)
 		}
 		CombinedSpaces = 0;
 		this->LabelVector[i]->SetPosition(glm::vec2(this->_Padding.x, NextHeight));
-
-		//int SubstrBegin = this->LettersInARow * i;
 		for (;;) 
 		{
 			nextSpace = tempString.find_first_of(" ");
@@ -64,7 +62,7 @@ void CListBox::SetText(std::string val)
 				tempString = tempString.substr(nextSpace + 1);
 			}
 			
-			if (CombinedSpaces > (int)(this->LettersInARow * .85) && CombinedSpaces < this->LettersInARow)
+			if (CombinedSpaces > (int)(this->LettersInARow * .85))
 			{
 				break;
 			}
@@ -87,7 +85,7 @@ void CListBox::PostDraw()
 		for (auto a : this->LabelVector)
 		{
 			a->PreDraw();
-			OpenGL->SetModelMatrixLayout(a->GetModelMatrix());
+			OpenGL->SetModelMatrix(a->GetModelMatrix());
 			OpenGL->SetColorMaskLayout(a->GetColorMask());
 			a->Draw();
 			a->PostDraw();

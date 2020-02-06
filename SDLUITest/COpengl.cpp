@@ -269,27 +269,23 @@ void COpengl::PreLoop()
 
 void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default","Model"), 1, GL_FALSE, &matrix[0][0]);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "Model"), 1, GL_FALSE, &matrix[0][0]);
-#ifndef __EMSCRIPTEN__
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("PointShad", "Model"), 1, GL_FALSE, &matrix[0][0]);
-#endif
+	Shaders.UniformMat4f(matrix, "Model");
 }
 
 /*
 Set position, scale and rotation to gui element
 */
-void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
-{
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Model"), 1, GL_FALSE, &matrix[0][0]);
-}
+//void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
+//{
+//	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Model"), 1, GL_FALSE, &matrix[0][0]);
+//}
 
 /*
 Sets colour of gui element
 */
 void COpengl::SetColorMaskLayout(glm::vec3 ColorMask)
 {
-	glUniform3f(Shaders.GetUniformByNameStruct("Gui", "ColorMask"), ColorMask.x, ColorMask.y, ColorMask.z);
+	Shaders.Uniform3f(ColorMask, "ColorMask");
 }
 
 /*
@@ -298,7 +294,7 @@ Calculates inversed and transposed normal matrix to base drawing struct
 void COpengl::SetNormalMatrix(glm::mat4 matrix)
 {
 	glm::mat4 NormalMatrix = glm::transpose(glm::inverse(matrix));
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "NormalMatrix"), 1, GL_FALSE, &NormalMatrix[0][0]);
+	Shaders.UniformMat4f(matrix, "NormalMatrix");
 }
 
 
@@ -321,11 +317,9 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 	{
 		ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetPosition()+ Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->WndInfo->ScreenAspectRatio, 0.1f, 100.0f);
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", "Projection"), 1, GL_FALSE, &Projection[0][0]);
-		glUniform1f(Shaders.GetUniformByNameStruct("Default", "FarPlane"), FARPLANE);
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+		Shaders.UniformMat4f(ViewMatrix, "View");
+		Shaders.UniformMat4f(Projection, "Projection");
+		Shaders.Uniform1f(FARPLANE, "FarPlane");
 		glCullFace(GL_BACK);
 	}
 	else
@@ -340,10 +334,11 @@ Sets viewport for gui elements
 */
 void COpengl::PreLoopOrtho()
 {
+	Shaders.SetCurrentShaderProgram("Gui");
 	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WndInfo->ScreenWidth, (float)this->WndInfo->ScreenHeight, 0.0f, -0.1f, 1000.0f);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+	Shaders.UniformMat4f(ViewMatrix, "View");
+	Shaders.UniformMat4f(Projection, "Projection");
 	glCullFace(GL_BACK);
 }
 /*
@@ -482,7 +477,7 @@ void COpengl::UseLightFramebuffer(std::string name)
 				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
 				glClearColor(0.f, 0.f, 0.f, 1.0f);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				//glCullFace(GL_FRONT);
+				glCullFace(GL_FRONT);
 				return;
 			}
 		}
@@ -551,14 +546,22 @@ MyFrameBuffer COpengl::GetFramebuffer(std::string name)
 /*
 Clears all framebuffers including those used for lighting
 */
+void COpengl::ClearAllFramebuffers()
+{
+	this->ClearFramebuffers();
+	this->ClearLightFramebuffers();
+}
 void COpengl::ClearFramebuffers()
 {
 	for (auto o : this->Framebuffers)
 	{
-		glDeleteRenderbuffers(1,&o.RBO);
+		glDeleteRenderbuffers(1, &o.RBO);
 		glDeleteTextures(1, &o.CBuffer);
-		glDeleteFramebuffers(1,&o.FBO);
+		glDeleteFramebuffers(1, &o.FBO);
 	}
+}
+void COpengl::ClearLightFramebuffers()
+{
 	for (auto o : this->LightFramebuffers)
 	{
 		for (int i = 0; i < 6; i++)
@@ -578,8 +581,8 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 	{
 		ViewMatrix = glm::lookAt(camera->GetPosition(), camera->GetPosition() + camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 Projection = glm::perspective(glm::radians(camera->GetFov()), this->WndInfo->ScreenAspectRatio, 0.1f, 100.0f);
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "View"), 1, GL_FALSE, &ViewMatrix[0][0]);
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "Projection"), 1, GL_FALSE, &Projection[0][0]);
+		Shaders.UniformMat4f(ViewMatrix, "View");
+		Shaders.UniformMat4f(Projection, "Projection");
 	}
 	else
 	{
@@ -587,35 +590,19 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 	}
 	auto model = ModelManager->GetModelByName("Cube.obj");
 	glBindVertexArray(model->VAO);
-//#ifdef HD4850
 	glEnableVertexAttribArray(MODEL_MESHBUFFER);
-//	glEnableVertexAttribArray(2);
-//	glEnableVertexAttribArray(1);
-//#else
-//	glEnableVertexAttribArray(0);
-//	glEnableVertexAttribArray(1);
-//	glEnableVertexAttribArray(2);
-//#endif
 	glm::vec3 Color;
 	for (auto a : list)
 	{
 		if (a->IsActive())
 		{
-			glUniformMatrix4fv(Shaders.GetUniformByNameStruct("DebugLights", "Model"), 1, GL_FALSE, &a->GetModelMatrix()[0][0]);
+			Shaders.UniformMat4f(a->GetModelMatrix(), "Model");
 			Color = glm::vec3(a->GetLightStruct().Color.r, a->GetLightStruct().Color.g, a->GetLightStruct().Color.b);
-			glUniform3f(Shaders.GetUniformByNameStruct("DebugLights", "Color"), Color.r,Color.g,Color.b);
+			Shaders.Uniform3f(Color, "Color");
 			glDrawArrays(GL_TRIANGLES, 0, model->IndicesCount);
 		}
 	}
-//#ifdef HD4850
 	glDisableVertexAttribArray(MODEL_MESHBUFFER);
-//	glDisableVertexAttribArray(2);
-//	glDisableVertexAttribArray(0);
-//#else
-//	glDisableVertexAttribArray(2);
-//	glDisableVertexAttribArray(1);
-//	glDisableVertexAttribArray(0);
-//#endif
 	glBindVertexArray(0);
 }
 
@@ -630,7 +617,7 @@ void COpengl::FinalDraw()
 	glEnableVertexAttribArray(1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->GetFramebuffer("Default").CBuffer);
-	glUniform1i(glGetUniformLocation(Shaders.GetCurrentShaderProgram(), "Base"),0);
+	Shaders.Uniform1i(0, "Base");
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -681,8 +668,8 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 			glUniformMatrix4fv(Shaders.GetUniformByNameStruct("PointShad", "ShadowMatrices[" + std::to_string(i) + "]"),1,GL_FALSE, &ShadowTransforms[i][0][0]);
 		}
 
-		glUniform3f(Shaders.GetUniformByNameStruct("PointShad", "LightPos"), lights->GetPosition().x, lights->GetPosition().y, lights->GetPosition().z);
-		glUniform1f(Shaders.GetUniformByNameStruct("PointShad", "FarPlane"), FARPLANE);
+		Shaders.Uniform3f(lights->GetPosition(), "LightPos");
+		Shaders.Uniform1f(FARPLANE, "FarPlane");
 #endif
 	}
 	else if(lights->GetLightStruct().LightType == LightType::Directional)
@@ -712,45 +699,74 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	LightNumber = "Lights[";
 	LightNumber += std::to_string(index);
 	LightNumber += "]";
-	Uniform = LightNumber + ".Position";
 
+	Uniform = LightNumber + ".Position";
 	Shaders.SetCurrentShaderProgram("Default");
-	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Position.x, LightStruct.Position.y, LightStruct.Position.z);
+	Shaders.Uniform3f(LightStruct.Position, Uniform.c_str());
 	Uniform = LightNumber + ".Rotation";
-	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Rotation.x, LightStruct.Rotation.y, LightStruct.Rotation.z);
+	Shaders.Uniform3f(LightStruct.Rotation, Uniform.c_str());
 	Uniform = LightNumber + ".Ambient";
-	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Ambient.x, LightStruct.Ambient.y, LightStruct.Ambient.z);
+	Shaders.Uniform3f(LightStruct.Ambient, Uniform.c_str());
 	Uniform = LightNumber + ".Diffuse";
-	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Diffuse.x, LightStruct.Diffuse.y, LightStruct.Diffuse.z);
+	Shaders.Uniform3f(LightStruct.Diffuse, Uniform.c_str());
 	Uniform = LightNumber + ".Specular";
-	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Specular.x, LightStruct.Specular.y, LightStruct.Specular.z);
+	Shaders.Uniform3f(LightStruct.Specular, Uniform.c_str());
 	Uniform = LightNumber + ".Color";
-	glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Color.x, LightStruct.Color.y, LightStruct.Color.z);
+	Shaders.Uniform3f(LightStruct.Color, Uniform.c_str());
 	Uniform = LightNumber + ".Constant";
-	glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Constant);
+	Shaders.Uniform1f(LightStruct.Constant, Uniform.c_str());
 	Uniform = LightNumber + ".Linear";
-	glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Linear);
+	Shaders.Uniform1f(LightStruct.Linear, Uniform.c_str());
 	Uniform = LightNumber + ".Quadratic";
-	glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Quadratic);
+	Shaders.Uniform1f(LightStruct.Quadratic, Uniform.c_str());
 	Uniform = LightNumber + ".CutoutDist";
-	glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.CutoutDist);
+	Shaders.Uniform1f(LightStruct.CutoutDist, Uniform.c_str());
 	Uniform = LightNumber + ".LightType";
-	glUniform1i(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.LightType);
+	Shaders.Uniform1i(LightStruct.LightType, Uniform.c_str());
 	Uniform = "depthMVP[" + std::to_string(index);
 	Uniform += "]";
-	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", Uniform), 1, GL_FALSE, &depthMVP[0][0]); //&depthBiasMatrix[0][0]);
+	Shaders.UniformMat4f(depthMVP, Uniform.c_str());
+	Shaders.UniformMat4f(depthMVP, "depthMVP", "Shadows");
+
+	//Uniform = LightNumber + ".Position";
+	//Shaders.SetCurrentShaderProgram("Default");
+	//glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Position.x, LightStruct.Position.y, LightStruct.Position.z);
+	//Uniform = LightNumber + ".Rotation";
+	//glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Rotation.x, LightStruct.Rotation.y, LightStruct.Rotation.z);
+	//Uniform = LightNumber + ".Ambient";
+	//glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Ambient.x, LightStruct.Ambient.y, LightStruct.Ambient.z);
+	//Uniform = LightNumber + ".Diffuse";
+	//glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Diffuse.x, LightStruct.Diffuse.y, LightStruct.Diffuse.z);
+	//Uniform = LightNumber + ".Specular";
+	//glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Specular.x, LightStruct.Specular.y, LightStruct.Specular.z);
+	//Uniform = LightNumber + ".Color";
+	//glUniform3f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Color.x, LightStruct.Color.y, LightStruct.Color.z);
+	//Uniform = LightNumber + ".Constant";
+	//glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Constant);
+	//Uniform = LightNumber + ".Linear";
+	//glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Linear);
+	//Uniform = LightNumber + ".Quadratic";
+	//glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.Quadratic);
+	//Uniform = LightNumber + ".CutoutDist";
+	//glUniform1f(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.CutoutDist);
+	//Uniform = LightNumber + ".LightType";
+	//glUniform1i(Shaders.GetUniformByNameStruct("Default", Uniform), LightStruct.LightType);
+	//Uniform = "depthMVP[" + std::to_string(index);
+	//Uniform += "]";
+	//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Default", Uniform), 1, GL_FALSE, &depthMVP[0][0]); //&depthBiasMatrix[0][0]);
+	//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
 
 	if (lights->GetLightStruct().LightType == LightType::Point)
 	{
 #ifndef __EMSCRIPTEN__
 		Shaders.SetCurrentShaderProgram("PointShad");
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
+		//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
 #endif
 	}
 	else
 	{
 		Shaders.SetCurrentShaderProgram("Shadows");
-		glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
+		//glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Shadows", "depthMVP"), 1, GL_FALSE, &depthMVP[0][0]);
 	}
 	glViewport(0, 0, SHADOWMAP_SIZE, SHADOWMAP_SIZE);
 }

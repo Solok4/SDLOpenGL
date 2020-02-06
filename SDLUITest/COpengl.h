@@ -59,8 +59,8 @@ public:
 	void PreLoop();
 	//Set model matrix to scene rendering shader uniform.
 	void SetModelMatrix(glm::mat4 matrix);
-	//Set model matrix to layout rendering shader uniform.
-	void SetModelMatrixLayout(glm::mat4 matrix);
+	////Set model matrix to layout rendering shader uniform.
+	//void SetModelMatrixLayout(glm::mat4 matrix);
 	//Set colour of layout element.
 	void SetColorMaskLayout(glm::vec3 ColorMask);
 	//Sends inverted and transposed normal matrix to scene rendering shader.
@@ -84,7 +84,11 @@ public:
 	//Returns framebuffer struct.
 	MyFrameBuffer GetFramebuffer(std::string name);
 	//Clears all framebuffers including the light ones.
+	void ClearAllFramebuffers();
+
 	void ClearFramebuffers();
+
+	void ClearLightFramebuffers();
 
 	void DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list, std::shared_ptr<CCameraComponent> camera);
 

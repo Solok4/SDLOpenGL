@@ -22,6 +22,8 @@ public:
 	//Function called every frame.
 	void Tick(double delta) override;
 
+	glm::vec3 CastRay();
+
 private:
 
 	int LastX = 0;
@@ -30,5 +32,7 @@ private:
 	float Sensitivity = 5;
 	bool IsFree = false;
 	bool First = true;
+
+	glm::vec3 LastRay;
 };
 
