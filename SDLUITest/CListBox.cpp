@@ -7,7 +7,8 @@ void CListBox::CreateLabels(int rows)
 {
 	for (int i = this->LabelVector.size(); i <= rows-1; i++)
 	{
-		auto Label = std::make_shared<CLabel>(std::to_string(i).c_str(), glm::vec2(this->GetSize().x / 2,this->_Padding.y), glm::vec2(1.f), this->LayoutRef);
+		std::string LabelName = this->_Name + "_" + std::to_string(i);
+		auto Label = std::make_shared<CLabel>(LabelName.c_str(), glm::vec2(this->GetSize().x / 2,this->_Padding.y), glm::vec2(1.f), this->LayoutRef);
 		Label->Prepare();
 		Label->BindParrentObject(this);
 		Label->MoveObjectLayerUp();
@@ -81,15 +82,15 @@ void CListBox::PostDraw()
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
-		
+		this->LabelVector[0]->PreDraw();
 		for (auto a : this->LabelVector)
 		{
-			a->PreDraw();
 			OpenGL->SetModelMatrix(a->GetModelMatrix());
 			OpenGL->SetColorMaskLayout(a->GetColorMask());
 			a->Draw();
-			a->PostDraw();
+			//a->PostDraw();
 		}
+		this->LabelVector[0]->PostDraw();
 	}
 }
 

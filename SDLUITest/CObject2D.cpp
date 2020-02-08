@@ -11,7 +11,7 @@
 
 
 CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref)
-	:_Name(std::string(name)), _Position(position), _Size(objsize), Layer(0), ObjectAligment(Object2DAligment::LEFT_TOP),
+	:_Name(name), _Position(position), _Size(objsize), Layer(0), ObjectAligment(Object2DAligment::LEFT_TOP),
 	_LocalOffset(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f)
 {
 	this->RefreshModelMatrix();
@@ -20,7 +20,7 @@ CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLa
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(LogType::Log, "Object2DDestructor %s",this->_Name);
+	CLog::MyLog(LogType::Log, "Object2DDestructor %s",this->_Name.c_str());
 }
 
 void CObject2D::Prepare()

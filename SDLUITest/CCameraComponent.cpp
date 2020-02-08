@@ -145,6 +145,8 @@ void CCameraComponent::Tick(double delta)
 {
 	this->_ParrentObject->SetRotation(this->_Rotation);
 	CBaseComponent::Tick(delta);
+	this->PerspectiveMatrix = glm::perspective(glm::radians(this->FOV), Renderer->GetWindowInfo()->ScreenAspectRatio, 0.1f, 1000.f);
+	this->ViewMatrix = glm::lookAt(this->_Position, this->_Position + this->GetForwardVector(), glm::vec3(0.f, 1.f, 0.f));
 	if (this->IsFree)
 	{
 		this->ProcessMouseMovements();

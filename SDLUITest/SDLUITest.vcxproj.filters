@@ -40,6 +40,9 @@
     <Filter Include="Source Files\AssetManagers">
       <UniqueIdentifier>{8aef664a-02f9-401a-9a6a-c1843b1e9d06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="_Shaders\GLES">
+      <UniqueIdentifier>{18ea5d19-9671-453e-9f8d-167210f620aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -271,37 +274,19 @@
     <None Include="Assets\Shaders\final.frag">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\finale.frag">
-      <Filter>_Shaders</Filter>
-    </None>
     <None Include="Assets\Shaders\final.vert">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\finale.vert">
       <Filter>_Shaders</Filter>
     </None>
     <None Include="Assets\Shaders\Gui.frag">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\Guie.frag">
-      <Filter>_Shaders</Filter>
-    </None>
     <None Include="Assets\Shaders\Gui.vert">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\Guie.vert">
       <Filter>_Shaders</Filter>
     </None>
     <None Include="Assets\Shaders\Scene.frag">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\Scenee.frag">
-      <Filter>_Shaders</Filter>
-    </None>
     <None Include="Assets\Shaders\Scene.vert">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\Scenee.vert">
       <Filter>_Shaders</Filter>
     </None>
     <None Include="Assets\Shaders\Shadows.frag">
@@ -319,31 +304,79 @@
     <None Include="Assets\Shaders\PointShad.geom">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\PointShade.frag">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\PointShade.geom">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\PointShade.vert">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\Shadowse.frag">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\Shadowse.vert">
-      <Filter>_Shaders</Filter>
-    </None>
     <None Include="Assets\Shaders\DebugLights.frag">
       <Filter>_Shaders</Filter>
     </None>
     <None Include="Assets\Shaders\DebugLights.vert">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\DebugLightse.frag">
+    <None Include="Assets\Shaders\BaseMap.frag">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\DebugLightse.vert">
+    <None Include="Assets\Shaders\BaseMap.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\NormalMap.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\NormalMap.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\SpecularMap.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\SpecularMap.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\DebugLightse.frag">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\DebugLightse.vert">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\finale.frag">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\finale.vert">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\Guie.frag">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\Guie.vert">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\PointShade.frag">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\PointShade.geom">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\PointShade.vert">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\Scenee.frag">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\Scenee.vert">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\Shadowse.frag">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\gles\Shadowse.vert">
+      <Filter>_Shaders\GLES</Filter>
+    </None>
+    <None Include="Assets\Shaders\LightPass.vert">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\LightPass.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\DepthPass.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\DepthPass.vert">
       <Filter>_Shaders</Filter>
     </None>
   </ItemGroup>

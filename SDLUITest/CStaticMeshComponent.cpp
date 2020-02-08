@@ -37,14 +37,24 @@ std::shared_ptr<Model> CStaticMeshComponent::GetModel()
 	return this->_Model;
 }
 
-void CStaticMeshComponent::Draw(DrawType DType)
+void CStaticMeshComponent::Draw(RenderStep step)
 {
 	if (this->_IsActive)
 	{
 		if (this->_Model != nullptr)
 		{
 			int program = 0;
-			if (DType == DrawType::FullDraw)
+
+			if (step == RenderStep::RenderVerticesOnly)
+			{
+				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
+				glBindVertexArray(this->_Model->VAO);
+				glEnableVertexAttribArray(MODEL_MESHBUFFER);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				glDisableVertexAttribArray(MODEL_MESHBUFFER);
+				glBindVertexArray(0);
+			}
+			else if (step == RenderStep::RenderDiffuse)
 			{
 				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
 				glBindVertexArray(this->_Model->VAO);
@@ -61,20 +71,6 @@ void CStaticMeshComponent::Draw(DrawType DType)
 				}
 				glBindTexture(GL_TEXTURE_2D, base);
 				glUniform1i(glGetUniformLocation(program, "Base"), 0);
-				auto normal = this->_Model->Mat->GetTextureByType(TextureTypes::NormalMap);
-				if (normal !=-1)
-				{
-					glActiveTexture(GL_TEXTURE1);
-					glBindTexture(GL_TEXTURE_2D, normal);
-					glUniform1i(glGetUniformLocation(program, "Normal"), 1);
-				}
-				auto specular = this->_Model->Mat->GetTextureByType(TextureTypes::SpecularMap);
-				if (specular !=-1)
-				{
-					glActiveTexture(GL_TEXTURE2);
-					glBindTexture(GL_TEXTURE_2D, specular);
-					glUniform1i(glGetUniformLocation(program, "Specular"), 2);
-				}
 				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
 				if (this->_Model->HasNormals)
 					glDisableVertexAttribArray(MODEL_NORMALBUFFER);
@@ -84,7 +80,59 @@ void CStaticMeshComponent::Draw(DrawType DType)
 
 				glBindVertexArray(0);
 			}
-			else if (DType == DrawType::VerticesOnly)
+			else if (step == RenderStep::RenderNormal)
+			{
+				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
+				glBindVertexArray(this->_Model->VAO);
+				glEnableVertexAttribArray(MODEL_MESHBUFFER);
+				if (this->_Model->HasTexcords)
+					glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
+				if (this->_Model->HasNormals)
+					glEnableVertexAttribArray(MODEL_NORMALBUFFER);
+				glActiveTexture(GL_TEXTURE0);
+				auto Normal = this->_Model->Mat->GetTextureByType(TextureTypes::NormalMap);
+				if (!Normal)
+				{
+					return;
+				}
+				glBindTexture(GL_TEXTURE_2D, Normal);
+				glUniform1i(glGetUniformLocation(program, "Normal"), 0);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				if (this->_Model->HasNormals)
+					glDisableVertexAttribArray(MODEL_NORMALBUFFER);
+				if (this->_Model->HasTexcords)
+					glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
+				glDisableVertexAttribArray(MODEL_MESHBUFFER);
+
+				glBindVertexArray(0);
+			}
+			else if (step == RenderStep::RenderSpecular)
+			{
+				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
+				glBindVertexArray(this->_Model->VAO);
+				glEnableVertexAttribArray(MODEL_MESHBUFFER);
+				if (this->_Model->HasTexcords)
+					glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
+				if (this->_Model->HasNormals)
+					glEnableVertexAttribArray(MODEL_NORMALBUFFER);
+				glActiveTexture(GL_TEXTURE0);
+				auto Specular = this->_Model->Mat->GetTextureByType(TextureTypes::SpecularMap);
+				if (!Specular)
+				{
+					return;
+				}
+				glBindTexture(GL_TEXTURE_2D, Specular);
+				glUniform1i(glGetUniformLocation(program, "Specular"), 0);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				if (this->_Model->HasNormals)
+					glDisableVertexAttribArray(MODEL_NORMALBUFFER);
+				if (this->_Model->HasTexcords)
+					glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
+				glDisableVertexAttribArray(MODEL_MESHBUFFER);
+
+				glBindVertexArray(0);
+			}
+			else if (step == RenderStep::RenderVerticesOnly)
 			{
 				program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
 				glBindVertexArray(this->_Model->VAO);

@@ -33,7 +33,7 @@ void CSpriteComponent::PreDraw()
 	}
 }
 
-void CSpriteComponent::Draw(DrawType dt)
+void CSpriteComponent::Draw(RenderStep step)
 {
 	
 }

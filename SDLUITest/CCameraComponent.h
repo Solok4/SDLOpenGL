@@ -22,6 +22,9 @@ public:
 	//Function called every frame.
 	void Tick(double delta) override;
 
+	glm::mat4 GetPerspectiveMatrix() { return this->PerspectiveMatrix; };
+	glm::mat4 GetViewMatrix() { return this->ViewMatrix; };
+
 	glm::vec3 CastRay();
 
 private:
@@ -32,6 +35,9 @@ private:
 	float Sensitivity = 5;
 	bool IsFree = false;
 	bool First = true;
+
+	glm::mat4 PerspectiveMatrix;
+	glm::mat4 ViewMatrix;
 
 	glm::vec3 LastRay;
 };

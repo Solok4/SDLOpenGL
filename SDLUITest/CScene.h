@@ -5,11 +5,6 @@
 #include "CObject3D.h"
 #include "IDraw.h"
 
-enum SkyboxType
-{
-	CubeType = 0,
-};
-
 class CScene
 {
 public:
@@ -35,6 +30,8 @@ public:
 
 	void Prepare();
 
+	void ProcessLights();
+
 	void SetCamera(std::shared_ptr<CCameraComponent> Cam);
 	void SetCamera(std::shared_ptr<CObject3D> Camera);
 	std::shared_ptr<CCameraComponent> GetCamera();
@@ -43,16 +40,17 @@ public:
 	void SetMovementObject(std::shared_ptr<CObject3D> Movement);
 	std::shared_ptr<CMovementComponent> GetMovementObject();
 
-	std::vector <std::shared_ptr<CObject3D>> Objects3D;
-	std::vector <std::shared_ptr<CLightComponent>> Lights;
-	std::string Name;
-	std::shared_ptr<CCameraComponent> Camera;
-	std::shared_ptr<CMovementComponent> MovementObject;
 
 	void CacheObjectsToDraw();
 
 	bool DrawableCached = false;
 	std::vector <std::shared_ptr<IDraw>> ObjectsToDraw;
+
+	std::vector <std::shared_ptr<CObject3D>> Objects3D;
+	std::vector <std::shared_ptr<CLightComponent>> Lights;
+	std::string Name;
+	std::shared_ptr<CCameraComponent> Camera;
+	std::shared_ptr<CMovementComponent> MovementObject;
 
 	GLuint SkyboxVAO;
 	GLuint SkyboxVBOs[2];

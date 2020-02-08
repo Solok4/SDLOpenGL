@@ -138,48 +138,113 @@ std::string CScene::GetName()
 
 void CScene::Draw(DrawType DType)
 {
-	if (this->DrawableCached)
+	if (!this->DrawableCached)
+	{
+		this->CacheObjectsToDraw();
+	}
+	if (DType == DrawType::FullDraw)
+	{
+		for (int i = 0; i < RenderStep::RenderStepsMAX; i++)
+		{
+			if (i == RenderStep::RenderVerticesOnly)
+			{
+				OpenGL->UseFramebuffer("DepthMap");
+				OpenGL->PreLoopPerspective(this->Camera);
+				for (auto c : this->ObjectsToDraw)
+				{
+					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+					if (sm != nullptr)
+					{
+						sm->CalculateMatrix();
+						OpenGL->SetModelMatrix(sm->GetModelMatrix());
+						c->Draw((RenderStep)i);
+					}
+				}
+
+			}
+			if (i == RenderStep::RenderDiffuse)
+			{
+				OpenGL->UseFramebuffer("BaseMap");
+				OpenGL->PreLoopPerspective(this->Camera);
+				for (auto c : this->ObjectsToDraw)
+				{
+					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+					if (sm != nullptr)
+					{
+						sm->CalculateMatrix();
+						OpenGL->SetModelMatrix(sm->GetModelMatrix());
+						c->Draw((RenderStep)i);
+					}
+				}
+
+			}
+			else if (i == RenderStep::RenderNormal)
+			{
+				OpenGL->UseFramebuffer("NormalMap");
+				OpenGL->PreLoopPerspective(this->Camera);
+				for (auto c : this->ObjectsToDraw)
+				{
+					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+					if (sm != nullptr)
+					{
+						sm->CalculateMatrix();
+						OpenGL->SetModelMatrix(sm->GetModelMatrix());
+						OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+						c->Draw((RenderStep)i);
+					}
+				}
+			}
+			else if (i == RenderStep::RenderSpecular)
+			{
+				OpenGL->UseFramebuffer("SpecularMap");
+				OpenGL->PreLoopPerspective(this->Camera);
+				for (auto c : this->ObjectsToDraw)
+				{
+					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+					if (sm != nullptr)
+					{
+						sm->CalculateMatrix();
+						OpenGL->SetModelMatrix(sm->GetModelMatrix());
+						OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+						c->Draw((RenderStep)i);
+					}
+				}
+			}
+			else if (i == RenderStep::RenderLight)
+			{
+				this->ProcessLights();
+				glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
+				OpenGL->UseFramebuffer("LightPass");
+				OpenGL->GetShadersClass().Uniform3f(this->Camera->GetPosition(),"Camera");
+				OpenGL->GetShadersClass().Uniform1i(this->Lights.size(),"LightCount");
+				OpenGL->PreLoopPerspective(this->Camera);
+				for (auto c : this->ObjectsToDraw)
+				{
+					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+					if (sm != nullptr)
+					{
+						sm->CalculateMatrix();
+						OpenGL->SetModelMatrix(sm->GetModelMatrix());
+						OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+						c->Draw(RenderStep::RenderNormal);
+					}
+				}
+			}
+		}
+	}
+	else if (DType == DrawType::VerticesOnly)
 	{
 		for (auto c : this->ObjectsToDraw)
 		{
 			auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
 			if (sm != nullptr)
-			{
-				if (DType == DrawType::FullDraw)
+				if (sm->GetCastShadow())
 				{
 					sm->CalculateMatrix();
 					OpenGL->SetModelMatrix(sm->GetModelMatrix());
-					OpenGL->SetNormalMatrix(sm->GetModelMatrix());
-					auto material = sm->GetModel()->Mat;
-					if (material != nullptr)
-					{
-						glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Ambient"),
-							material->GetLightMaterial()->Ambient.x, material->GetLightMaterial()->Ambient.y, material->GetLightMaterial()->Ambient.z);
-						glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Diffuse"),
-							material->GetLightMaterial()->Diffuse.x, material->GetLightMaterial()->Diffuse.y, material->GetLightMaterial()->Diffuse.z);
-						glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Specular"),
-							material->GetLightMaterial()->Specular.x, material->GetLightMaterial()->Specular.y, material->GetLightMaterial()->Specular.z);
-						glUniform1f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "Mat.Shininess"),
-							material->GetLightMaterial()->Shininess);
-					}
-					c->Draw(DType);
+					c->Draw(RenderVerticesOnly);
 				}
-				else if (DType == DrawType::VerticesOnly)
-				{
-					if (sm->GetCastShadow())
-					{
-						sm->CalculateMatrix();
-						OpenGL->SetModelMatrix(sm->GetModelMatrix());
-						c->Draw(DType);
-					}
-				}
-			}
-
 		}
-	}
-	else
-	{
-		this->CacheObjectsToDraw();
 	}
 
 }
@@ -190,7 +255,6 @@ void CScene::Tick(double delta)
 	{
 		o->Tick(delta);
 	}
-	this->Camera->CastRay();
 }
 
 //void CScene::SetSkyBox(SkyboxType type, Texture texture)
@@ -329,4 +393,17 @@ void CScene::CacheObjectsToDraw()
 			}
 	}
 	this->DrawableCached = true;
+}
+
+void CScene::ProcessLights()
+{
+	for (int i=0; i<this->Lights.size();i++)
+	{
+		if (this->Lights[i]->IsActive())
+		{
+			OpenGL->ProcessLight(this->Lights[i], i);
+			this->Draw(DrawType::VerticesOnly);
+			OpenGL->PostProcessLight(this->Lights[i], i);
+		}
+	}
 }

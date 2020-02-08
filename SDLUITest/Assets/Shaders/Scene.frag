@@ -55,10 +55,8 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	//ambient
 	vec3 Ambient = Mat.Ambient*l.Ambient*l.Color;
 
-	
 	//Diffuse
-	//NormalTex.xyz = NormalTex.xyz*2.0-1.0;
-	vec3 norm = normalize(NormalVec*NormalTex.xyz);
+	vec3 norm = NormalTex.xyz*NormalVec;
 	vec3 LightDir = normalize(l.Position - FragPos);
 	float diff = max(dot(LightDir,norm),0.0);
 	vec3 diffuse = (diff*Mat.Diffuse*l.Diffuse)*l.Color;
@@ -170,6 +168,8 @@ void main()
 	vec4 NormalEl = texture(Normal,UV);
 	vec4 SpecularEl = texture(Specular,UV);
 
+	NormalEl.z = (NormalEl.z*2.0f-1.0f);
+
 	vec3 result;
 	for(int i=0; i<LCount;i++)
 	{
@@ -182,5 +182,6 @@ void main()
 	}
 	
 
+	//FragColor = vec4(SpecularEl.xyz,1.0);
 	FragColor = vec4(result,1.0);
 } 

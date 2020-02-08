@@ -30,7 +30,7 @@ public:
 	~CSpriteComponent();
 
 	void PreDraw();
-	virtual void Draw(DrawType dt);
+	virtual void Draw(RenderStep step);
 	void SetSpriteBehaviour(SpriteBehaviour behaviour) { this->_SpBehaviour = behaviour; };
 
 private:

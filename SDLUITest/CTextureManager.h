@@ -8,6 +8,11 @@
 
 #include "CLog.h"
 
+enum SkyboxType
+{
+	CubeType = 0,
+};
+
 struct Texture
 {
 	std::string name;

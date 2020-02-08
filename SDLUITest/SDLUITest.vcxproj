@@ -258,40 +258,59 @@
     <ClCompile Include="Shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Shaders\BaseMap.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\BaseMap.vert">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\DebugLights.frag">
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\DebugLights.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\DebugLightse.frag">
+    <None Include="Assets\Shaders\DepthPass.frag">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\DebugLightse.vert">
+    <None Include="Assets\Shaders\DepthPass.vert">
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\final.frag">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\finale.frag">
-      <FileType>Script</FileType>
-    </None>
     <None Include="Assets\Shaders\final.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\finale.vert">
-      <FileType>Script</FileType>
-    </None>
+    <None Include="Assets\Shaders\gles\DebugLightse.frag" />
+    <None Include="Assets\Shaders\gles\DebugLightse.vert" />
+    <None Include="Assets\Shaders\gles\finale.frag" />
+    <None Include="Assets\Shaders\gles\finale.vert" />
+    <None Include="Assets\Shaders\gles\Guie.frag" />
+    <None Include="Assets\Shaders\gles\Guie.vert" />
+    <None Include="Assets\Shaders\gles\PointShade.frag" />
+    <None Include="Assets\Shaders\gles\PointShade.geom" />
+    <None Include="Assets\Shaders\gles\PointShade.vert" />
+    <None Include="Assets\Shaders\gles\Scenee.frag" />
+    <None Include="Assets\Shaders\gles\Scenee.vert" />
+    <None Include="Assets\Shaders\gles\Shadowse.frag" />
+    <None Include="Assets\Shaders\gles\Shadowse.vert" />
     <None Include="Assets\Shaders\Gui.frag">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\Guie.frag">
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\Gui.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Guie.vert">
+    <None Include="Assets\Shaders\LightPass.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\LightPass.vert">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\NormalMap.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\NormalMap.vert">
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\PointShad.frag">
@@ -303,25 +322,10 @@
     <None Include="Assets\Shaders\PointShad.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\PointShade.frag">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\PointShade.geom">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\PointShade.vert">
-      <FileType>Script</FileType>
-    </None>
     <None Include="Assets\Shaders\Scene.frag">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Scenee.frag">
-      <FileType>Script</FileType>
-    </None>
     <None Include="Assets\Shaders\Scene.vert">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\Scenee.vert">
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\Shadows.frag">
@@ -330,10 +334,10 @@
     <None Include="Assets\Shaders\Shadows.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Shadowse.frag">
+    <None Include="Assets\Shaders\SpecularMap.frag">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Shadowse.vert">
+    <None Include="Assets\Shaders\SpecularMap.vert">
       <FileType>Script</FileType>
     </None>
   </ItemGroup>

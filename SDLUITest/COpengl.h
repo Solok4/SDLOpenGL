@@ -17,7 +17,7 @@
 #include "CRenderer.h"
 
 #define MAX_LIGHTS 8
-#define SHADOWMAP_SIZE 1024
+#define SHADOWMAP_SIZE 128
 #define FARPLANE 50.0f
 
 #pragma comment(lib,"opengl32.lib")
@@ -26,6 +26,7 @@
 struct MyFrameBuffer
 {
 	std::string name;
+	bool isDepth = false;
 	GLuint FBO=0;
 	//GLuint DBO = 0;
 	GLuint RBO=0;
@@ -78,7 +79,7 @@ public:
 	//Return screen aspect ratio.
 	float GetAspectRatio() { return this->WndInfo->ScreenAspectRatio; };
 	//Adds new framebuffer for drawing.
-	void AddNewFramebuffer(std::string FBName, const char* ShaderName);
+	void AddNewFramebuffer(std::string FBName, const char* ShaderName, bool isDepthbuffer = false);
 	//Changes current drawing framebuffer.
 	void UseFramebuffer(std::string name);
 	//Returns framebuffer struct.

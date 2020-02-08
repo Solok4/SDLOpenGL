@@ -15,7 +15,7 @@ public:
 
 	void BindModel(std::shared_ptr<Model> model);
 	std::shared_ptr<Model> GetModel();
-	void Draw(DrawType) override;
+	void Draw(RenderStep step) override;
 	void SetCastShadow(bool value) { this->_CastShadow = value; };
 	bool GetCastShadow() { return this->_CastShadow; };
 
