@@ -181,7 +181,5 @@ void main()
 			result += ProccessSpotLight(Lights[i],BaseEl,NormalEl,SpecularEl);
 	}
 	
-
-	//FragColor = vec4(SpecularEl.xyz,1.0);
 	FragColor = vec4(result,1.0);
 } 

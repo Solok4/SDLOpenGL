@@ -109,8 +109,8 @@ void Loop()
 		//		OpenGL->PostProcessLight(LightList[i], i);
 		//	}
 		//}
-		glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
-		OpenGL->PreLoopPerspective(CurrentScene->GetCamera());
+		//glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
+		//OpenGL->PreLoopPerspective(CurrentScene->GetCamera());
 		CurrentScene->Draw(DrawType::FullDraw);
 		//Lights Debug position
 		//OpenGL->DrawDebugLights(CurrentScene->GetLightObjects(),CurrentScene->GetCamera());
@@ -343,6 +343,7 @@ void PreLoop()
 	SceneManager->SetCurrentScene("Default");
 
 	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_1, true);
+	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_F3, true);
 
 	auto gameplay = GameplayManager->AddNewGameplay("Default");
 	gameplay->SetTimescale(1.0f);

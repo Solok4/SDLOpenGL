@@ -38,19 +38,23 @@ uniform Material Mat;
 uniform Light Lights[8];
 uniform float FarPlane;
 
+uniform sampler2D gDiffuse;
+uniform sampler2D gNormal;
+uniform sampler2D gSpecular;
+
 uniform sampler2D ShadowMap;
 uniform samplerCube ShadowCube;
 
 int ShadowMapIterator=0;
 int ShadowCubeIterator=0;
 
-vec3 ProccessDirectionalLight(Light l,vec4 mvp)
+vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 {
 	//ambient
 	vec3 Ambient = Mat.Ambient*l.Ambient*l.Color;
 
 	//Diffuse
-	vec3 norm = OutNormal;
+	vec3 norm = NormalTex.xyz*OutNormal;
 	vec3 LightDir = normalize(l.Position - FragPos);
 	float diff = max(dot(LightDir,norm),0.0);
 	vec3 diffuse = (diff*Mat.Diffuse*l.Diffuse)*l.Color;
@@ -59,37 +63,40 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp)
 	vec3 viewDir = normalize(CameraP-FragPos);
 	vec3 HalfWayDir = normalize(LightDir+ CameraP);
 	vec3 reflectDir = reflect(-LightDir,norm);
+	//float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
 	float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
-	vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
+	vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
+	//vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
 		
-	//float bias = max(0.15 * (1.0 - dot(norm, LightDir)), 0.005);
+	float bias = max(0.15 * (1.0 - dot(norm, LightDir)), 0.005);
 	
-//	vec3 projCoords = mvp.xyz / mvp.w;
-//	projCoords = projCoords *0.5+0.5;
-//	float ClosestDepth = texture(ShadowMap/*[ShadowMapIterator]*/,projCoords.xy).r;
-//	float CurrentDepth = projCoords.z;
-//	float visibility = 0;
-//	vec2 texelSize = 1.0 / textureSize(ShadowMap/*[ShadowMapIterator]*/, 0);
-//	for(int x = -1; x <= 1; ++x)
-//	{
-//		for(int y = -1; y <= 1; ++y)
-//		{
-//			float pcfDepth = texture(ShadowMap/*[ShadowMapIterator]*/, projCoords.xy + vec2(x, y) * texelSize).r; 
-//			visibility += CurrentDepth - bias > pcfDepth ? 0.5 : 1.0;        
-//		}    
-//	}
-//	visibility /= 9.0;
-//	if(projCoords.z >1.0)
-//	{
-//		visibility = 1.0;
-//	}
-//
-//	ShadowMapIterator++;
-	return Ambient+diffuse+specular;
-	//return (Ambient+diffuse+specular)*visibility;
+	vec3 projCoords = mvp.xyz / mvp.w;
+	projCoords = projCoords *0.5+0.5;
+	float ClosestDepth = texture(ShadowMap/*[ShadowMapIterator]*/,projCoords.xy).r;
+	float CurrentDepth = projCoords.z;
+	float visibility = 0;
+	//visibility = CurrentDepth-bias > ClosestDepth? 1.0:0.5;
+	vec2 texelSize = 1.0 / textureSize(ShadowMap/*[ShadowMapIterator]*/, 0);
+	for(int x = -1; x <= 1; ++x)
+	{
+		for(int y = -1; y <= 1; ++y)
+		{
+			float pcfDepth = texture(ShadowMap/*[ShadowMapIterator]*/, projCoords.xy + vec2(x, y) * texelSize).r; 
+			visibility += CurrentDepth - bias > pcfDepth ? 0.5 : 1.0;        
+		}    
+	}
+	visibility /= 9.0;
+	if(projCoords.z >1.0)
+	{
+		visibility = 1.0;
+	}
+
+	ShadowMapIterator++;
+
+	return ((Ambient+diffuse+specular)* BaseTex.xyz)*visibility;
 }
 
-vec3 ProccessPointLight(Light l)
+vec3 ProccessPointLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 {
 
 	float distance = length(l.Position - FragPos);
@@ -100,7 +107,7 @@ vec3 ProccessPointLight(Light l)
 	Ambient *= attenuation;
 	
 	//Diffuse
-	vec3 norm = normalize(OutNormal);
+	vec3 norm = normalize(NormalTex.xyz*OutNormal);
 	vec3 LightDir = normalize(l.Position - FragPos);
 	float diff = max(dot(norm,LightDir),0.0);
 	vec3 diffuse = (diff*Mat.Diffuse)*l.Color;
@@ -120,17 +127,16 @@ vec3 ProccessPointLight(Light l)
 	float bias = 0.05;
 	float visibility = CurrentDepth - bias > ClosestDepth ? 0.5:1.0;
 	
-	return Ambient;
-	//return ((Ambient+diffuse+specular))*visibility;
+	return ((Ambient+diffuse+specular)* BaseTex.xyz)*visibility;
 }
 
-vec3 ProccessSpotLight(Light l)
+vec3 ProccessSpotLight(Light l,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 {
 	//ambient
 	vec3 Ambient = vec3(0.1)*l.Color;
 	
 	//Diffuse
-	vec3 norm = normalize(OutNormal);
+	vec3 norm = normalize(NormalTex.xyz*OutNormal);
 	//vec3 LightDir = normalize(l.Position - FragPos);
 	vec3 LightDir = normalize(-l.Rotation);
 	float theta = dot(LightDir,normalize(-l.Rotation));
@@ -145,7 +151,7 @@ vec3 ProccessSpotLight(Light l)
 		float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
 		vec3 specular = (Mat.Specular*spec)*l.Color;
 		
-		return Ambient+diffuse+specular;
+		return (Ambient+diffuse+specular)* BaseTex.xyz;
 	}
 	else
 	{
@@ -156,15 +162,19 @@ vec3 ProccessSpotLight(Light l)
 
 void main()
 {	
+	vec4 BaseEl = texture(gDiffuse,UV);
+	vec4 NormalEl = texture(gNormal,UV);
+	vec4 SpecularEl = texture(gSpecular,UV);
+
 	vec3 result;
 	for(int i=0; i<LCount;i++)
 	{
 		if(Lights[i].LightType == 0)
-			result += ProccessDirectionalLight(Lights[i],LightMVP[i]);
+			result += ProccessDirectionalLight(Lights[i],LightMVP[i],BaseEl,NormalEl,SpecularEl);
 		else if(Lights[i].LightType == 1)
-			result += ProccessPointLight(Lights[i]);
+			result += ProccessPointLight(Lights[i],BaseEl,NormalEl,SpecularEl);
 		else if(Lights[i].LightType == 2)
-			result += ProccessSpotLight(Lights[i]);
+			result += ProccessSpotLight(Lights[i],BaseEl,NormalEl,SpecularEl);
 	}
 	
 

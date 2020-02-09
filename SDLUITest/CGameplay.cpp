@@ -65,6 +65,19 @@ void CGameplay::KeyEvents(std::array<bool, 322> keys)
 		{
 			LayoutManager->ChangeCurrentLayout("Blank");
 		}
+		if (keys[SDL_SCANCODE_F3])
+		{
+			auto renderingMethod = OpenGL->GetRenderMode();
+			if (renderingMethod == RenderMode::RenderModeForward)
+			{
+				OpenGL->SetRenderMode(RenderMode::RenderModeDeferred);
+			}
+			else
+			{
+				OpenGL->SetRenderMode(RenderMode::RenderModeForward);
+			}
+		}
+
 		if (keys[SDL_SCANCODE_W])
 		{
 			SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(true);

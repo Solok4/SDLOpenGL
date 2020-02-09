@@ -14,9 +14,9 @@ uniform mat4 Model;
 
 void main()
 {
-	mat4 MVP = Projection*View*Model;
-	gl_Position = MVP*vec4(vertexPosition_modelspace,1.0f);
-	 FragPos = vec3(Model * vec4(vertexPosition_modelspace,1.0));
+	 mat4 MVP = Projection*View*Model;
+	 gl_Position = MVP*vec4(vertexPosition_modelspace,1.0f);
+	 FragPos = mat3(Model)*vertexPosition_modelspace;
 	 OutNormal = vertexNormal;
 	 UV = vertexUV;
 }

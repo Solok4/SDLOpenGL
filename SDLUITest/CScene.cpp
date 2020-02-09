@@ -144,90 +144,85 @@ void CScene::Draw(DrawType DType)
 	}
 	if (DType == DrawType::FullDraw)
 	{
-		for (int i = 0; i < RenderStep::RenderStepsMAX; i++)
+		if (OpenGL->GetRenderMode() == RenderMode::RenderModeDeferred)
 		{
-			if (i == RenderStep::RenderVerticesOnly)
+			for (int i = 0; i < RenderStep::RenderStepsMAX; i++)
 			{
-				OpenGL->UseFramebuffer("DepthMap");
-				OpenGL->PreLoopPerspective(this->Camera);
-				for (auto c : this->ObjectsToDraw)
+				if (i == RenderStep::RenderDeferred)
 				{
-					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
-					if (sm != nullptr)
+					OpenGL->UseFramebuffer("DeferredShading");
+					OpenGL->PreLoopPerspective(this->Camera);
+					for (auto c : this->ObjectsToDraw)
 					{
-						sm->CalculateMatrix();
-						OpenGL->SetModelMatrix(sm->GetModelMatrix());
-						c->Draw((RenderStep)i);
+						auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+						if (sm != nullptr)
+						{
+							sm->CalculateMatrix();
+							OpenGL->SetModelMatrix(sm->GetModelMatrix());
+							OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+							c->Draw((RenderStep)i);
+						}
 					}
 				}
+				else if (i == RenderStep::RenderLight)
+				{
+					this->ProcessLights();
+					glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
+					//OpenGL->UseFramebuffer("LightPass");
+					//OpenGL->GetShadersClass().Uniform3f(this->Camera->GetPosition(),"Camera");
+					//OpenGL->GetShadersClass().Uniform1i(this->Lights.size(),"LightCount");
+					//OpenGL->PreLoopPerspective(this->Camera);
+					//auto basemap = OpenGL->GetFramebuffer("DeferredShading");
 
-			}
-			if (i == RenderStep::RenderDiffuse)
-			{
-				OpenGL->UseFramebuffer("BaseMap");
-				OpenGL->PreLoopPerspective(this->Camera);
-				for (auto c : this->ObjectsToDraw)
-				{
-					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
-					if (sm != nullptr)
-					{
-						sm->CalculateMatrix();
-						OpenGL->SetModelMatrix(sm->GetModelMatrix());
-						c->Draw((RenderStep)i);
-					}
-				}
+					////glActiveTexture(GL_TEXTURE0);
+					//glBindTexture(GL_TEXTURE_2D, basemap.Deferred[0]);
+					//OpenGL->GetShadersClass().Uniform1i(0, "gDiffuse");
 
-			}
-			else if (i == RenderStep::RenderNormal)
-			{
-				OpenGL->UseFramebuffer("NormalMap");
-				OpenGL->PreLoopPerspective(this->Camera);
-				for (auto c : this->ObjectsToDraw)
-				{
-					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
-					if (sm != nullptr)
-					{
-						sm->CalculateMatrix();
-						OpenGL->SetModelMatrix(sm->GetModelMatrix());
-						OpenGL->SetNormalMatrix(sm->GetModelMatrix());
-						c->Draw((RenderStep)i);
-					}
+					////glActiveTexture(GL_TEXTURE1);
+					//glBindTexture(GL_TEXTURE_2D, basemap.Deferred[1]);
+					//OpenGL->GetShadersClass().Uniform1i(1, "gNormal");
+
+					////glActiveTexture(GL_TEXTURE2);
+					//glBindTexture(GL_TEXTURE_2D, basemap.Deferred[2]);
+					//OpenGL->GetShadersClass().Uniform1i(2, "gSpecular");
+					//for (auto c : this->ObjectsToDraw)
+					//{
+					//	auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
+					//	if (sm != nullptr)
+					//	{
+					//		sm->CalculateMatrix();
+					//		OpenGL->SetModelMatrix(sm->GetModelMatrix());
+					//		OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+					//		c->Draw(RenderStep::RenderJustBuffers);
+					//	}
+					//}
 				}
 			}
-			else if (i == RenderStep::RenderSpecular)
+		}
+		else
+		{
+			this->ProcessLights();
+			glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
+			OpenGL->UseFramebuffer("Default");
+			OpenGL->GetShadersClass().Uniform1i(this->Lights.size(), "LightCount");
+			OpenGL->PreLoopPerspective(this->Camera);
+			if (!this->DrawableCached)
 			{
-				OpenGL->UseFramebuffer("SpecularMap");
-				OpenGL->PreLoopPerspective(this->Camera);
-				for (auto c : this->ObjectsToDraw)
-				{
-					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
-					if (sm != nullptr)
-					{
-						sm->CalculateMatrix();
-						OpenGL->SetModelMatrix(sm->GetModelMatrix());
-						OpenGL->SetNormalMatrix(sm->GetModelMatrix());
-						c->Draw((RenderStep)i);
-					}
-				}
+				this->CacheObjectsToDraw();
 			}
-			else if (i == RenderStep::RenderLight)
+			for (auto a : this->ObjectsToDraw)
 			{
-				this->ProcessLights();
-				glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
-				OpenGL->UseFramebuffer("LightPass");
-				OpenGL->GetShadersClass().Uniform3f(this->Camera->GetPosition(),"Camera");
-				OpenGL->GetShadersClass().Uniform1i(this->Lights.size(),"LightCount");
-				OpenGL->PreLoopPerspective(this->Camera);
-				for (auto c : this->ObjectsToDraw)
+				auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(a);
+				if (sm != nullptr)
 				{
-					auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
-					if (sm != nullptr)
-					{
-						sm->CalculateMatrix();
-						OpenGL->SetModelMatrix(sm->GetModelMatrix());
-						OpenGL->SetNormalMatrix(sm->GetModelMatrix());
-						c->Draw(RenderStep::RenderNormal);
-					}
+					sm->CalculateMatrix();
+					OpenGL->SetModelMatrix(sm->GetModelMatrix());
+					OpenGL->SetNormalMatrix(sm->GetModelMatrix());
+					OpenGL->GetShadersClass().Uniform3f(sm->GetModel()->Mat->GetLightMaterial()->Ambient, "Mat.Ambient");
+					OpenGL->GetShadersClass().Uniform3f(sm->GetModel()->Mat->GetLightMaterial()->Diffuse, "Mat.Diffuse");
+					OpenGL->GetShadersClass().Uniform3f(sm->GetModel()->Mat->GetLightMaterial()->Specular, "Mat.Specular");	
+					OpenGL->GetShadersClass().Uniform1f(sm->GetModel()->Mat->GetLightMaterial()->Shininess, "Mat.Shininess");
+					a->Draw(RenderStep::RenderDeferred);
 				}
 			}
 		}

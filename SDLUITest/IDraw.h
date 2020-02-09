@@ -8,9 +8,8 @@ enum DrawType
 enum RenderStep
 {
 	RenderVerticesOnly = 0,
-	RenderDiffuse,
-	RenderNormal,
-	RenderSpecular,
+	RenderDeferred,
+	RenderJustBuffers,
 	RenderLight,
 	RenderStepsMAX
 };

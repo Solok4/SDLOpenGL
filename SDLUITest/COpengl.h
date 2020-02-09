@@ -17,7 +17,7 @@
 #include "CRenderer.h"
 
 #define MAX_LIGHTS 8
-#define SHADOWMAP_SIZE 128
+#define SHADOWMAP_SIZE 512
 #define FARPLANE 50.0f
 
 #pragma comment(lib,"opengl32.lib")
@@ -26,9 +26,9 @@
 struct MyFrameBuffer
 {
 	std::string name;
-	bool isDepth = false;
+	bool DeferredShading = false;
+	GLuint Deferred[4];
 	GLuint FBO=0;
-	//GLuint DBO = 0;
 	GLuint RBO=0;
 	GLuint CBuffer=0;
 	const char* ShaderName;
@@ -39,6 +39,12 @@ struct MyLightFramebuffer
 	std::string name;
 	GLuint FBO;
 	GLuint DepthBuff;
+};
+
+enum RenderMode
+{
+	RenderModeForward,
+	RenderModeDeferred,
 };
 
 
@@ -79,7 +85,7 @@ public:
 	//Return screen aspect ratio.
 	float GetAspectRatio() { return this->WndInfo->ScreenAspectRatio; };
 	//Adds new framebuffer for drawing.
-	void AddNewFramebuffer(std::string FBName, const char* ShaderName, bool isDepthbuffer = false);
+	void AddNewFramebuffer(std::string FBName, const char* ShaderName, bool Deferred = false);
 	//Changes current drawing framebuffer.
 	void UseFramebuffer(std::string name);
 	//Returns framebuffer struct.
@@ -111,6 +117,9 @@ public:
 	//returns shader class.
 	Shaders GetShadersClass();
 
+	RenderMode GetRenderMode() { return this->OglRenderMode; };
+	void SetRenderMode(RenderMode mode) { this->OglRenderMode = mode; };
+
 
 private:
 
@@ -124,6 +133,8 @@ private:
 	//GLuint FinalEbo;
 	//GLuint FinalVbo[2];
 	glm::mat4 ViewMatrix;
+
+	RenderMode OglRenderMode;
 };
 
 extern std::unique_ptr<COpengl> OpenGL;
