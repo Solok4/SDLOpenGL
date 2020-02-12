@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "CBaseComponent.h"
+#include "CObject3D.h"
 
 
-CBaseComponent::CBaseComponent()
+CBaseComponent::CBaseComponent(CObject3D* ref)
 {
+	this->PossesingObject = ref;
 	this->_Type = Object3DComponent::BASE_COMPONENT;
 	this->_Position = glm::vec3(0.f, 0.f, 0.f);
 	this->_Rotation = glm::vec3(0.f);
@@ -11,8 +13,9 @@ CBaseComponent::CBaseComponent()
 	this->CalculateMatrix();
 }
 
-CBaseComponent::CBaseComponent(const CBaseComponent& comp)
+CBaseComponent::CBaseComponent(const CBaseComponent& comp,CObject3D* ref)
 {
+	this->PossesingObject = ref;
 	this->_Name = comp._Name;
 	this->_Type = comp._Type;
 	this->_Position = comp._Position;
@@ -22,43 +25,9 @@ CBaseComponent::CBaseComponent(const CBaseComponent& comp)
 	this->_PosOffset = comp._PosOffset;
 }
 
-CBaseComponent::CBaseComponent(const CBaseComponent& comp, char* name)
-{
-	this->_Name = name;
-	this->_Type = comp._Type;
-	this->_Position = comp._Position;
-	this->_Rotation = comp._Rotation;
-	this->_Scale = comp._Scale;
-	this->_RotOffset = comp._RotOffset;
-	this->_PosOffset = comp._PosOffset;
-}
-
-CBaseComponent::CBaseComponent(const std::shared_ptr<CBaseComponent>& obj)
-{
-	this->_Name = obj->_Name;
-	this->_Type = obj->_Type;
-	this->_Position = obj->_Position;
-	this->_Rotation = obj->_Rotation;
-	this->_Scale = obj->_Scale;
-	this->_RotOffset = obj->_RotOffset;
-	this->_PosOffset = obj->_PosOffset;
-}
-
-CBaseComponent::CBaseComponent(const std::shared_ptr<CBaseComponent>& obj, char* name)
-{
-	this->_Name = name;
-	this->_Type = obj->_Type;
-	this->_Position = obj->_Position;
-	this->_Rotation = obj->_Rotation;
-	this->_Scale = obj->_Scale;
-	this->_RotOffset = obj->_RotOffset;
-	this->_PosOffset = obj->_PosOffset;
-}
-
-
 CBaseComponent::~CBaseComponent()
 {
-	CLog::MyLog(LogType::Log, "BaseComponentDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Debug, "BaseComponentDestructor %s",this->GetName().c_str());
 }
 
 void CBaseComponent::SetName(std::string name)
@@ -78,15 +47,12 @@ void CBaseComponent::AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent
 	this->CalculateMatrix();
 }
 
-void CBaseComponent::SetPossesingObject(std::shared_ptr<CObject3D> obj)
+void CBaseComponent::SetPossesingObject(CObject3D* obj)
 {
-	if (obj != nullptr)
-	{
-		this->PossesingObject = obj;
-	}
+	this->PossesingObject = obj;
 }
 
-std::shared_ptr<CObject3D> CBaseComponent::GetPossesingObject()
+CObject3D* CBaseComponent::GetPossesingObject()
 {
 	return this->PossesingObject;
 }

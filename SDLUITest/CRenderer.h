@@ -13,6 +13,7 @@
 #endif // __EMSCRIPTEN__
 
 #include <chrono>
+#include "CLog.h"
 
 #pragma comment(lib,"SDL2.lib")
 #pragma comment(lib,"SDL2_ttf.lib")
@@ -20,6 +21,8 @@
 
 struct WindowInfo
 {
+	WindowInfo() :ScreenWidth(0),ScreenHeight(0),ScreenPosX(0),ScreenPosY(0),ScreenAspectRatio(0.0f),WindowFlags(0),
+		Delta(0), BeginingOfTheFrame(std::chrono::system_clock::now()), EndOfTheFrame(std::chrono::system_clock::now()), FPSLock(30) {};
 	int ScreenWidth;
 	int ScreenHeight;
 	int ScreenPosX;
@@ -47,12 +50,14 @@ public:
 	void Destroy();
 	//Change size of the window
 	void Resize(int w, int h);
+	void ResizeDemand();
 	//Called on window move event
 	void OnWindowMove();
 	//Returns SDL_Window 
 	SDL_Window* GetWindow();
 	//Returns window information struct
 	std::shared_ptr<WindowInfo> GetWindowInfo();
+	std::shared_ptr<WindowInfo> GetDemandWindowInfo() { return this->DemandWinfo; };
 
 	void SetFrameLock(int frames);
 
@@ -60,10 +65,8 @@ public:
 private:
 
 	SDL_Window* Window;
-	Uint32 Flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
-	int ScreenWidth = 1280;
-	int ScreenHeight = 720;
 	std::shared_ptr<WindowInfo> WInfo;
+	std::shared_ptr<WindowInfo> DemandWinfo;
 
 };
 

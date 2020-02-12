@@ -15,7 +15,7 @@ CLayout::CLayout()
 
 CLayout::~CLayout()
 {
-	CLog::MyLog(LogType::Log, "LayoutDestructor %s",this->Name);
+	CLog::MyLog(LogType::Debug, "LayoutDestructor %s",this->Name);
 }
 
 void CLayout::RefreshWindowData()
@@ -38,7 +38,6 @@ void CLayout::Draw()
 	for (auto a : Objects2D)
 	{
 		a->PreDraw();
-		//OpenGL->SetModelMatrixLayout(a->GetModelMatrix());
 		OpenGL->SetModelMatrix(a->GetModelMatrix());
 		OpenGL->SetColorMaskLayout(a->GetColorMask());
 		a->Draw();

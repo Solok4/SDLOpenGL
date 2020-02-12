@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "CLog.h"
 #include "CRenderer.h"
 
 
@@ -12,22 +11,23 @@ CRenderer::CRenderer()
 
 CRenderer::~CRenderer()
 {
-	CLog::MyLog(LogType::Log, "RendererDestructor");
+	CLog::MyLog(LogType::Debug, "RendererDestructor");
 }
 
 void CRenderer::Init()
 {
 	this->WInfo = std::make_shared<WindowInfo>();
-	this->WInfo->ScreenHeight = this->ScreenHeight;
-	this->WInfo->ScreenWidth = this->ScreenWidth;
-	this->WInfo->ScreenAspectRatio = (float)this->ScreenWidth / this->ScreenHeight;
-	this->WInfo->WindowFlags = this->Flags;
+	this->DemandWinfo = std::make_shared<WindowInfo>();
+	this->WInfo->ScreenHeight = 720;
+	this->WInfo->ScreenWidth = 1280;
+	this->WInfo->ScreenAspectRatio = (float)1280 / 720;
+	this->WInfo->WindowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	this->WInfo->BeginingOfTheFrame = std::chrono::system_clock::now();
 	this->WInfo->EndOfTheFrame = std::chrono::system_clock::now();
 	this->WInfo->Delta = this->WInfo->EndOfTheFrame- this->WInfo->BeginingOfTheFrame;
 	this->WInfo->FPSLock = 60;
 
-	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->WInfo->ScreenWidth, this->WInfo->ScreenHeight, Flags);
+	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->WInfo->ScreenWidth, this->WInfo->ScreenHeight, this->WInfo->WindowFlags);
 	if (Window == nullptr)
 	{
 		CLog::MyLog(LogType::Error, "Failed to create window: %s",SDL_GetError());
@@ -54,9 +54,18 @@ void CRenderer::Destroy()
 
 void CRenderer::Resize(int w, int h)
 {
-	SDL_SetWindowSize(Window, w, h);
-	ScreenWidth = w;
-	ScreenHeight = h;
+	SDL_SetWindowSize(this->Window, w, h);
+	this->WInfo->ScreenWidth = w;
+	this->WInfo->ScreenHeight = h;
+	this->WInfo->ScreenAspectRatio = (float)this->WInfo->ScreenWidth / this->WInfo->ScreenHeight;
+}
+
+void CRenderer::ResizeDemand()
+{
+	SDL_SetWindowSize(this->Window, this->DemandWinfo->ScreenWidth, this->DemandWinfo->ScreenHeight);
+	this->WInfo->ScreenWidth = this->DemandWinfo->ScreenWidth;
+	this->WInfo->ScreenHeight = this->DemandWinfo->ScreenHeight;
+	this->WInfo->ScreenAspectRatio = (float)this->WInfo->ScreenWidth / this->WInfo->ScreenHeight;
 }
 
 void CRenderer::OnWindowMove()

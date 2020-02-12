@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "CMovementComponent.h"
+#include "CObject3D.h"
 
 
-CMovementComponent::CMovementComponent()
+CMovementComponent::CMovementComponent(CObject3D* ref):CBaseComponent(ref)
 {
+	this->_Type = Object3DComponent::MOVEMENT_COMPONENT;
 }
 
-CMovementComponent::CMovementComponent(const CMovementComponent& move):CBaseComponent(move)
+CMovementComponent::CMovementComponent(const CMovementComponent& move, CObject3D* ref):CBaseComponent(move,ref)
 {
 	this->MaxAccel = move.MaxAccel;
 	this->MaxSpeed = move.MaxSpeed;
@@ -21,23 +23,8 @@ CMovementComponent::CMovementComponent(const CMovementComponent& move):CBaseComp
 	this->isMoveRight = move.isMoveRight;
 	this->isMoveUp = move.isMoveUp;
 	this->ResultVector = move.ResultVector;
-}
-
-CMovementComponent::CMovementComponent(const std::shared_ptr<CMovementComponent>& move) :CBaseComponent(move)
-{
-	this->MaxAccel = move->MaxAccel;
-	this->MaxSpeed = move->MaxSpeed;
-	this->CurrentXAccel = move->CurrentXAccel;
-	this->CurrentYAccel = move->CurrentYAccel;
-	this->CurrentZAccel = move->CurrentZAccel;
-	this->AccelTime = move->AccelTime;
-	this->isMoveBackward = move->isMoveBackward;
-	this->isMoveDown = move->isMoveDown;
-	this->isMoveForward = move->isMoveForward;
-	this->isMoveLeft = move->isMoveLeft;
-	this->isMoveRight = move->isMoveRight;
-	this->isMoveUp = move->isMoveUp;
-	this->ResultVector = move->ResultVector;
+	this->_Type = Object3DComponent::MOVEMENT_COMPONENT;
+	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 }
 
 

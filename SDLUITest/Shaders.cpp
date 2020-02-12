@@ -31,9 +31,9 @@ void Shaders::CreateShader(const char * File, ShaderType type)
 			glCompileShader(VertexShaderID);
 
 			glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(LogType::Log, "Vertex Shader compile status: %d", Result);
+			CLog::MyLog(LogType::Debug, "Vertex Shader compile status: %d", Result);
 			glGetShaderInfoLog(VertexShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Log,"Info: %s", logBuff);
+			CLog::MyLog(LogType::Debug,"Info: %s", logBuff);
 			this->VertexShader = VertexShaderID;
 		}
 		else if(type == ShaderType::Fragment)
@@ -43,9 +43,9 @@ void Shaders::CreateShader(const char * File, ShaderType type)
 			glCompileShader(FragmentShaderID);
 
 			glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(LogType::Log, "Fragment Shader compile status: %d", Result);
+			CLog::MyLog(LogType::Debug, "Fragment Shader compile status: %d", Result);
 			glGetShaderInfoLog(FragmentShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Log, "Info: %s", logBuff);
+			CLog::MyLog(LogType::Debug, "Info: %s", logBuff);
 			this->FragmentShader = FragmentShaderID;
 		}
 		else if (type == ShaderType::Geometry)
@@ -55,9 +55,9 @@ void Shaders::CreateShader(const char * File, ShaderType type)
 			glCompileShader(GeometryShaderID);
 
 			glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(LogType::Log, "Geometry Shader compile status: %d", Result);
+			CLog::MyLog(LogType::Debug, "Geometry Shader compile status: %d", Result);
 			glGetShaderInfoLog(GeometryShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Log, "Info: %s", logBuff);
+			CLog::MyLog(LogType::Debug, "Info: %s", logBuff);
 			this->GeometryShader = GeometryShaderID;
 		}
 		else
@@ -129,7 +129,7 @@ void Shaders::CreateShaderProgram(std::string name,bool UseGeometryShader)
 
 		GLint result = GL_FALSE;
 		glGetProgramiv(Prog.Program, GL_LINK_STATUS, &result);
-		CLog::MyLog(LogType::Log, "%s> Shader Program link status: %d",name.c_str(), result);
+		CLog::MyLog(LogType::Debug, "%s> Shader Program link status: %d",name.c_str(), result);
 		glDetachShader(Prog.Program, this->VertexShader);
 		glDetachShader(Prog.Program, this->FragmentShader);
 		if (UseGeometryShader)

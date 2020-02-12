@@ -87,35 +87,8 @@ void Loop()
 		CurrentLayout->Tick(TickTime);
 		CurrentScene->Tick(TickTime);
 
-		//LightList = CurrentScene->GetLightObjects();
-		//int ShadowMapIterator = 0;
-		//int ShadowCubeIterator = 0;
-		//for (int i = 0; i < LightList.size() && i<MAX_LIGHTS; i++)
-		//{
-		//	if (LightList[i]->IsActive())
-		//	{
-		//		if (LightList[i]->GetLightStruct().LightType == LightType::Point)
-		//		{
-		//			OpenGL->ProcessLight(LightList[i], i);
-		//			ShadowCubeIterator++;
-		//			CurrentScene->Draw(DrawType::VerticesOnly);
-		//		}
-		//		else
-		//		{
-		//			OpenGL->ProcessLight(LightList[i], i);
-		//			ShadowMapIterator++;
-		//			CurrentScene->Draw(DrawType::VerticesOnly);
-		//		}
-		//		OpenGL->PostProcessLight(LightList[i], i);
-		//	}
-		//}
-		//glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
-		//OpenGL->PreLoopPerspective(CurrentScene->GetCamera());
 		CurrentScene->Draw(DrawType::FullDraw);
-		//Lights Debug position
-		//OpenGL->DrawDebugLights(CurrentScene->GetLightObjects(),CurrentScene->GetCamera());
-		//
-		//OpenGL->UseFramebuffer("0");
+		OpenGL->DrawDebugLights(CurrentScene->GetLightObjects(), CurrentScene->GetCamera());
 		OpenGL->FinalDraw();
 
 		OpenGL->PreLoopOrtho();

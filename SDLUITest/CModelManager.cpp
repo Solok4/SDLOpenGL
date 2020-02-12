@@ -14,7 +14,7 @@ CModelManager::CModelManager()
 
 CModelManager::~CModelManager()
 {
-	CLog::MyLog(LogType::Log, "ModelManagerDestructor");
+	CLog::MyLog(LogType::Debug, "ModelManagerDestructor");
 }
 
 

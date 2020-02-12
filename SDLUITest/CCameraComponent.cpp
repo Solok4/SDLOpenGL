@@ -3,37 +3,41 @@
 #include "CEvent.h"
 #include "CRenderer.h"
 #include "COpengl.h"
+#include "CObject3D.h"
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
 #endif
 
 
-CCameraComponent::CCameraComponent() 
+CCameraComponent::CCameraComponent(CObject3D* ref) :CBaseComponent(ref)
 {
+	this->_Type = Object3DComponent::CAMERA_COMPONENT;
 	this->IsFree = false;
 	this->FOV =65.f;
 	this->Sensitivity = 5.f;
 }
 
-CCameraComponent::CCameraComponent(const CCameraComponent& cam):CBaseComponent(cam)
+CCameraComponent::CCameraComponent(const CCameraComponent& cam,CObject3D* ref):CBaseComponent(cam,ref)
 {
+	this->_Type = Object3DComponent::CAMERA_COMPONENT;
 	this->LastX = cam.LastX;
 	this->LastY = cam.LastY;
 	this->FOV = cam.FOV;
 	this->Sensitivity = cam.Sensitivity;
 	this->IsFree = cam.IsFree;
 	this->First = cam.First;
+	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 }
 
-CCameraComponent::CCameraComponent(const std::shared_ptr<CCameraComponent>& camera) :CBaseComponent(camera)
-{
-	this->LastX = camera->LastX;
-	this->LastY = camera->LastY;
-	this->FOV = camera->FOV;
-	this->Sensitivity = camera->Sensitivity;
-	this->IsFree = camera->IsFree;
-	this->First = camera->First;
-}
+//CCameraComponent::CCameraComponent(const std::shared_ptr<CCameraComponent>& camera) :CBaseComponent(camera)
+//{
+//	this->LastX = camera->LastX;
+//	this->LastY = camera->LastY;
+//	this->FOV = camera->FOV;
+//	this->Sensitivity = camera->Sensitivity;
+//	this->IsFree = camera->IsFree;
+//	this->First = camera->First;
+//}
 
 
 CCameraComponent::~CCameraComponent()

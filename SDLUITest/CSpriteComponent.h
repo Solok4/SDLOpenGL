@@ -26,7 +26,8 @@ class CSpriteComponent :
 	public CBaseComponent,IDraw
 {
 public:
-	CSpriteComponent();
+	CSpriteComponent(CObject3D* ref);
+	CSpriteComponent(const CSpriteComponent& comp, CObject3D* ref);
 	~CSpriteComponent();
 
 	void PreDraw();

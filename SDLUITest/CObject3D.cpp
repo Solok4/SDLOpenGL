@@ -2,16 +2,20 @@
 #include "CObject3D.h"
 #include "glm/gtx/transform.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "CScene.h"
 
-CObject3D::CObject3D()
+CObject3D::CObject3D(std::string name,CScene* ref)
 {
 	this->AddComponent(0, "root");
 	this->BindRootComponent("root");
+	this->Name = name;
+	this->SceneRef = ref;
 }
 
-CObject3D::CObject3D(const CObject3D& obj)
+
+
+CObject3D::CObject3D(const CObject3D& obj,std::string name,CScene* ref):CObject3D(name,ref)
 {
-	this->Name = obj.Name;
 	if (obj._Components.size() != 0)
 	{
 		for (int i = 0; i < obj._Components.size(); i++)
@@ -19,124 +23,36 @@ CObject3D::CObject3D(const CObject3D& obj)
 			if (obj._Components[i]->GetType() == CAMERA_COMPONENT)
 			{
 				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj._Components[i]);
-				this->AddComponent(temp);
+				auto NewComp = std::make_shared<CCameraComponent>(*temp,this);
+				this->AddComponent(NewComp);
 			}
 			else if (obj._Components[i]->GetType() == STATIC_MESH_COMPONENT)
 			{
 				auto temp = std::dynamic_pointer_cast<CStaticMeshComponent>(obj._Components[i]);
+				auto NewComp = std::make_shared<CStaticMeshComponent>(*temp, this);
 				this->AddComponent(temp);
 			}
 			else if (obj._Components[i]->GetType() == MOVEMENT_COMPONENT)
 			{
 				auto temp = std::dynamic_pointer_cast<CMovementComponent>(obj._Components[i]);
+				auto NewComp = std::make_shared<CMovementComponent>(*temp, this);
 				this->AddComponent(temp);
 			}
 			else if (obj._Components[i]->GetType() == LIGHT_COMPONENT)
 			{
 				auto temp = std::dynamic_pointer_cast<CLightComponent>(obj._Components[i]);
+				auto NewComp = std::make_shared<CLightComponent>(*temp, this);
 				this->AddComponent(temp);
 			}
 		}
 	}
 }
 
-CObject3D::CObject3D(const std::shared_ptr<CObject3D>& obj)
-{
-	this->Name = obj->Name;
-	if (obj->_Components.size() != 0)
-	{
-		for (int i = 0; i < obj->_Components.size(); i++)
-		{
-			if (obj->_Components[i]->GetType() == CAMERA_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj->_Components[i]->GetType() == STATIC_MESH_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CStaticMeshComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj->_Components[i]->GetType() == MOVEMENT_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CMovementComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj->_Components[i]->GetType() == LIGHT_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CLightComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-		}
-	}
-}
-
-CObject3D::CObject3D(const CObject3D& obj,char* name):CObject3D()
-{
-	this->Name = name;
-	if (obj._Components.size() != 0)
-	{
-		for (int i = 0; i < obj._Components.size(); i++)
-		{
-			if (obj._Components[i]->GetType() == CAMERA_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj._Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj._Components[i]->GetType() == STATIC_MESH_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CStaticMeshComponent>(obj._Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj._Components[i]->GetType() == MOVEMENT_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CMovementComponent>(obj._Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj._Components[i]->GetType() == LIGHT_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CLightComponent>(obj._Components[i]);
-				this->AddComponent(temp);
-			}
-		}
-	}
-}
-
-CObject3D::CObject3D(const std::shared_ptr<CObject3D>& obj,char* name) :CObject3D()
-{
-	this->Name = name;
-	if (obj->_Components.size() != 0)
-	{
-		for (int i = 0; i < obj->_Components.size(); i++)
-		{
-			if (obj->_Components[i]->GetType() == CAMERA_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj->_Components[i]->GetType() == STATIC_MESH_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CStaticMeshComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj->_Components[i]->GetType() == MOVEMENT_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CMovementComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-			else if (obj->_Components[i]->GetType() == LIGHT_COMPONENT)
-			{
-				auto temp = std::dynamic_pointer_cast<CLightComponent>(obj->_Components[i]);
-				this->AddComponent(temp);
-			}
-		}
-	}
-}
 
 
 CObject3D::~CObject3D()
 {
-	CLog::MyLog(LogType::Log, "3DObjectDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Debug, "3DObjectDestructor %s",this->GetName().c_str());
 }
 
 void CObject3D::Prepare()
@@ -159,51 +75,55 @@ void CObject3D::AddComponent(int id, std::string name)
 	{
 		case(Object3DComponent::BASE_COMPONENT):
 		{
-			std::shared_ptr<CBaseComponent> temp=std::make_shared<CBaseComponent>();
+			std::shared_ptr<CBaseComponent> temp=std::make_shared<CBaseComponent>(this);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::BASE_COMPONENT);
-			//temp->SetPossesingObject(std::make_shared<CObject3D>(*this));
 			this->_Components.push_back(temp);
 			break;
 		}
 
 		case(Object3DComponent::STATIC_MESH_COMPONENT): 
 		{
-			std::shared_ptr<CStaticMeshComponent> temp = std::make_shared<CStaticMeshComponent>();
+			std::shared_ptr<CStaticMeshComponent> temp = std::make_shared<CStaticMeshComponent>(this);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
-			//temp->SetPossesingObject(std::make_shared<CObject3D>(*this));
 			this->_Components.push_back(temp);
 			break;
 		}
 		case(Object3DComponent::CAMERA_COMPONENT): {
-			std::shared_ptr<CCameraComponent> temp = std::make_shared<CCameraComponent>();
+			std::shared_ptr<CCameraComponent> temp = std::make_shared<CCameraComponent>(this);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::CAMERA_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
-			//temp->SetPossesingObject(std::make_shared<CObject3D>(*this));
 			this->_Components.push_back(temp);
 			break;
 		}
 		case(Object3DComponent::LIGHT_COMPONENT): {
-			std::shared_ptr<CLightComponent> temp = std::make_shared<CLightComponent>();
+			std::shared_ptr<CLightComponent> temp = std::make_shared<CLightComponent>(this);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::LIGHT_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
-			//temp->SetPossesingObject(std::make_shared<CObject3D>(*this));
 			this->_Components.push_back(temp);
 			break;
 		}
 		case(Object3DComponent::MOVEMENT_COMPONENT): {
-			std::shared_ptr<CMovementComponent> temp = std::make_shared<CMovementComponent>();
+			std::shared_ptr<CMovementComponent> temp = std::make_shared<CMovementComponent>(this);
 			temp->SetName(name);
 			temp->SetType(Object3DComponent::MOVEMENT_COMPONENT);
 			temp->AttachParrentObject(this->GetRootComponent());
-			//temp->SetPossesingObject(std::make_shared<CObject3D>(*this));
 			this->_Components.push_back(temp);
 			break;
 		}
+	}
+}
+
+void CObject3D::AddComponent(std::shared_ptr<CBaseComponent> comp)
+{
+	if (comp != nullptr)
+	{
+		comp->AttachParrentObject(this->GetRootComponent());
+		this->_Components.push_back(comp);
 	}
 }
 

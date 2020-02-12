@@ -31,9 +31,8 @@ class CLightComponent :
 	public CBaseComponent
 {
 public:
-	CLightComponent();
-	CLightComponent(const CLightComponent& light);
-	CLightComponent(std::shared_ptr<CLightComponent>& obj);
+	CLightComponent(CObject3D* ref);
+	CLightComponent(const CLightComponent& light,CObject3D* ref);
 	~CLightComponent();
 	//Function called every frame.
 	void Tick(double delta) override;

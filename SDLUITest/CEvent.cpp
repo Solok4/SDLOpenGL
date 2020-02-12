@@ -69,22 +69,22 @@ void CEvent::PollEvents()
 			{
 			case SDL_WINDOWEVENT_SHOWN:
 			{
-				CLog::MyLog(LogType::Log, "Window shown");
+				CLog::MyLog(LogType::Debug, "Window shown");
 				break;
 			}
 			case SDL_WINDOWEVENT_HIDDEN:
 			{
-				CLog::MyLog(LogType::Log, "Window hidden");
+				CLog::MyLog(LogType::Debug, "Window hidden");
 				break;
 			}
 			case SDL_WINDOWEVENT_RESIZED:
 			{
-				CLog::MyLog(LogType::Log, "Window resized");
+				CLog::MyLog(LogType::Debug, "Window resized");
 				break;
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			{
-				CLog::MyLog(LogType::Log, "Window size changed");
+				CLog::MyLog(LogType::Debug, "Window size changed");
 				Renderer->Resize(this->_Event.window.data1, this->_Event.window.data2);
 				break;
 			}

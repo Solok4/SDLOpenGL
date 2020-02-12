@@ -13,13 +13,13 @@ CScene::CScene()
 
 CScene::~CScene()
 {
-	CLog::MyLog(LogType::Log, "SceneDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Debug, "SceneDestructor %s",this->GetName().c_str());
 }
 
 std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name)
 {
-	std::shared_ptr<CObject3D> temp=std::make_shared<CObject3D>();
-	temp->SetName(Name);
+	std::shared_ptr<CObject3D> temp=std::make_shared<CObject3D>(Name,this);
+	//temp->SetName(Name);
 	this->Objects3D.push_back(temp);
 	this->DrawableCached = false;
 	return temp;
@@ -27,8 +27,8 @@ std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name)
 
 std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name, std::shared_ptr<CObject3D> &obj)
 {
-	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(obj);
-	temp->SetName(Name);
+	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(*obj,Name.c_str(),this);
+	//temp->SetName(Name);
 	this->Objects3D.push_back(temp);
 	this->DrawableCached = false;
 	return temp;

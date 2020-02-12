@@ -1,0 +1,10 @@
+.vs
+.git
+/Debug/x64/Inter
+/Debug/x64/SDLUITest.ikk
+/Debug/x64/SDLUITest.pdb
+/Debug/x86/Inter
+/Debug/x86/SDLUITest.ikk
+/Debug/x86/SDLUITest.pdb
+/Release
+/TestingProj/Debug

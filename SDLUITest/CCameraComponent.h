@@ -5,9 +5,8 @@ class CCameraComponent :
 	public CBaseComponent
 {
 public:
-	CCameraComponent();
-	CCameraComponent(const CCameraComponent& cam);
-	CCameraComponent(const std::shared_ptr<CCameraComponent>& camera);
+	CCameraComponent(CObject3D* ref);
+	CCameraComponent(const CCameraComponent& cam,CObject3D* ref);
 	~CCameraComponent();
 	//Sets field of view of the camera.
 	void SetFov(float fov);

@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "CLightComponent.h"
+#include "CObject3D.h"
 
 
-CLightComponent::CLightComponent()
+CLightComponent::CLightComponent(CObject3D* ref): CBaseComponent(ref)
 {
+	this->_Type = Object3DComponent::LIGHT_COMPONENT;
 	this->Light.Ambient = glm::vec3(1.0f);
 	this->Light.Color = glm::vec3(0.0f, 1.0f, 1.0f);
 	this->Light.Diffuse = glm::vec3(1.0f);
@@ -13,19 +15,32 @@ CLightComponent::CLightComponent()
 	this->Light.Quadratic = 0.f;
 	this->Light.CutoutDist = 9999.f;
 	this->Light.LightType = LightType::Directional;
-
 	this->_Scale = glm::vec3(0.5f);
 }
 
-CLightComponent::CLightComponent(const CLightComponent& light) :CBaseComponent(light)
+CLightComponent::CLightComponent(const CLightComponent& light,CObject3D* ref) :CBaseComponent(light,ref)
 {
-	this->Light = light.Light;
+	this->_Type = Object3DComponent::LIGHT_COMPONENT;
+	this->Light.Ambient = light.Light.Ambient;
+	this->Light.Diffuse = light.Light.Diffuse;
+	this->Light.Color = light.Light.Color;
+	this->Light.Constant = light.Light.Constant;
+	this->Light.CutoutDist = light.Light.CutoutDist;
+	this->Light.LightType = light.Light.LightType;
+	this->Light.Linear = light.Light.Linear;
+	this->Light.Quadratic = light.Light.Quadratic;
+	this->Light.Specular = light.Light.Specular;
+	this->Light.Position = glm::vec3(0.f);
+	this->Light.Rotation = glm::vec3(0.f);
+	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
+	this->CalculateMatrix();
 }
 
-CLightComponent::CLightComponent(std::shared_ptr<CLightComponent>& obj):CBaseComponent(obj)
-{
-	this->Light = obj->Light;
-}
+
+//CLightComponent::CLightComponent(std::shared_ptr<CLightComponent>& obj):CBaseComponent(obj)
+//{
+//	this->Light = obj->Light;
+//}
 
 
 CLightComponent::~CLightComponent()

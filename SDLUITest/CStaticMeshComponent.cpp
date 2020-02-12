@@ -5,22 +5,23 @@
 #include "CLog.h"
 #include "COpengl.h"
 #include "CSceneManager.h"
+#include "CObject3D.h"
 
 
-CStaticMeshComponent::CStaticMeshComponent()
+CStaticMeshComponent::CStaticMeshComponent(CObject3D* ref) : CBaseComponent(ref)
 {
 	this->_CastShadow = true;
+	this->_Type = Object3DComponent::STATIC_MESH_COMPONENT;
 }
 
-CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& mesh):CBaseComponent(mesh)
+CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& mesh,CObject3D* ref):CBaseComponent(mesh,ref)
 {
+	this->_CastShadow = mesh._CastShadow;
 	this->_Model = mesh._Model;
+	this->_Type = Object3DComponent::STATIC_MESH_COMPONENT;
+	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 }
 
-CStaticMeshComponent::CStaticMeshComponent(const std::shared_ptr<CStaticMeshComponent>& mesh):CBaseComponent(mesh)
-{
-	this->_Model = mesh->_Model;
-}
 
 
 CStaticMeshComponent::~CStaticMeshComponent()

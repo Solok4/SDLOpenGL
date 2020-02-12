@@ -8,9 +8,9 @@ class CStaticMeshComponent :
 	public CBaseComponent,public IDraw
 {
 public:
-	CStaticMeshComponent();
-	CStaticMeshComponent(const CStaticMeshComponent& mesh);
-	CStaticMeshComponent(const std::shared_ptr<CStaticMeshComponent>& mesh);
+	CStaticMeshComponent(CObject3D* ref);
+	CStaticMeshComponent(const CStaticMeshComponent& mesh,CObject3D* ref);
+	//CStaticMeshComponent(const std::shared_ptr<CStaticMeshComponent>& mesh);
 	~CStaticMeshComponent();
 
 	void BindModel(std::shared_ptr<Model> model);

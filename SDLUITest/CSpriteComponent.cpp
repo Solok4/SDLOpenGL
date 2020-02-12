@@ -3,10 +3,14 @@
 
 
 
-CSpriteComponent::CSpriteComponent()
+CSpriteComponent::CSpriteComponent(CObject3D* ref) : CBaseComponent(ref)
 {
 }
 
+
+CSpriteComponent::CSpriteComponent(const CSpriteComponent& comp, CObject3D* ref):CBaseComponent(comp,ref)
+{
+}
 
 CSpriteComponent::~CSpriteComponent()
 {

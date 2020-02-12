@@ -17,7 +17,7 @@
 #include "CRenderer.h"
 
 #define MAX_LIGHTS 8
-#define SHADOWMAP_SIZE 512
+#define SHADOWMAP_SIZE 1024
 #define FARPLANE 50.0f
 
 #pragma comment(lib,"opengl32.lib")

@@ -20,7 +20,7 @@ CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLa
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(LogType::Log, "Object2DDestructor %s",this->_Name.c_str());
+	CLog::MyLog(LogType::Debug, "Object2DDestructor %s",this->_Name.c_str());
 }
 
 void CObject2D::Prepare()

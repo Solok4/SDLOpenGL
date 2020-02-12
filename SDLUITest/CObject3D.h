@@ -9,15 +9,16 @@
 #include "CMovementComponent.h"
 #include "COpengl.h"
 
+class CScene;
 
 class CObject3D
 {
 public:
-	CObject3D();
-	CObject3D(const CObject3D& obj);
-	CObject3D(const std::shared_ptr<CObject3D>& obj);
-	CObject3D(const CObject3D& obj,char* name);
-	CObject3D(const std::shared_ptr<CObject3D>& obj,char* name);
+	CObject3D(std::string name, CScene* ref);
+	//CObject3D(const CObject3D& obj);
+	//CObject3D(const std::shared_ptr<CObject3D>& obj);
+	CObject3D(const CObject3D& obj,std::string name, CScene* ref);
+	//CObject3D(const std::shared_ptr<CObject3D>& obj,char* name);
 	~CObject3D();
 
 	virtual void Prepare();
@@ -28,19 +29,19 @@ public:
 	//Adds component based on id.
 	void AddComponent(int id,std::string name);
 	//Adds component based on another component.
-	template<typename T>
-	void AddComponent(std::shared_ptr<T> comp)
-	{
-		std::shared_ptr<T> newComp = std::make_shared<T>(comp);
-		std::shared_ptr<CBaseComponent> fix = static_cast<std::shared_ptr<CBaseComponent>>(newComp);
-		if (fix == nullptr)
-		{
-			CLog::MyLog(LogType::Error, "Wrong component provided to add");
-			return;
-		}
-		fix->AttachParrentObject(this->GetRootComponent());
-		this->_Components.push_back(newComp);
-	}
+	//template<typename T>
+	void AddComponent(std::shared_ptr<CBaseComponent> comp);
+	//{
+	//	std::shared_ptr<T> newComp = std::make_shared<T>(comp);
+	//	std::shared_ptr<CBaseComponent> fix = static_cast<std::shared_ptr<CBaseComponent>>(newComp);
+	//	if (fix == nullptr)
+	//	{
+	//		CLog::MyLog(LogType::Error, "Wrong component provided to add");
+	//		return;
+	//	}
+	//	fix->AttachParrentObject(this->GetRootComponent());
+	//	this->_Components.push_back(newComp);
+	//}
 	//Removes component from the object.
 	void RemoveComponent(std::string name);
 	//Returns component by name and type.
@@ -79,5 +80,6 @@ protected:
 	std::string Name;
 	std::vector<std::shared_ptr<CBaseComponent>> _Components;
 	std::shared_ptr<CBaseComponent> _RootComponent;
+	CScene* SceneRef;
 };
 

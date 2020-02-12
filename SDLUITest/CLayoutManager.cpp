@@ -12,7 +12,7 @@ CLayoutManager::CLayoutManager()
 
 CLayoutManager::~CLayoutManager()
 {
-	CLog::MyLog(LogType::Log, "LayoutManagerDestructor");
+	CLog::MyLog(LogType::Debug, "LayoutManagerDestructor");
 }
 
 std::shared_ptr<CLayout> CLayoutManager::AddNewLayout(const char* name)

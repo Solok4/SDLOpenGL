@@ -4,9 +4,9 @@ class CMovementComponent :
 	public CBaseComponent
 {
 public:
-	CMovementComponent();
-	CMovementComponent(const CMovementComponent& move);
-	CMovementComponent(const std::shared_ptr<CMovementComponent>& move);
+	CMovementComponent(CObject3D* ref);
+	CMovementComponent(const CMovementComponent& move,CObject3D* ref);
+	//CMovementComponent(const std::shared_ptr<CMovementComponent>& move);
 	~CMovementComponent();
 
 	void MoveForward(bool isForward);

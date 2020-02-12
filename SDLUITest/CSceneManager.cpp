@@ -12,7 +12,7 @@ CSceneManager::CSceneManager()
 
 CSceneManager::~CSceneManager()
 {
-	CLog::MyLog(LogType::Log, "SceneManagerDestructor");
+	CLog::MyLog(LogType::Debug, "SceneManagerDestructor");
 }
 
 void CSceneManager::AddNewScene(std::string Name)

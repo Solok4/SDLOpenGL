@@ -25,7 +25,7 @@ COpengl::COpengl()
 
 COpengl::~COpengl()
 {
-	CLog::MyLog(LogType::Log, "OpenglDestructor");
+	CLog::MyLog(LogType::Debug, "OpenglDestructor");
 }
 
 /*
@@ -499,24 +499,25 @@ Creates framebuffer that are used for lighting. Those saves only depth from the 
 */
 void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int size)
 {
+	std::string name = light->GetPossesingObject()->GetName() + "_" + light->GetName();
 	for (auto x : this->LightFramebuffers)
 	{
-		if (strcmp(light->GetName().c_str(), x.name.c_str()) == 0)
+		if (strcmp(name.c_str(), x.name.c_str()) == 0)
 		{
 			return;
 		}
 	}
 	if (size < 0)
 	{
-		CLog::MyLog(LogType::Error, "Light Framebuffer has to be bigger than 0 %s", light->GetName().c_str());
+		CLog::MyLog(LogType::Error, "Light Framebuffer has to be bigger than 0 %s", name.c_str());
 		return;
 	}
 	else if (size % 2 != 0)
 	{
-		CLog::MyLog(LogType::Warning, "It would be better if light framebuffer will be divisible by 2 %s", light->GetName().c_str());
+		CLog::MyLog(LogType::Warning, "It would be better if light framebuffer will be divisible by 2 %s", name.c_str());
 	}
 	MyLightFramebuffer FboStruct;
-	FboStruct.name = light->GetName();
+	FboStruct.name = name;
 	glGenFramebuffers(1, &FboStruct.FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, FboStruct.FBO);
 
@@ -593,7 +594,8 @@ void COpengl::UseLightFramebuffer(std::string name)
 				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
 				glClearColor(0.f, 0.f, 0.f, 1.0f);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				glCullFace(GL_FRONT);
+				//glCullFace(GL_FRONT);
+				glCullFace(GL_BACK);
 				return;
 			}
 		}
@@ -789,13 +791,14 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 		0.5, 0.5, 0.5, 1.0
 	);
 	glm::mat4 depthBiasMatrix;
+	std::string name = lights->GetPossesingObject()->GetName() + "_" + lights->GetName();
 
 	COpengl::AddNewLightFramebuffer(lights, SHADOWMAP_SIZE);
 	if (lights->GetLightStruct().LightType == LightType::Point)
 	{
 #ifndef __EMSCRIPTEN__
 		depthProjectionMatrix = glm::perspective<float>(glm::radians(90.f), 1, 0.01f, 100.f);
-		COpengl::UseLightFramebuffer(lights->GetName());
+		COpengl::UseLightFramebuffer(name);
 		depthViewMatrix = glm::lookAt(lights->GetPosition(), lights->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 		std::vector<glm::mat4> ShadowTransforms;
 		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3( 1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f, 0.0f )));
@@ -817,8 +820,8 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	}
 	else if(lights->GetLightStruct().LightType == LightType::Directional)
 	{
-		depthProjectionMatrix = glm::ortho<float>(-20.f, 20.f, -20.f,20.f, 0.0f, 50.f);
-		COpengl::UseLightFramebuffer(lights->GetName());
+		depthProjectionMatrix = glm::ortho<float>(-30.f, 30.f, -30.f,30.f, 0.0f, 30.f);
+		COpengl::UseLightFramebuffer(name);
 
 		auto camera =SceneManager->GetCurrentScene()->GetCamera();
 		glm::vec3 LightPostition = camera->GetPosition();
@@ -896,6 +899,7 @@ Sends shadowmaps as uniforms to default shader program.
 */
 void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count)
 {
+	std::string name = light->GetPossesingObject()->GetName() + "_" + light->GetName();
 	std::string Uniform;
 	if (this->OglRenderMode == RenderDeferred)
 	{
@@ -910,7 +914,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 	if (light->GetLightStruct().LightType == LightType::Point)
 	{
 #ifndef __EMSCRIPTEN__
-		glBindTexture(GL_TEXTURE_CUBE_MAP, COpengl::GetLightFrameBuffer(light->GetName()).DepthBuff);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, COpengl::GetLightFrameBuffer(name).DepthBuff);
 		Uniform = "ShadowCube[" + std::to_string(count);
 		Uniform += "]";
 		this->Shaders.Uniform1i(3+count, "ShadowCube");
@@ -919,7 +923,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 	}
 	else
 	{
-		glBindTexture(GL_TEXTURE_2D, COpengl::GetLightFrameBuffer(light->GetName()).DepthBuff);
+		glBindTexture(GL_TEXTURE_2D, COpengl::GetLightFrameBuffer(name).DepthBuff);
 		Uniform = "ShadowMap[" + std::to_string(count);
 		Uniform += "]";
 		this->Shaders.Uniform1i(3+count, "ShadowMap");

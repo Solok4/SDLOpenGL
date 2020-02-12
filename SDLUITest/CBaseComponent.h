@@ -22,11 +22,12 @@ class CObject3D;
 class CBaseComponent
 {
 public:
-	CBaseComponent();
-	CBaseComponent(const CBaseComponent& comp);
-	CBaseComponent(const CBaseComponent& comp,char* name);
-	CBaseComponent(const std::shared_ptr<CBaseComponent>& obj);
-	CBaseComponent(const std::shared_ptr<CBaseComponent>& obj,char* name);
+	CBaseComponent()=delete;
+	CBaseComponent(CObject3D* ref);
+	CBaseComponent(const CBaseComponent& comp, CObject3D* ref);
+	//CBaseComponent(const CBaseComponent& comp,char* name);
+	//CBaseComponent(const std::shared_ptr<CBaseComponent>& obj);
+	//CBaseComponent(const std::shared_ptr<CBaseComponent>& obj,char* name);
 	~CBaseComponent();
 	//Sets name of the component.
 	void SetName(std::string name);
@@ -35,9 +36,9 @@ public:
 	//Attach the component to another one.
 	void AttachParrentObject(std::shared_ptr<CBaseComponent> Parrent);
 	//Create reference to possesing object.
-	void SetPossesingObject(std::shared_ptr<CObject3D> obj);
+	void SetPossesingObject(CObject3D* obj);
 	//Returns possesing object.
-	std::shared_ptr<CObject3D> GetPossesingObject();
+	CObject3D* GetPossesingObject();
 	//Sets type of the component.
 	void SetType(Object3DComponent type);
 	//Returns type of the component.
@@ -74,7 +75,7 @@ public:
 protected:
 
 	std::shared_ptr<CBaseComponent> _ParrentObject;
-	std::shared_ptr<CObject3D> PossesingObject;
+	CObject3D* PossesingObject;
 	std::string _Name;
 	Object3DComponent _Type;
 	glm::vec3 _Position;
