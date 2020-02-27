@@ -78,20 +78,20 @@ Creates shaders and uniforms. Also creates quad for final drawing.
 void COpengl::PrepareToLoop()
 {
 #ifdef __EMSCRIPTEN__
-	Shaders.CreateShader("Assets/Shaders/Guie.vert", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Guie.frag", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/gles/Gui.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/gles/Gui.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Gui",false);
-	Shaders.CreateShader("Assets/Shaders/Scenee.vert", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Scenee.frag", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/gles/Scene.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/gles/Scene.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Default",false);
-	Shaders.CreateShader("Assets/Shaders/finale.vert", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/finale.frag", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/gles/final.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/gles/final.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Final",false);
-	Shaders.CreateShader("Assets/Shaders/Shadowse.vert", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/Shadowse.frag", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/gles/Shadows.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/gles/Shadows.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Shadows", false);
-	Shaders.CreateShader("Assets/Shaders/DebugLightse.vert", ShaderType::Vertex);
-	Shaders.CreateShader("Assets/Shaders/DebugLightse.frag", ShaderType::Fragment);
+	Shaders.CreateShader("Assets/Shaders/gles/DebugLights.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/gles/DebugLights.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("DebugLights", false);
 #else
 	Shaders.CreateShader("Assets/Shaders/Gui.vert", ShaderType::Vertex);
@@ -117,21 +117,10 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/BaseMap.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/BaseMap.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("BaseMap", false);
-	//Shaders.CreateShader("Assets/Shaders/NormalMap.vert", ShaderType::Vertex);
-	//Shaders.CreateShader("Assets/Shaders/NormalMap.frag", ShaderType::Fragment);
-	//Shaders.CreateShaderProgram("NormalMap", false);
-
-	//Shaders.CreateShader("Assets/Shaders/SpecularMap.vert", ShaderType::Vertex);
-	//Shaders.CreateShader("Assets/Shaders/SpecularMap.frag", ShaderType::Fragment);
-	//Shaders.CreateShaderProgram("SpecularMap", false);
 
 	Shaders.CreateShader("Assets/Shaders/LightPass.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/LightPass.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("LightPass", false);
-
-	//Shaders.CreateShader("Assets/Shaders/DepthPass.vert", ShaderType::Vertex);
-	//Shaders.CreateShader("Assets/Shaders/DepthPass.frag", ShaderType::Fragment);
-	//Shaders.CreateShaderProgram("DepthPass", false);
 #endif // __EMSCRIPTEN__
 
 	glClearColor(0, 0, 0, 1);
@@ -170,18 +159,18 @@ void COpengl::PrepareToLoop()
 	//Forward
 	this->AddNewFramebuffer("Default", "Default");
 	//Deferred
+#ifndef __EMSCRIPTEN__
 	this->AddNewFramebuffer("DeferredShading", "BaseMap",true);
 	this->AddNewFramebuffer("LightPass", "LightPass");
+#endif
 
 	Shaders.SetCurrentShaderProgram("Default");
+#ifndef __EMSCRIPTEN__
 	//Deferred rendering light uniforms
 	{
 		Shaders.AddUniformToShaderStruct("LightPass", "BaseMap");
 		Shaders.AddUniformToShaderStruct("LightPass", "NormalMap");
 		Shaders.AddUniformToShaderStruct("LightPass", "PositionMap");
-		//Shaders.AddUniformToShaderStruct("Final", "LightMap");
-		//Shaders.AddUniformToShaderStruct("Final", "DepthMap");
-
 		Shaders.AddUniformToShaderStruct("LightPass", "View");
 		Shaders.AddUniformToShaderStruct("LightPass", "Projection");
 		Shaders.AddUniformToShaderStruct("LightPass", "Model");
@@ -193,9 +182,8 @@ void COpengl::PrepareToLoop()
 		Shaders.AddUniformToShaderStruct("LightPass", "gSpecular");
 
 		Shaders.AddUniformToShaderStruct("LightPass", "ShadowMap");
-#ifndef __EMSCRIPTEN__
+
 		Shaders.AddUniformToShaderStruct("LightPass", "ShadowCube");
-#endif
 		Shaders.AddUniformToShaderStruct("LightPass", "LightCount");
 		{
 			std::string LightNumber;
@@ -238,6 +226,7 @@ void COpengl::PrepareToLoop()
 		Shaders.AddUniformToShaderStruct("LightPass", "Mat.Shininess");
 		Shaders.AddUniformToShaderStruct("LightPass", "FarPlane");
 	}
+#endif
 	//Forward rendering uniforms
 	{
 		Shaders.AddUniformToShaderStruct("Default", "View");
@@ -320,13 +309,14 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("DebugLights", "Color");
 	
 	//Deferred rendering geometry uniforms
+#ifndef __EMSCRIPTEN__
 	Shaders.AddUniformToShaderStruct("BaseMap", "Projection");
 	Shaders.AddUniformToShaderStruct("BaseMap", "View");
 	Shaders.AddUniformToShaderStruct("BaseMap", "Model");
 	Shaders.AddUniformToShaderStruct("BaseMap", "Base");
 	Shaders.AddUniformToShaderStruct("BaseMap", "Normal");
 	Shaders.AddUniformToShaderStruct("BaseMap", "Specular");
-
+#endif
 	Shaders.AddUniformToShaderStruct("Final", "Base");
 }
 
@@ -345,13 +335,6 @@ void COpengl::SetModelMatrix(glm::mat4 matrix)
 	Shaders.UniformMat4f(matrix, "Model");
 }
 
-/*
-Set position, scale and rotation to gui element
-*/
-//void COpengl::SetModelMatrixLayout(glm::mat4 matrix)
-//{
-//	glUniformMatrix4fv(Shaders.GetUniformByNameStruct("Gui", "Model"), 1, GL_FALSE, &matrix[0][0]);
-//}
 
 /*
 Sets colour of gui element
@@ -847,7 +830,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	LightNumber += "]";
 
 	Uniform = LightNumber + ".Position";
-	if (this->OglRenderMode == RenderDeferred)
+	if (this->OglRenderMode == RenderMode::RenderModeDeferred)
 	{
 		Shaders.SetCurrentShaderProgram("LightPass");
 	}
@@ -901,7 +884,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 {
 	std::string name = light->GetPossesingObject()->GetName() + "_" + light->GetName();
 	std::string Uniform;
-	if (this->OglRenderMode == RenderDeferred)
+	if (this->OglRenderMode == RenderMode::RenderModeDeferred)
 	{
 		Shaders.SetCurrentShaderProgram("LightPass");
 	}

@@ -4,9 +4,11 @@
 #include <map>
 #include <memory>
 #include <functional>
+#include <string>
 
 #include "glm/glm.hpp"
 #include "GL/glew.h"
+
 //#include "CLayout.h"
 
 using namespace glm;

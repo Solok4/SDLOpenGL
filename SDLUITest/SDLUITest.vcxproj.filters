@@ -316,18 +316,6 @@
     <None Include="Assets\Shaders\BaseMap.vert">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\NormalMap.frag">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\NormalMap.vert">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\SpecularMap.frag">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\SpecularMap.vert">
-      <Filter>_Shaders</Filter>
-    </None>
     <None Include="Assets\Shaders\gles\DebugLightse.frag">
       <Filter>_Shaders\GLES</Filter>
     </None>
@@ -371,12 +359,6 @@
       <Filter>_Shaders</Filter>
     </None>
     <None Include="Assets\Shaders\LightPass.frag">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\DepthPass.frag">
-      <Filter>_Shaders</Filter>
-    </None>
-    <None Include="Assets\Shaders\DepthPass.vert">
       <Filter>_Shaders</Filter>
     </None>
   </ItemGroup>

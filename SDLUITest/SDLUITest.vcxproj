@@ -270,12 +270,6 @@
     <None Include="Assets\Shaders\DebugLights.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\DepthPass.frag">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\DepthPass.vert">
-      <FileType>Script</FileType>
-    </None>
     <None Include="Assets\Shaders\final.frag">
       <FileType>Script</FileType>
     </None>
@@ -307,12 +301,6 @@
     <None Include="Assets\Shaders\LightPass.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\NormalMap.frag">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\NormalMap.vert">
-      <FileType>Script</FileType>
-    </None>
     <None Include="Assets\Shaders\PointShad.frag">
       <FileType>Script</FileType>
     </None>
@@ -332,12 +320,6 @@
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\Shadows.vert">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\SpecularMap.frag">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Assets\Shaders\SpecularMap.vert">
       <FileType>Script</FileType>
     </None>
   </ItemGroup>

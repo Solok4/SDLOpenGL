@@ -11,9 +11,10 @@
 
 
 CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref)
-	:_Name(name), _Position(position), _Size(objsize), Layer(0), ObjectAligment(Object2DAligment::LEFT_TOP),
+	:_Position(position), _Size(objsize), Layer(0), ObjectAligment(Object2DAligment::LEFT_TOP),
 	_LocalOffset(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f)
 {
+	this->_Name = std::string(name);
 	this->RefreshModelMatrix();
 	this->SetLayoutReference(ref);
 };

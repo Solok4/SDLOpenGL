@@ -7,7 +7,7 @@ void Material::AddTextureToMaterial(std::string name, TextureTypes type)
 	auto tex = TextureManager->GetTextureByName(name);
 	if (!tex)
 	{
-		CLog::MyLog(LogType::Warning, "Texture named %s not found.", name);
+		CLog::MyLog(LogType::Warning, "Texture named %s not found.", name.c_str());
 		return;
 	}
 	this->Textures.push_back(std::make_shared<MaterialTexHandle>(tex, type));

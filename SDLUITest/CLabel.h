@@ -26,11 +26,11 @@ public:
 	void SetColorSDL(SDL_Color Col);
 
 	//Prepares object to draw.
-	virtual void PreDraw();
+	virtual void PreDraw() override;
 	//Draws the object. Should be used after PreDraw func.
-	virtual void Draw();
+	virtual void Draw() override;
 	//Cleans up things after drawing.
-	virtual void PostDraw();
+	virtual void PostDraw() override;
 
 private:
 	TTF_Font* Font;

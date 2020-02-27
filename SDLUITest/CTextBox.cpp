@@ -1,6 +1,7 @@
 #include "CTextBox.h"
 #include "CLayout.h"
 
+#define DEAD_SPACE 20
 
 //CTextBox::CTextBox()
 //{
@@ -37,7 +38,9 @@ void CTextBox::SetValue(std::string value)
 			return;
 		}
 		int labelWidth = (int)this->Label->GetSize().x;
-		if (this->_Size.x >= (this->Label->GetSize().x + (this->GetPadding().x) * 2))
+		static int MaxLength = 0;
+		if ((this->_Size.x >= (this->Label->GetSize().x + (this->GetPadding().x) * 2 + DEAD_SPACE))
+			&& ((MaxLength ==0) ||(MaxLength> this->Value.length())))
 		{
 			if (this->Value.length() > 0)
 			{
@@ -51,7 +54,6 @@ void CTextBox::SetValue(std::string value)
 		}
 		else
 		{
-			static int MaxLength = 0;
 			if (MaxLength == 0)
 			{
 				MaxLength = this->Value.length();
@@ -59,6 +61,10 @@ void CTextBox::SetValue(std::string value)
 			if (MaxLength > this->Value.length())
 			{
 				label->SetText(value.c_str());
+			}
+			else
+			{
+				label->SetText(value.substr(this->Value.length()-MaxLength, MaxLength).c_str());
 			}
 		}
 	}

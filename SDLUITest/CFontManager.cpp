@@ -23,7 +23,11 @@ void CFontManager::LoadFont(std::string path, int size)
 	char OnlyName[128];
 	char* LastSlash;
 	LastSlash = strrchr((char*)path.c_str(), '/');
+#ifdef __EMSCRIPTEN__
+	strcpy(OnlyName, LastSlash + 1);
+#else
 	strcpy_s(OnlyName, LastSlash+1);
+#endif
 
 	auto bExists = CFontManager::GetFontByName(OnlyName, size);
 	if (bExists == nullptr)

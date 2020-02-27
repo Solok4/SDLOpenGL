@@ -19,9 +19,14 @@ void CTextureManager::LoadTexture(std::string path)
 	char OnlyName[128];
 	char* LastSlash;
 	LastSlash = strrchr((char*)path.c_str(), '/');
+#ifdef __EMSCRIPTEN__
+	strcpy(OnlyName, LastSlash + 1);
+#else
 	strcpy_s(OnlyName, LastSlash + 1);
+#endif
 
 	auto ret = this->GetTextureByName(OnlyName);
+	CLog::MyLog(LogType::Debug, "Texture name %s",OnlyName);
 	if (ret != -1)
 	{
 		CLog::MyLog(LogType::Error, "Failed to load texture %s. File has been already loaded", path.c_str());
