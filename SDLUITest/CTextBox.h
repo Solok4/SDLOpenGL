@@ -12,6 +12,7 @@ public:
 	std::string GetValue();
 	void SetValue(std::string value);
 	void SetCanEdit(bool canBe) { this->CanEdit = canBe; };
+	virtual void OnEnter(std::string value);
 	bool GetCanEdit() { return this->CanEdit; };
 	virtual void Tick(double delta) override;
 

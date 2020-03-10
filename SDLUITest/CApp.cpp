@@ -64,31 +64,31 @@ void Loop()
 
 		PollEvents();
 
-		//Check if camera in scene manager exists
-		if (SceneManager->GetCamera() != nullptr)
-		{
-			//If free look mode is activated
-			if (CurrentGameplay->GetMouseLock())
-			{
-				SDL_ShowCursor(false);
-
-				SceneManager->GetCamera()->SetIsFree(true);
-			}
-			else
-			{
-				SceneManager->GetCamera()->SetIsFree(false);
-				SDL_ShowCursor(true);
-			}
-		}
-
-		OpenGL->PreLoop();
-		double TickTime =((WInfo->Delta.count() * CurrentGameplay->GetTimescale())*1000);
+		double TickTime = ((WInfo->Delta.count() * CurrentGameplay->GetTimescale()) * 1000);
 		CurrentGameplay->Tick(TickTime);
 		CurrentLayout->Tick(TickTime);
 		CurrentScene->Tick(TickTime);
 
-		CurrentScene->Draw(DrawType::FullDraw);
-		OpenGL->DrawDebugLights(CurrentScene->GetLightObjects(), CurrentScene->GetCamera());
+		//Check if camera in scene manager exists
+		if (CurrentScene->GetCamera() != nullptr)
+		{
+			//If free look mode is activated
+			if (CurrentGameplay->GetMouseLock())
+			{
+				CurrentScene->GetCamera()->SetIsFree(true);
+			}
+			else
+			{
+				CurrentScene->GetCamera()->SetIsFree(false);
+			}
+		}
+
+		if (!(CurrentGameplay->GetTimescale() == 0.0f && !CurrentGameplay->GetMouseLock()))
+		{
+			OpenGL->PreLoop();
+			CurrentScene->Draw(DrawType::FullDraw);
+			OpenGL->DrawDebugLights(CurrentScene->GetLightObjects(), CurrentScene->GetCamera());
+		}
 		OpenGL->FinalDraw();
 
 		OpenGL->PreLoopOrtho();
@@ -182,8 +182,7 @@ void PreLoop()
 
 		auto TestListBox = Layout->FindObjectByName<CListBox>("TestListBox");
 		TestListBox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
-		TestListBox->CreateLabels(8);
-		TestListBox->SetFont(Font10);
+		TestListBox->SetFont(Font16);
 		TestListBox->SetText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.");
 
 		auto TempLabel = Layout->FindObjectByName<CLabel>("FrameTimeCounter");
@@ -236,6 +235,30 @@ void PreLoop()
 		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); }, MouseButton::LEFTMOUSEBUTTON);
 
 		//LayoutManager->PushActiveLayout("DoubleTest");
+
+		auto Console = LayoutManager->AddNewLayout("Console");
+		Console->AddItem(Object2DType::OBJECT2D_CONTAINER, "Container", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth, 500.f));
+		Console->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth,450.f));
+		Console->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth,50.f));
+
+		Console->PrepareToLoop();
+
+		auto Container = Console->FindObjectByName<CContainer>("Container");
+		auto Listbox = Console->FindObjectByName<CListBox>("Text");
+		auto Textbox = Console->FindObjectByName<CTextBox>("Input");
+
+		Container->AddToParrentOfTable(&*Listbox);
+		Container->AddToParrentOfTable(&*Textbox);
+
+		Listbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+		Listbox->SetFont(Font10);
+		Listbox->SetText("Console Test");
+
+		Textbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+		Textbox->GetLabel()->SetFont(Font10);
+		Textbox->GetLabel()->SetAligment(Object2DAligment::LEFT);
+		Textbox->MoveObjectLayerUp();
+		
 	}
 	SceneManager->AddNewScene("Default");
 	auto tempScene(SceneManager->GetSceneByName("Default"));
@@ -315,23 +338,9 @@ void PreLoop()
 
 	SceneManager->SetCurrentScene("Default");
 
-	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_1, true);
-	KeyboardConf->SetKeyTriggerStatus(SDL_SCANCODE_F3, true);
-
 	auto gameplay = GameplayManager->AddNewGameplay("Default");
 	gameplay->SetTimescale(1.0f);
-	gameplay->SetFrameLimit(200);
+	gameplay->SetFrameLimit(60);
 	GameplayManager->SelectCurrentGameplay("Default");
 	
 }
-
-//void ResizeWindow(int w, int h)
-//{
-//	Renderer->Resize(w, h);
-//	LayoutManager->RefreshWindowData();
-//}
-//
-//void SetFPSLock(int FPS)
-//{
-//	Renderer->GetWindowInfo()->FPSLock = FPS;
-//}

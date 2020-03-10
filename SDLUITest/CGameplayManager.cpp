@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CGameplayManager.h"
+#include "CKeyboardConf.h"
 
 std::unique_ptr<CGameplayManager> GameplayManager;
 
@@ -15,6 +16,7 @@ CGameplayManager::~CGameplayManager()
 std::shared_ptr<CGameplay> CGameplayManager::AddNewGameplay(const char* name)
 {
 	std::shared_ptr<CGameplay> temp = std::make_shared<CGameplay>(name);
+	temp->Init();
 	this->GameplayConfigurations.push_back(temp);
 	return temp;
 }
@@ -39,6 +41,8 @@ void CGameplayManager::SelectCurrentGameplay(const char* name)
 		if (strcmp(a->Name.c_str(), name) == 0)
 		{
 			this->CurrentGameplay = a;
+			KeyboardConf->ClearTriggerStatus();
+			a->OnGameplayChange();
 			return;
 		}
 	}

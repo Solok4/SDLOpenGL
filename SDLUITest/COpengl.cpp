@@ -371,8 +371,6 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 {
 	if (Camera != nullptr)
 	{
-		//ViewMatrix = glm::lookAt(Camera->GetPosition(), Camera->GetPosition()+ Camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
-		//glm::mat4 Projection = glm::perspective(glm::radians(Camera->GetFov()), this->WndInfo->ScreenAspectRatio, 0.1f, 100.0f);
 		Shaders.UniformMat4f(Camera->GetViewMatrix(), "View");
 		Shaders.UniformMat4f(Camera->GetPerspectiveMatrix(), "Projection");
 		Shaders.Uniform1f(FARPLANE, "FarPlane");
@@ -577,8 +575,8 @@ void COpengl::UseLightFramebuffer(std::string name)
 				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
 				glClearColor(0.f, 0.f, 0.f, 1.0f);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				//glCullFace(GL_FRONT);
-				glCullFace(GL_BACK);
+				glCullFace(GL_FRONT);
+				//glCullFace(GL_BACK);
 				return;
 			}
 		}

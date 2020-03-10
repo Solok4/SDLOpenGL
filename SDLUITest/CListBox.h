@@ -14,11 +14,11 @@ public:
 	{
 		this->_ID = Object2DType::OBJECT2D_LISTBOX;
 		this->Value = std::string("");
-		this->LBoxFont = nullptr;
 		this->_Padding = glm::vec2(10.f);
+		this->CreateLabels();
 	};
 	
-	void CreateLabels(int rows);
+	void CreateLabels();
 	void SetFont(TTF_Font* fon);
 	void SetText(std::string val);
 	std::string GetText() { return this->Value; };
@@ -29,9 +29,7 @@ public:
 
 private:
 	int FontSize;
-	int LettersInARow;
-	TTF_Font* LBoxFont;
 	std::string Value;
-	std::vector<std::shared_ptr<CLabel>> LabelVector;
+	std::shared_ptr<CLabel> Label;
 };
 

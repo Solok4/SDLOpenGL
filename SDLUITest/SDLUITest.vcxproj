@@ -295,6 +295,12 @@
     <None Include="Assets\Shaders\Gui.vert">
       <FileType>Script</FileType>
     </None>
+    <None Include="Assets\Shaders\Label.frag">
+      <FileType>Script</FileType>
+    </None>
+    <None Include="Assets\Shaders\Label.vert">
+      <FileType>Script</FileType>
+    </None>
     <None Include="Assets\Shaders\LightPass.frag">
       <FileType>Script</FileType>
     </None>

@@ -37,12 +37,6 @@ CLightComponent::CLightComponent(const CLightComponent& light,CObject3D* ref) :C
 }
 
 
-//CLightComponent::CLightComponent(std::shared_ptr<CLightComponent>& obj):CBaseComponent(obj)
-//{
-//	this->Light = obj->Light;
-//}
-
-
 CLightComponent::~CLightComponent()
 {
 }

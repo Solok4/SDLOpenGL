@@ -5,15 +5,6 @@
 #include <stdarg.h>
 
 
-//CLabel::CLabel() : CObject2D()
-//{
-//	this->_Size = glm::vec2(200.0f, 100.0f);
-//	this->_Rotation = vec3(180.f, 0.0f, 0.0f);
-//	this->Font = TTF_OpenFont("Assets/Fonts/Raleway-Black.ttf", 20);
-//	//this->SetText("Default");
-//	this->ColorMask = vec4(1.0f);
-//}
-
 
 CLabel::~CLabel()
 {
@@ -44,6 +35,37 @@ void CLabel::SetText(const char* format, ...)
 	else
 	{
 		this->SetSize(glm::vec2(TextSurface->w,TextSurface->h));
+		glBindTexture(GL_TEXTURE_2D, this->TextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TextSurface->w, TextSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, TextSurface->pixels);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		SDL_FreeSurface(TextSurface);
+	}
+	va_end(vl);
+}
+
+void CLabel::SetTextWrapped(int width, const char* format, ...)
+{
+	char Text[256];
+	va_list vl;
+	va_start(vl, format);
+#ifdef __EMSCRIPTEN__
+	vsprintf(Text, format, vl);
+#else
+	vsprintf_s(Text, format, vl);
+#endif
+	this->Value = std::string(Text);
+	if (!(TextSurface = TTF_RenderText_Blended_Wrapped(this->Font,this->Value.c_str(),{255,255,255},width)))
+	{
+		CLog::MyLog(LogType::Error, "Failed to create text surface: %s", TTF_GetError());
+		return;
+	}
+	else
+	{
+		this->SetSize(glm::vec2(TextSurface->w, TextSurface->h));
 		glBindTexture(GL_TEXTURE_2D, this->TextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TextSurface->w, TextSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, TextSurface->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

@@ -56,6 +56,14 @@ void CKeyboardConf::SetKeyTriggerStatus(unsigned int Key, bool Status)
 	this->KeyBtns[Key].IsTriggerType = Status;
 }
 
+void CKeyboardConf::ClearTriggerStatus()
+{
+	for (KeyboardButtons a : this->KeyBtns)
+	{
+		a.IsTriggerType = false;
+	}
+}
+
 std::array<bool, 322> CKeyboardConf::GetKeyButtons()
 {
 	return this->KeyResults;

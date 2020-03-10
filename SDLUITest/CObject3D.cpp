@@ -12,8 +12,6 @@ CObject3D::CObject3D(std::string name,CScene* ref)
 	this->SceneRef = ref;
 }
 
-
-
 CObject3D::CObject3D(const CObject3D& obj,std::string name,CScene* ref):CObject3D(name,ref)
 {
 	if (obj._Components.size() != 0)
@@ -53,6 +51,9 @@ CObject3D::CObject3D(const CObject3D& obj,std::string name,CScene* ref):CObject3
 CObject3D::~CObject3D()
 {
 	CLog::MyLog(LogType::Debug, "3DObjectDestructor %s",this->GetName().c_str());
+	this->SceneRef = nullptr;
+	this->_RootComponent = nullptr;
+	this->_Components.clear();
 }
 
 void CObject3D::Prepare()

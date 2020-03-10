@@ -157,6 +157,12 @@ void CLayout::ProcessTextEditing()
 		{
 			Text = SDL_GetClipboardText();
 		}
+		else if (SingleKey == SDLK_RETURN)
+		{
+			this->UsedTestBox->OnEnter(Text);
+			Text.clear();
+			bChanged = true;
+		}
 
 		if (Event->GetIsEditing())
 		{

@@ -60,7 +60,15 @@ void CTextBox::SetValue(std::string value)
 			}
 			if (MaxLength > this->Value.length())
 			{
-				label->SetText(value.c_str());
+				if (this->Value.length() > 0)
+				{
+					label->SetText(value.c_str());
+					this->Label->SetVisibility(true);
+				}
+				else
+				{
+					this->Label->SetVisibility(false);
+				}
 			}
 			else
 			{
@@ -68,6 +76,11 @@ void CTextBox::SetValue(std::string value)
 			}
 		}
 	}
+}
+
+void CTextBox::OnEnter(std::string value)
+{
+	CLog::MyLog(LogType::Debug, value.c_str());
 }
 
 void CTextBox::Tick(double delta)

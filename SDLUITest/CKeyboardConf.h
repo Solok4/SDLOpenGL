@@ -23,6 +23,7 @@ public:
 
 	void ProcessButtons(std::array<bool, 322> ButArray);
 	void SetKeyTriggerStatus(unsigned int Key,bool Status);
+	void ClearTriggerStatus();
 	std::array<bool, 322> GetKeyButtons();
 
 	std::array<bool, 322> KeyResults;

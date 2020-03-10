@@ -361,5 +361,11 @@
     <None Include="Assets\Shaders\LightPass.frag">
       <Filter>_Shaders</Filter>
     </None>
+    <None Include="Assets\Shaders\Label.frag">
+      <Filter>_Shaders</Filter>
+    </None>
+    <None Include="Assets\Shaders\Label.vert">
+      <Filter>_Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -22,10 +22,9 @@ CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& mesh,CObj
 	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 }
 
-
-
 CStaticMeshComponent::~CStaticMeshComponent()
 {
+	this->_Model = nullptr;
 }
 
 void CStaticMeshComponent::BindModel(std::shared_ptr<Model> model)

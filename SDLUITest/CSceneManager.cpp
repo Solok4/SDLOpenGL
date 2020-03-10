@@ -13,6 +13,9 @@ CSceneManager::CSceneManager()
 CSceneManager::~CSceneManager()
 {
 	CLog::MyLog(LogType::Debug, "SceneManagerDestructor");
+	this->CurrentScene = nullptr;
+	this->Camera = nullptr;
+	this->Scenes.clear();
 }
 
 void CSceneManager::AddNewScene(std::string Name)

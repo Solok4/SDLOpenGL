@@ -18,6 +18,7 @@ public:
 	void SetFont(TTF_Font* font);
 	//Creates texture with provided text
 	void SetText(const char* format, ...);
+	void SetTextWrapped(int width, const char* format, ...);
 	//Prepares label for using
 	virtual void Prepare() override;
 	//Returns font used by this label

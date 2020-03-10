@@ -29,16 +29,6 @@ CCameraComponent::CCameraComponent(const CCameraComponent& cam,CObject3D* ref):C
 	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 }
 
-//CCameraComponent::CCameraComponent(const std::shared_ptr<CCameraComponent>& camera) :CBaseComponent(camera)
-//{
-//	this->LastX = camera->LastX;
-//	this->LastY = camera->LastY;
-//	this->FOV = camera->FOV;
-//	this->Sensitivity = camera->Sensitivity;
-//	this->IsFree = camera->IsFree;
-//	this->First = camera->First;
-//}
-
 
 CCameraComponent::~CCameraComponent()
 {
@@ -74,11 +64,10 @@ void CCameraComponent::ProcessMouseMovements()
 		this->LastX = MouseX;
 		this->LastY = MouseY;
 #else
+		SDL_ShowCursor(false);
 		auto WNDInfo = Renderer->GetWindowInfo();
 		int w = WNDInfo->ScreenWidth; int h = WNDInfo->ScreenHeight;
 		int xpos = WNDInfo->ScreenPosX; int ypos = WNDInfo->ScreenPosY;
-		/*SDL_GetWindowPosition(Wnd, &xpos, &ypos);
-		SDL_GetWindowSize(Wnd, &w, &h);*/
 		SetCursorPos(xpos + (w / 2), ypos + (h / 2));
 		DeltaX = MouseX - (w / 2);
 		DeltaY = MouseY - (h / 2);
@@ -99,6 +88,10 @@ void CCameraComponent::ProcessMouseMovements()
 		this->_Rotation.x -= MovementY;
 		this->ClipCamera();
 		this->CalculateMatrix();
+	}
+	else
+	{
+		SDL_ShowCursor(true);
 	}
 
 	//CLog::MyLog(0, "X: %f Y: %f DeltaX: %d DeltaY: %d ", this->_Rotation.x, this->_Rotation.y, DeltaX, DeltaY);
@@ -151,9 +144,9 @@ void CCameraComponent::Tick(double delta)
 	CBaseComponent::Tick(delta);
 	this->PerspectiveMatrix = glm::perspective(glm::radians(this->FOV), Renderer->GetWindowInfo()->ScreenAspectRatio, 0.1f, 1000.f);
 	this->ViewMatrix = glm::lookAt(this->_Position, this->_Position + this->GetForwardVector(), glm::vec3(0.f, 1.f, 0.f));
+	this->ProcessMouseMovements();
 	if (this->IsFree)
 	{
-		this->ProcessMouseMovements();
 		OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
 		glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
 			this->_Position.x+this->_PosOffset.x, this->_Position.y+ this->_PosOffset.y, this->_Position.z+ this->_PosOffset.z);

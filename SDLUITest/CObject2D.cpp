@@ -56,7 +56,6 @@ void CObject2D::Prepare()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
-
 }
 
 void CObject2D::RefreshModelMatrix()
@@ -105,7 +104,7 @@ void CObject2D::SetSize(vec2 vec)
 	this->_Size = vec;
 	switch (this->ObjectAligment)
 	{
-		case LEFT_TOP:
+		case LEFT_BOTTOM:
 		{
 			this->_LocalOffset.x = 0;
 			this->_LocalOffset.y = 0;
@@ -141,7 +140,7 @@ void CObject2D::SetSize(vec2 vec)
 			this->_LocalOffset.y = this->_Size.y/2;
 			break;
 		}
-		case LEFT_BOTTOM:
+		case LEFT_TOP:
 		{
 			this->_LocalOffset.x = 0;
 			this->_LocalOffset.y = this->_Size.y;

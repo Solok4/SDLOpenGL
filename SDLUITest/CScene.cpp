@@ -14,6 +14,11 @@ CScene::CScene()
 CScene::~CScene()
 {
 	CLog::MyLog(LogType::Debug, "SceneDestructor %s",this->GetName().c_str());
+	this->Camera = nullptr;
+	this->Lights.clear();
+	this->MovementObject = nullptr;
+	this->ObjectsToDraw.clear();
+	this->Objects3D.clear();
 }
 
 std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name)
