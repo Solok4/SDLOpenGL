@@ -57,7 +57,8 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 
 	//Diffuse
 	vec3 norm = NormalTex.xyz*NormalVec;
-	vec3 LightDir = normalize(l.Position - FragPos);
+	//vec3 LightDir = normalize(l.Position - FragPos);
+	vec3 LightDir = normalize(l.Rotation);
 	float diff = max(dot(LightDir,norm),0.0);
 	vec3 diffuse = (diff*Mat.Diffuse*l.Diffuse)*l.Color;
 		
@@ -67,8 +68,8 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	vec3 reflectDir = reflect(-LightDir,norm);
 	//float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
 	float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
-	vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
-	//vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
+	//vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
+	vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
 		
 	float bias = max(0.15 * (1.0 - dot(norm, LightDir)), 0.005);
 	

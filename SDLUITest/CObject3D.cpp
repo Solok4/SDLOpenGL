@@ -4,6 +4,13 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "CScene.h"
 
+CObject3D::CObject3D(std::string name)
+{
+	this->AddComponent(0, "root");
+	this->BindRootComponent("root");
+	this->Name = name;
+}
+
 CObject3D::CObject3D(std::string name,CScene* ref)
 {
 	this->AddComponent(0, "root");

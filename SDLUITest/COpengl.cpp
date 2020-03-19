@@ -350,7 +350,7 @@ Calculates inversed and transposed normal matrix to base drawing struct
 void COpengl::SetNormalMatrix(glm::mat4 matrix)
 {
 	glm::mat4 NormalMatrix = glm::transpose(glm::inverse(matrix));
-	Shaders.UniformMat4f(matrix, "NormalMatrix");
+	Shaders.UniformMat4f(NormalMatrix, "NormalMatrix");
 }
 
 
@@ -573,7 +573,7 @@ void COpengl::UseLightFramebuffer(std::string name)
 			if (strcmp(o.name.c_str(), name.c_str()) == 0)
 			{
 				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
-				glClearColor(0.f, 0.f, 0.f, 1.0f);
+				glClearColor(1.f, 1.f, 1.f, 1.0f);
 				glClear(GL_DEPTH_BUFFER_BIT);
 				glCullFace(GL_FRONT);
 				//glCullFace(GL_BACK);
@@ -811,6 +811,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 
 		glm::vec3 FVectorCamera = LightPostition + (FinalVec*10.f);
 		lights->SetPosition(FVectorCamera);
+		lights->SetRotation(lights->GetForwardVector());
 
 		depthViewMatrix = glm::lookAt(FVectorCamera, LightPostition, glm::vec3(0.0f, 1.0f, 0.0f));
 	}

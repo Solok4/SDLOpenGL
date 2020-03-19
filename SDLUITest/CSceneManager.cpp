@@ -14,7 +14,6 @@ CSceneManager::~CSceneManager()
 {
 	CLog::MyLog(LogType::Debug, "SceneManagerDestructor");
 	this->CurrentScene = nullptr;
-	this->Camera = nullptr;
 	this->Scenes.clear();
 }
 
@@ -61,24 +60,7 @@ void CSceneManager::SetCurrentScene(std::string Name)
 		if (o->GetName() == Name)
 		{
 			this->CurrentScene = o;
-			this->Camera = o->GetCamera();
 			break;
 		}
 	}
-}
-
-void CSceneManager::SetCamera(std::shared_ptr<CCameraComponent> Cam)
-{
-	if (Cam != nullptr)
-	{
-		this->Camera = Cam;
-		return;
-	}
-	CLog::MyLog(LogType::Error, "Camera not bound to scene: %s ",this->CurrentScene->GetName().c_str());
-
-}
-
-std::shared_ptr<CCameraComponent> CSceneManager::GetCamera()
-{
-	return this->Camera;
 }

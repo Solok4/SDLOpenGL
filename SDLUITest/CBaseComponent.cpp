@@ -85,18 +85,18 @@ glm::vec3 CBaseComponent::GetForwardVector()
 {
 	glm::vec3 FV;
 
-	FV.x = (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
+	FV.x = (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y)));
 	FV.y = sin(glm::radians(this->_Rotation.x));
-	FV.z = (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y)));
+	FV.z = (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
 	return FV;
 }
 
 glm::vec3 CBaseComponent::GetRightVector()
 {
 	glm::vec3 RV;
-	RV.x = (cos(glm::radians(this->_Rotation.z))*cos(glm::radians(this->_Rotation.y+90.f)));
+	RV.x = (cos(glm::radians(this->_Rotation.z))*sin(glm::radians(this->_Rotation.y+90.f)));
 	RV.y = sin(glm::radians(this->_Rotation.z));
-	RV.z = (cos(glm::radians(this->_Rotation.z))*sin(glm::radians(this->_Rotation.y+90.f)));
+	RV.z = (cos(glm::radians(this->_Rotation.z))*cos(glm::radians(this->_Rotation.y+90.f)));
 	return RV;
 }
 

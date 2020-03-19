@@ -17,6 +17,7 @@ public:
 		this->_Padding = glm::vec2(10.f);
 		this->CreateLabels();
 	};
+	~CListBox();
 	
 	void CreateLabels();
 	void SetFont(TTF_Font* fon);
@@ -24,7 +25,6 @@ public:
 	std::string GetText() { return this->Value; };
 
 	virtual void PostDraw() override;
-	~CListBox();
 
 
 private:

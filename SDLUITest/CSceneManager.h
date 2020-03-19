@@ -15,10 +15,6 @@ public:
 	std::shared_ptr<CScene> GetCurrentScene();
 	void SetCurrentScene(std::string Name);
 
-	void SetCamera(std::shared_ptr<CCameraComponent> Cam);
-	std::shared_ptr<CCameraComponent> GetCamera();
-
-	std::shared_ptr<CCameraComponent> Camera;
 	std::vector<std::shared_ptr<CScene>> Scenes;
 	std::shared_ptr<CScene> CurrentScene;
 };

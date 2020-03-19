@@ -11,6 +11,8 @@ public:
 	//Bind texture to the object.
 	void BindTexture(GLuint Tex);
 
+	virtual void Prepare() override;
+
 	//Prepares object to draw.
 	virtual void PreDraw() override;
 	//Draws the object. Should be used after PreDraw func.

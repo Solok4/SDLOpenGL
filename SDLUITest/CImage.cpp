@@ -2,9 +2,6 @@
 #include "CImage.h"
 
 
-//CImage::CImage() : CObject2D()
-//{
-//}
 
 
 CImage::~CImage()
@@ -45,4 +42,9 @@ void CImage::PostDraw()
 void CImage::BindTexture(GLuint Tex)
 {
 	this->TextureID = Tex;
+}
+
+void CImage::Prepare()
+{
+	CObject2D::Prepare();
 }

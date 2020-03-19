@@ -18,6 +18,15 @@ bool Init(int argc, char** argv)
 	InitialSetup = std::make_unique<CInitialSetup>(argc,argv);
 	OpenGL = std::make_unique<COpengl>();
 	Renderer = std::make_unique<CRenderer>();
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
+		return false;
+	}
+	Renderer->Init();
+	OpenGL->Create(Renderer->GetWindow());
+
 	Event = std::make_unique<CEvent>();
 	LayoutManager = std::make_unique<CLayoutManager>();
 	ModelManager = std::make_unique<CModelManager>();
@@ -27,13 +36,6 @@ bool Init(int argc, char** argv)
 	FontManager = std::make_unique<CFontManager>();
 	TextureManager = std::make_unique<CTextureManager>();
 	MaterialManager = std::make_unique<CMaterialManager>();
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
-		return false;
-	}
-	Renderer->Init();
-	OpenGL->Create(Renderer->GetWindow());
 	PreLoop();
 	return true;
 }
@@ -342,5 +344,4 @@ void PreLoop()
 	gameplay->SetTimescale(1.0f);
 	gameplay->SetFrameLimit(60);
 	GameplayManager->SelectCurrentGameplay("Default");
-	
 }

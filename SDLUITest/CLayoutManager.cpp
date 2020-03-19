@@ -87,5 +87,6 @@ void CLayoutManager::RefreshWindowData()
 	for (auto o : this->Layouts)
 	{
 		o->RefreshWindowData();
+		o->RefreshScreenSize();
 	}
 }

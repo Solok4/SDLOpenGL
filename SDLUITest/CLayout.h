@@ -58,6 +58,7 @@ public:
 
 	void SetUsedTextBox(CTextBox* tbox);
 	bool GetIsEditingLayout() { return this->LayoutIsEditing; };
+	void RefreshScreenSize();
 
 private:
 	int MousePosX;
@@ -68,6 +69,7 @@ private:
 	std::vector<std::shared_ptr<CObject2D>> Buttons;
 	bool LayoutIsEditing = false;
 	CTextBox* UsedTestBox;
+	std::shared_ptr<CContainer> RootContainer;
 };
 
 

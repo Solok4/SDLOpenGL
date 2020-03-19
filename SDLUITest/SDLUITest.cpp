@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	}
 	Loop();
 #ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(Loop, 0, true);
+	emscripten_set_main_loop(Loop, Renderer->GetWindowInfo()->FPSLock, true);
 #endif
 
 	Destroy();

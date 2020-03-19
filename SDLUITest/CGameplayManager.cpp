@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CGameplayManager.h"
 #include "CKeyboardConf.h"
-
+#include "CRenderer.h"
 std::unique_ptr<CGameplayManager> GameplayManager;
 
 CGameplayManager::CGameplayManager()
@@ -43,6 +43,7 @@ void CGameplayManager::SelectCurrentGameplay(const char* name)
 			this->CurrentGameplay = a;
 			KeyboardConf->ClearTriggerStatus();
 			a->OnGameplayChange();
+			Renderer->SetFrameLock(a->GetFrameLimit());
 			return;
 		}
 	}

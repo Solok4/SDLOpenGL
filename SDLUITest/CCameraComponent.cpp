@@ -84,7 +84,7 @@ void CCameraComponent::ProcessMouseMovements()
 		float MovementX = (DeltaX * this->Sensitivity)*0.1f;
 		float MovementY = (DeltaY * this->Sensitivity)*0.1f;
 
-		this->_Rotation.y += MovementX;
+		this->_Rotation.y -= MovementX;
 		this->_Rotation.x -= MovementY;
 		this->ClipCamera();
 		this->CalculateMatrix();
@@ -94,9 +94,9 @@ void CCameraComponent::ProcessMouseMovements()
 		SDL_ShowCursor(true);
 	}
 
-	//CLog::MyLog(0, "X: %f Y: %f DeltaX: %d DeltaY: %d ", this->_Rotation.x, this->_Rotation.y, DeltaX, DeltaY);
+	//CLog::MyLog(LogType::Debug, "X: %f Y: %f", this->_Rotation.x, this->_Rotation.y);
 	//CLog::MyLog(0, "MouseX: %d MouseY: %d Window W: %d Window H: %d\n",e.x,e.y,w,h);
-	//CLog::MyLog(0, "ForwardVector X: %f Y: %f Z: %f", this->GetForwardVector().x, this->GetForwardVector().y, this->GetForwardVector().z);
+	//CLog::MyLog(LogType::Debug, "ForwardVector X: %f Y: %f Z: %f", this->GetForwardVector().x, this->GetForwardVector().y, this->GetForwardVector().z);
 }
 
 void CCameraComponent::SetIsFree(bool used)

@@ -2,6 +2,10 @@
 #include "COpengl.h"
 
 
+CListBox::~CListBox()
+{
+	this->Label = nullptr;
+}
 
 void CListBox::CreateLabels()
 {
@@ -43,8 +47,4 @@ void CListBox::PostDraw()
 		this->Label->Draw();
 		this->Label->PostDraw();
 	}
-}
-
-CListBox::~CListBox()
-{
 }

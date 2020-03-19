@@ -4,6 +4,9 @@
 #include <array>
 #include <functional>
 #include <vector>
+#include <string>
+
+#include "CRenderer.h"
 
 struct KeyFunction
 {
@@ -45,7 +48,11 @@ public:
 	virtual void OnGameplayChange();
 	virtual void Tick(double delta);
 	virtual void KeyEvents(std::array<bool, 322> keys);
-	void SetFrameLimit(int frames) { this->FrameLimit = frames; };
+	void SetFrameLimit(int frames) 
+	{ 
+		this->FrameLimit = frames;
+		Renderer->SetFrameLock(frames);
+	};
 	int GetFrameLimit() { return this->FrameLimit; };
 
 	std::string Name;
@@ -56,4 +63,3 @@ public:
 	std::vector<std::shared_ptr<KeyMapping>> KeyMapVector;
 	std::vector<int> KeyTriggerVector;
 };
-

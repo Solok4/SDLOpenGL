@@ -8,6 +8,7 @@
 
 CLabel::~CLabel()
 {
+	glDeleteTextures(1, &this->TextureID);
 }
 
 

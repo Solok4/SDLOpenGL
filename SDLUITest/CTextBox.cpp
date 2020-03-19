@@ -16,10 +16,12 @@ CTextBox::CTextBox(const char* name, glm::vec2 position, glm::vec2 objsize, CLay
 	CObject2D::Prepare();
 	this->CanEdit = true;
 	glGenTextures(1, &this->TextureID);
+	this->EnterFunc = []() {};
 }
 
 CTextBox::~CTextBox()
 {
+	glDeleteTextures(1, &this->TextureID);
 }
 
 std::string CTextBox::GetValue()
@@ -78,9 +80,14 @@ void CTextBox::SetValue(std::string value)
 	}
 }
 
-void CTextBox::OnEnter(std::string value)
+void CTextBox::BindEnterFunc(std::function<void()> func)
 {
-	CLog::MyLog(LogType::Debug, value.c_str());
+	this->EnterFunc = func;
+}
+
+void CTextBox::OnEnter()
+{
+	this->EnterFunc();
 }
 
 void CTextBox::Tick(double delta)

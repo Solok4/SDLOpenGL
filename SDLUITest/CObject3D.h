@@ -14,11 +14,9 @@ class CScene;
 class CObject3D
 {
 public:
+	CObject3D(std::string name);
 	CObject3D(std::string name, CScene* ref);
-	//CObject3D(const CObject3D& obj);
-	//CObject3D(const std::shared_ptr<CObject3D>& obj);
 	CObject3D(const CObject3D& obj,std::string name, CScene* ref);
-	//CObject3D(const std::shared_ptr<CObject3D>& obj,char* name);
 	~CObject3D();
 
 	virtual void Prepare();
