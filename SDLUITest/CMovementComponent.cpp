@@ -65,7 +65,7 @@ void CMovementComponent::Tick(double delta)
 	glm::vec3 diffY = this->GetUpVector();
 	glm::vec3 diffZ = this->GetRightVector();
 	//CLog::MyLog(0, "FVector x:%f y:%f z:%f", this->GetForwardVector().x, this->GetForwardVector().y, this->GetForwardVector().z);
-	CLog::MyLog(LogType::Debug, "Inputs x:%f y:%f z:%f", this->isMoveForward, this->isMoveRight, this->isMoveUp);
+	//CLog::MyLog(LogType::Debug, "Inputs x:%f y:%f z:%f", this->isMoveForward, this->isMoveRight, this->isMoveUp);
 	if (this->isMoveForward != 0.0f)
 	{
 		if (this->CurrentXAccel < this->MaxAccel)

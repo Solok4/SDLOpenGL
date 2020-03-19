@@ -43,10 +43,10 @@ public:
 #else
 		sprintf(LabelName, "%s%s", name, "_Label");
 #endif
-		this->Label = std::make_shared<CLabel>(LabelName, glm::vec2(this->GetSize().x / 2, this->GetSize().y / 2), glm::vec2(1.f), this->LayoutRef);
+		this->Label = std::make_shared<CLabel>(LabelName, glm::vec2(0.0f)/*glm::vec2(this->GetSize().x / 2, this->GetSize().y / 2)*/, glm::vec2(1.f), this->LayoutRef);
 		this->Label->BindParrentObject(this);
 		this->Label->MoveObjectLayerUp();
-		this->Label->SetPadding(glm::vec2(10.f));
+		this->Label->SetPadding(glm::vec2(0.f));
 		this->Label->SetAligment(Object2DAligment::CENTER);
 		this->Label->Prepare();
 	};

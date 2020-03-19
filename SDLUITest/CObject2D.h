@@ -60,7 +60,7 @@ public:
 	void SetAligment(Object2DAligment Aligment);
 
 	//Returns vec2 position vector.
-	vec2 GetPosition() { return this->_Position; };
+	vec2 GetPosition() { return this->_LocalOffset; };
 	//returns vec2 rotation vector.
 	vec2 GetRotaton() { return this->_Rotation; };
 	//returns vec2 size vector.

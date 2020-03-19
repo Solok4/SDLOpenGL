@@ -14,7 +14,7 @@ public:
 	{
 		this->_ID = Object2DType::OBJECT2D_LISTBOX;
 		this->Value = std::string("");
-		this->_Padding = glm::vec2(10.f);
+		this->_Padding = glm::vec2(0.f);
 		this->CreateLabels();
 	};
 	~CListBox();

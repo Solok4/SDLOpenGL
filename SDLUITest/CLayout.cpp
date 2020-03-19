@@ -54,39 +54,39 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
 	{
 		std::shared_ptr<CLabel> temp = std::make_shared<CLabel>(name,pos,size,this);
-		this->RootContainer->AddToParrentOfTable(&*temp);
+		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
 		std::shared_ptr<CImage> temp = std::make_shared<CImage>(name, pos, size,this);
-		this->RootContainer->AddToParrentOfTable(&*temp);
+		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_BUTTON)	//Button
 	{
 		std::shared_ptr<CButton> temp = std::make_shared<CButton>(name, pos, size, this);
-		this->RootContainer->AddToParrentOfTable(&*temp);
+		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_CONTAINER)	//CContainer
 	{
 		std::shared_ptr<CContainer> temp = std::make_shared<CContainer>(name, pos, size, this);
-		this->RootContainer->AddToParrentOfTable(&*temp);
+		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_TEXTBOX)		//CTextBox
 	{
 		std::shared_ptr<CTextBox> temp = std::make_shared<CTextBox>(name, pos, size, this);
-		this->RootContainer->AddToParrentOfTable(&*temp);
+		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 		CLayout::AddButtonToList(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_LISTBOX)
 	{
 		std::shared_ptr<CListBox> temp = std::make_shared<CListBox>(name, pos, size, this);
-		this->RootContainer->AddToParrentOfTable(&*temp);
+		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 	}
 }

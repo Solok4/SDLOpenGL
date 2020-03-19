@@ -239,18 +239,13 @@ void PreLoop()
 		//LayoutManager->PushActiveLayout("DoubleTest");
 
 		auto Console = LayoutManager->AddNewLayout("Console");
-		Console->AddItem(Object2DType::OBJECT2D_CONTAINER, "Container", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth, 500.f));
 		Console->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth,450.f));
 		Console->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth,50.f));
 
 		Console->PrepareToLoop();
 
-		auto Container = Console->FindObjectByName<CContainer>("Container");
 		auto Listbox = Console->FindObjectByName<CListBox>("Text");
 		auto Textbox = Console->FindObjectByName<CTextBox>("Input");
-
-		Container->AddToParrentOfTable(&*Listbox);
-		Container->AddToParrentOfTable(&*Textbox);
 
 		Listbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 		Listbox->SetFont(Font10);
