@@ -71,8 +71,8 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->_LocalOffset.y + this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
 			}
 			break;
 		}
@@ -85,8 +85,9 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + (this->ParrentObject->GetSize().x / 2) + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->_LocalOffset.y + this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + 
+									(this->ParrentObject->GetSize().x / 2) + this->_LocalOffset.x + this->_Padding.x + this->_Size.x/2;
+				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
 			}
 			break;
 		}
@@ -99,8 +100,8 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->_LocalOffset.y + this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetSize().x - this->ParrentObject->GetPadding().x  - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
 			}
 			break;
 		}
@@ -113,8 +114,9 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + (this->ParrentObject->GetSize().y/2) + this->_LocalOffset.y + this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y +
+									(this->ParrentObject->GetSize().y/2) + this->_LocalOffset.y + this->_Padding.y;
 			}
 			break;
 		}
@@ -127,8 +129,10 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + (this->ParrentObject->GetSize().x / 2) - (this->_Size.x / 2) + this->_LocalOffset.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + (this->ParrentObject->GetSize().y / 2) + (this->_Size.y/2) + this->_LocalOffset.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + 
+									(this->ParrentObject->GetSize().x / 2) - (this->_Size.x / 2) + this->_LocalOffset.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + 
+									(this->ParrentObject->GetSize().y / 2) + (this->_Size.y/2) + this->_LocalOffset.y;
 			}
 			break;
 		}
@@ -141,8 +145,8 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + (this->ParrentObject->GetSize().y / 2) + this->_LocalOffset.y + this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + (this->ParrentObject->GetSize().y / 2) + this->_LocalOffset.y + this->_Padding.y;
 			}
 			break;
 		}
@@ -155,8 +159,8 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
 			}
 			break;
 		}
@@ -169,8 +173,10 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + (this->ParrentObject->GetSize().x/2) +  this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + 
+									(this->ParrentObject->GetSize().x/2) +  this->_LocalOffset.x + this->_Padding.x - this->_Size.x/2;
+				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + 
+									this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
 			}
 			break;
 		}
@@ -183,8 +189,8 @@ void CObject2D::RefreshModelMatrix()
 			}
 			else
 			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
+				this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
+				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
 			}
 			break;
 		}

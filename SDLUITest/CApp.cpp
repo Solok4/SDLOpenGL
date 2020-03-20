@@ -126,7 +126,6 @@ void PreLoop()
 	OpenGL->PrepareToLoop();
 
 	ModelManager->LoadOBJ("Assets/Models/PiernikNorm.obj");
-	//ModelManager->CreateMaterial("Piernik");
 	TextureManager->LoadTexture("Assets/Textures/gingerbreadhouse_tex.png");
 	TextureManager->LoadTexture("Assets/Textures/gingerbreadhouse_NM.png");
 	TextureManager->LoadTexture("Assets/Textures/gingerbreadhouse_Spec.png");
@@ -140,15 +139,12 @@ void PreLoop()
 
 	ModelManager->LoadOBJ("Assets/Models/Cube.obj");
 
-	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 10);
-	FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 16);
+	auto Font10 = FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 10);
+	auto Font16 = FontManager->LoadFont("Assets/Fonts/Raleway-Black.ttf", 16);
 
 	TextureManager->LoadTexture("Assets/Textures/Tex.tga");
 	TextureManager->LoadTexture("Assets/Textures/TestTex.bmp");
 	TextureManager->GetTextureByName("Tex.tga");
-
-	auto Font10 = FontManager->GetFontByName("Raleway-Black.ttf", 10);
-	auto Font16 = FontManager->GetFontByName("Raleway-Black.ttf", 16);
 
 	{
 
@@ -161,6 +157,7 @@ void PreLoop()
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "TestTextBox", vec2(300.f, 500.f), vec2(100.f, 20.f));
 		Layout->AddItem(Object2DType::OBJECT2D_LISTBOX, "TestListBox", vec2(800.f, 200.f), vec2(300.f, 300.f));
+		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "PositionTest", vec2(300.f, 600.f), vec2(100.f, 20.f));
 		Layout->PrepareToLoop();
 
 		auto TempImage = Layout->FindObjectByName<CImage>("TestImage");
@@ -223,38 +220,104 @@ void PreLoop()
 				
 			});
 
+		auto PositionTest = Layout->FindObjectByName<CButton>("PositionTest");
+		PositionTest->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+		PositionTest->GetLabel()->SetFont(Font10);
+		PositionTest->GetLabel()->SetText("Position Test");
+		PositionTest->AttachFunc([]()
+			{
+				LayoutManager->ChangeCurrentLayout("Positions");
+			}, MouseButton::LEFTMOUSEBUTTON);
+
 	}
 	{
-		auto SecondLayout = LayoutManager->AddNewLayout("DoubleTest");
-		SecondLayout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButtonSecond", vec2(500.f, 500.f), vec2(100.f, 50.f));
+		//Console
+		{
+			auto Console = LayoutManager->AddNewLayout("Console");
+			Console->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth, 450.f));
+			Console->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth, 50.f));
 
-		SecondLayout->PrepareToLoop();
-		
-		auto TempButton = SecondLayout->FindObjectByName<CButton>("TestButtonSecond");
-		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
-		TempButton->GetLabel()->SetFont(Font10);
-		TempButton->GetLabel()->SetText("SecondLay Button");
-		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "Second Layout Button Click"); }, MouseButton::LEFTMOUSEBUTTON);
+			Console->PrepareToLoop();
 
-		//LayoutManager->PushActiveLayout("DoubleTest");
+			auto Listbox = Console->FindObjectByName<CListBox>("Text");
+			auto Textbox = Console->FindObjectByName<CTextBox>("Input");
 
-		auto Console = LayoutManager->AddNewLayout("Console");
-		Console->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth,450.f));
-		Console->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth,50.f));
+			Listbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			Listbox->SetFont(Font10);
+			Listbox->SetText("Console Test");
 
-		Console->PrepareToLoop();
+			Textbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			Textbox->GetLabel()->SetFont(Font10);
+			Textbox->GetLabel()->SetAligment(Object2DAligment::LEFT);
+			Textbox->MoveObjectLayerUp();
+		}
+		//Position test layout
+		{
+			auto PositionTest = LayoutManager->AddNewLayout("Positions");
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "LeftTop", vec2(0.f, 10.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Top", vec2(0.f, 10.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "RightTop", vec2(0.f, 10.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Left", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Center", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Right", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "LeftBottom", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Bottom", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "RightBottom", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_BUTTON, "GoBack", vec2(200.f), vec2(100.f, 50.f));
 
-		auto Listbox = Console->FindObjectByName<CListBox>("Text");
-		auto Textbox = Console->FindObjectByName<CTextBox>("Input");
+			PositionTest->PrepareToLoop();
 
-		Listbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
-		Listbox->SetFont(Font10);
-		Listbox->SetText("Console Test");
+			auto LeftTop = PositionTest->FindObjectByName<CLabel>("LeftTop");
+			LeftTop->SetFont(Font10);
+			LeftTop->SetText("Left Top");
+			LeftTop->SetAligment(Object2DAligment::LEFT_TOP);
+			auto Top = PositionTest->FindObjectByName<CLabel>("Top");
+			Top->SetFont(Font10);
+			Top->SetText("Top");
+			Top->SetAligment(Object2DAligment::TOP);
+			auto RightTop = PositionTest->FindObjectByName<CLabel>("RightTop");
+			RightTop->SetFont(Font10);
+			RightTop->SetText("Right Top");
+			RightTop->SetAligment(Object2DAligment::RIGHT_TOP);
 
-		Textbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
-		Textbox->GetLabel()->SetFont(Font10);
-		Textbox->GetLabel()->SetAligment(Object2DAligment::LEFT);
-		Textbox->MoveObjectLayerUp();
+			//
+			auto Left = PositionTest->FindObjectByName<CLabel>("Left");
+			Left->SetFont(Font10);
+			Left->SetText("Left");
+			Left->SetAligment(Object2DAligment::LEFT);
+			auto Center = PositionTest->FindObjectByName<CLabel>("Center");
+			Center->SetFont(Font10);
+			Center->SetText("Center");
+			Center->SetAligment(Object2DAligment::CENTER);
+			auto Right = PositionTest->FindObjectByName<CLabel>("Right");
+			Right->SetFont(Font10);
+			Right->SetText("Right");
+			Right->SetAligment(Object2DAligment::RIGHT);
+
+			//
+			auto LeftBottom = PositionTest->FindObjectByName<CLabel>("LeftBottom");
+			LeftBottom->SetFont(Font10);
+			LeftBottom->SetText("Left Bottom");
+			LeftBottom->SetAligment(Object2DAligment::LEFT_BOTTOM);
+			auto Bottom = PositionTest->FindObjectByName<CLabel>("Bottom");
+			Bottom->SetFont(Font10);
+			Bottom->SetText("Bottom");
+			Bottom->SetAligment(Object2DAligment::BOTTOM);
+			auto RightBottom = PositionTest->FindObjectByName<CLabel>("RightBottom");
+			RightBottom->SetFont(Font10);
+			RightBottom->SetText("Right Bottom");
+			RightBottom->SetAligment(Object2DAligment::RIGHT_BOTTOM);
+
+			//Goback
+			auto GoBack = PositionTest->FindObjectByName<CButton>("GoBack");
+			GoBack->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			GoBack->GetLabel()->SetFont(Font10);
+			GoBack->GetLabel()->SetText("Go back");
+			GoBack->AttachFunc([]()
+				{
+					LayoutManager->ChangeCurrentLayout("Default");
+				}, MouseButton::LEFTMOUSEBUTTON);
+		}
 		
 	}
 	SceneManager->AddNewScene("Default");

@@ -18,7 +18,7 @@ CFontManager::~CFontManager()
 	}
 }
 
-void CFontManager::LoadFont(std::string path, int size)
+TTF_Font* CFontManager::LoadFont(std::string path, int size)
 {
 	char OnlyName[128];
 	char* LastSlash;
@@ -40,19 +40,22 @@ void CFontManager::LoadFont(std::string path, int size)
 			if (IsLoadedBefore != this->FontMap.end())
 			{
 				IsLoadedBefore->second.push_back(fontStruct);
+				return fontStruct.FontHandle;
 			}
 			else
 			{
 				this->FontMap.emplace(std::string(OnlyName), std::vector<MyFont>(1,fontStruct));
+				return fontStruct.FontHandle;
 			}
 		}
 		else
 		{
 			CLog::MyLog(LogType::Warning, "Font %s %d loading failed", OnlyName, size);
 		}
-		return;
+		return nullptr;
 	}
 	CLog::MyLog(LogType::Warning, "Font %s %d has been loaded already", OnlyName, size);
+	return bExists;
 }
 
 TTF_Font* CFontManager::GetFontByName(std::string name, int size)

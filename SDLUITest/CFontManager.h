@@ -18,7 +18,7 @@ public:
 	CFontManager();
 	~CFontManager();
 
-	void LoadFont(std::string path, int size);
+	TTF_Font* LoadFont(std::string path, int size);
 	TTF_Font* GetFontByName(std::string name, int size);
 
 
