@@ -185,6 +185,7 @@
     <ClInclude Include="CFontManager.h" />
     <ClInclude Include="CGameplay.h" />
     <ClInclude Include="CGameplayManager.h" />
+    <ClInclude Include="CHeightMap.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CInitialSetup.h" />
     <ClInclude Include="CKeyboardConf.h" />
@@ -225,6 +226,7 @@
     <ClCompile Include="CFontManager.cpp" />
     <ClCompile Include="CGameplay.cpp" />
     <ClCompile Include="CGameplayManager.cpp" />
+    <ClCompile Include="CHeightMap.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CInitialSetup.cpp" />
     <ClCompile Include="CKeyboardConf.cpp" />
@@ -295,10 +297,10 @@
     <None Include="Assets\Shaders\Gui.vert">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Label.frag">
+    <None Include="Assets\Shaders\HeightMap.frag">
       <FileType>Script</FileType>
     </None>
-    <None Include="Assets\Shaders\Label.vert">
+    <None Include="Assets\Shaders\HeightMap.vert">
       <FileType>Script</FileType>
     </None>
     <None Include="Assets\Shaders\LightPass.frag">

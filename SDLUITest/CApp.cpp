@@ -264,6 +264,9 @@ void PreLoop()
 			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Bottom", vec2(0.f), vec2(1.f));
 			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "RightBottom", vec2(0.f), vec2(1.f));
 			PositionTest->AddItem(Object2DType::OBJECT2D_BUTTON, "GoBack", vec2(200.f), vec2(100.f, 50.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_BUTTON, "LeftTopButton", vec2(100.f), vec2(100.f, 50.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_BUTTON, "CenterButton", vec2(0.f), vec2(100.f, 50.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_BUTTON, "RightBottomButton", vec2(0.f), vec2(100.f, 50.f));
 
 			PositionTest->PrepareToLoop();
 
@@ -317,6 +320,25 @@ void PreLoop()
 				{
 					LayoutManager->ChangeCurrentLayout("Default");
 				}, MouseButton::LEFTMOUSEBUTTON);
+
+			auto LeftTopButton = PositionTest->FindObjectByName<CButton>("LeftTopButton");
+			LeftTopButton->SetAligment(Object2DAligment::LEFT_TOP);
+			LeftTopButton->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			LeftTopButton->GetLabel()->SetFont(Font10);
+			LeftTopButton->GetLabel()->SetText("Left top");
+
+			auto CenterButton = PositionTest->FindObjectByName<CButton>("CenterButton");
+			CenterButton->SetAligment(Object2DAligment::CENTER);
+			CenterButton->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			CenterButton->GetLabel()->SetFont(Font10);
+			CenterButton->GetLabel()->SetText("Center");
+
+			auto RightBottomButton = PositionTest->FindObjectByName<CButton>("RightBottomButton");
+			RightBottomButton->SetAligment(Object2DAligment::RIGHT_BOTTOM);
+			RightBottomButton->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			RightBottomButton->GetLabel()->SetFont(Font10);
+			RightBottomButton->GetLabel()->SetText("Right Bottom");
+			
 		}
 		
 	}

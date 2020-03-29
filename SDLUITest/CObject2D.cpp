@@ -11,7 +11,7 @@
 
 
 CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref)
-	:_LocalOffset(position), _Size(objsize), Layer(0), ObjectAligment(Object2DAligment::LEFT_TOP),
+	:_LocalOffset(position), _Size(objsize), Layer(-2), ObjectAligment(Object2DAligment::LEFT_TOP),
 	_Position(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f)
 {
 	this->_Name = std::string(name);
@@ -190,14 +190,14 @@ void CObject2D::RefreshModelMatrix()
 			else
 			{
 				this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
+				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y - this->_Size.y;
 			}
 			break;
 		}
 		default:
 			break;
 	}
-	mat4 Translation = translate(mat4(), vec3(this->_Position.x, this->_Position.y, (float)Layer));
+	mat4 Translation = translate(mat4(1.0f), vec3(this->_Position.x, this->_Position.y, (float)Layer));
 	mat4 Scaling = scale(vec3(this->_Size.x, this->_Size.y, 1.0f));
 	mat4 RotationX = rotate(radians(this->_Rotation.x), vec3(1.0f, 0.0f, 0.0f));
 	mat4 RotationY = rotate(radians(this->_Rotation.y), vec3(0.0f, 1.0f, 0.0f));
@@ -237,14 +237,14 @@ void CObject2D::SetSize(vec2 vec)
 void CObject2D::SetAligment(Object2DAligment Aligment)
 {
 	this->ObjectAligment = Aligment;
-	this->SetSize(this->_Size);
+	this->RefreshModelMatrix();
 }
 
 void CObject2D::BindParrentObject(CObject2D* obj)
 {
 	this->ParrentObject = obj;
 	obj->AddToParrentOfTable(this);
-	this->SetPosition(this->_Position);
+	this->RefreshModelMatrix();
 }
 
 CObject2D* CObject2D::GetParrentObject() const

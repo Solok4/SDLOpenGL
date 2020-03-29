@@ -159,6 +159,9 @@
     <ClInclude Include="CSceneManager.h">
       <Filter>Header Files\AssetManagers</Filter>
     </ClInclude>
+    <ClInclude Include="CHeightMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -269,6 +272,9 @@
     <ClCompile Include="CKeyboardConf.cpp">
       <Filter>Source Files\AssetManagers</Filter>
     </ClCompile>
+    <ClCompile Include="CHeightMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\final.frag">
@@ -361,10 +367,10 @@
     <None Include="Assets\Shaders\LightPass.frag">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\Label.frag">
+    <None Include="Assets\Shaders\HeightMap.frag">
       <Filter>_Shaders</Filter>
     </None>
-    <None Include="Assets\Shaders\Label.vert">
+    <None Include="Assets\Shaders\HeightMap.vert">
       <Filter>_Shaders</Filter>
     </None>
   </ItemGroup>

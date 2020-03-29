@@ -121,6 +121,10 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/LightPass.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/LightPass.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("LightPass", false);
+
+	Shaders.CreateShader("Assets/Shaders/HeightMap.vert", ShaderType::Vertex);
+	Shaders.CreateShader("Assets/Shaders/HeightMap.frag", ShaderType::Fragment);
+	Shaders.CreateShaderProgram("HeightMap", false);
 #endif // __EMSCRIPTEN__
 
 	glClearColor(0, 0, 0, 1);
@@ -307,6 +311,11 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("DebugLights", "View");
 	Shaders.AddUniformToShaderStruct("DebugLights", "Model");
 	Shaders.AddUniformToShaderStruct("DebugLights", "Color");
+
+	Shaders.AddUniformToShaderStruct("HeightMap", "Projection");
+	Shaders.AddUniformToShaderStruct("HeightMap", "View");
+	Shaders.AddUniformToShaderStruct("HeightMap", "Model");
+	Shaders.AddUniformToShaderStruct("HeightMap", "Color");
 	
 	//Deferred rendering geometry uniforms
 #ifndef __EMSCRIPTEN__
@@ -389,8 +398,8 @@ Sets viewport for gui elements
 void COpengl::PreLoopOrtho()
 {
 	Shaders.SetCurrentShaderProgram("Gui");
-	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::ortho(0.0f, (float)this->WndInfo->ScreenWidth, (float)this->WndInfo->ScreenHeight, 0.0f, -0.1f, 1000.0f);
+	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 Projection = glm::ortho(0.f, (float)this->WndInfo->ScreenWidth, (float)this->WndInfo->ScreenHeight, 0.0f, 0.1f, 1000.0f);
 	Shaders.UniformMat4f(ViewMatrix, "View");
 	Shaders.UniformMat4f(Projection, "Projection");
 	glCullFace(GL_BACK);
@@ -916,6 +925,11 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 Shaders COpengl::GetShadersClass()
 {
 	return this->Shaders;
+}
+
+void COpengl::SetCurrentShaderProgram(std::string name)
+{
+	this->Shaders.SetCurrentShaderProgram(name);
 }
 
 

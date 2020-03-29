@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <memory>
+
 #include "CObject3D.h"
 #include "IDraw.h"
+#include "CHeightMap.h"
 
 class CScene
 {
@@ -55,6 +57,8 @@ public:
 	GLuint SkyboxVAO;
 	GLuint SkyboxVBOs[2];
 	SkyboxType Skyboxtype;
+
+	std::shared_ptr<CHeightMap> _HeightMap;
 
 };
 

@@ -9,7 +9,6 @@
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 
-//#include "CLayout.h"
 
 using namespace glm;
 
@@ -57,10 +56,12 @@ public:
 
 	void SetPadding(vec2 vec) { this->_Padding = vec; }
 
-	void SetAligment(Object2DAligment Aligment);
+	virtual void SetAligment(Object2DAligment Aligment);
 
-	//Returns vec2 position vector.
-	vec2 GetPosition() { return this->_LocalOffset; };
+	//Returns vec2 position vector relative to aligment setting.
+	vec2 GetRelativePosition() { return this->_LocalOffset; };
+	//Returns vec2 position vector
+	vec2 GetPosition() { return this->_Position; };
 	//returns vec2 rotation vector.
 	vec2 GetRotaton() { return this->_Rotation; };
 	//returns vec2 size vector.

@@ -120,6 +120,8 @@ public:
 	RenderMode GetRenderMode() { return this->OglRenderMode; };
 	void SetRenderMode(RenderMode mode) { this->OglRenderMode = mode; };
 
+	void SetCurrentShaderProgram(std::string name);
+
 
 private:
 

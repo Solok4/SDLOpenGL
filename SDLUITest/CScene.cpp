@@ -8,6 +8,7 @@ CScene::CScene()
 {
 	this->Camera = nullptr;
 	this->MovementObject = nullptr;
+	this->Prepare();
 }
 
 
@@ -209,6 +210,14 @@ void CScene::Draw(DrawType DType)
 			this->ProcessLights();
 			glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
 			OpenGL->UseFramebuffer("Default");
+			//HeightMap
+			OpenGL->SetCurrentShaderProgram("HeightMap");
+			OpenGL->PreLoopPerspective(this->Camera);
+			this->_HeightMap->CalculateMatrix();
+			OpenGL->SetModelMatrix(this->_HeightMap->GetModelMatrix());
+			this->_HeightMap->Draw();
+			//
+			OpenGL->SetCurrentShaderProgram("Default");
 			OpenGL->GetShadersClass().Uniform1i(this->Lights.size(), "LightCount");
 			OpenGL->PreLoopPerspective(this->Camera);
 			if (!this->DrawableCached)
@@ -320,6 +329,8 @@ void CScene::Tick(double delta)
 
 void CScene::Prepare()
 {
+	this->_HeightMap = std::make_shared<CHeightMap>(32, 4.f, 0);
+	this->_HeightMap->CreateMesh();
 }
 
 void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
