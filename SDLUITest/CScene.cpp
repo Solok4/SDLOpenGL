@@ -232,10 +232,6 @@ void CScene::Draw(DrawType DType)
 					sm->CalculateMatrix();
 					OpenGL->SetModelMatrix(sm->GetModelMatrix());
 					OpenGL->SetNormalMatrix(sm->GetModelMatrix());
-					OpenGL->GetShadersClass().Uniform3f(sm->GetModel()->Mat->GetLightMaterial()->Ambient, "Mat.Ambient");
-					OpenGL->GetShadersClass().Uniform3f(sm->GetModel()->Mat->GetLightMaterial()->Diffuse, "Mat.Diffuse");
-					OpenGL->GetShadersClass().Uniform3f(sm->GetModel()->Mat->GetLightMaterial()->Specular, "Mat.Specular");	
-					OpenGL->GetShadersClass().Uniform1f(sm->GetModel()->Mat->GetLightMaterial()->Shininess, "Mat.Shininess");
 					a->Draw(RenderStep::RenderDeferred);
 				}
 			}

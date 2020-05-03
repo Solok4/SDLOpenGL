@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 #include "SDL_ttf.h"
 #include "CLog.h"
 

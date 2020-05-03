@@ -135,7 +135,7 @@ void PreLoop()
 	PierMat->AddTextureToMaterial("gingerbreadhouse_NM.png", TextureTypes::NormalMap);
 	PierMat->AddTextureToMaterial("gingerbreadhouse_Spec.png", TextureTypes::SpecularMap);
 
-	ModelManager->GetModelByName("PiernikNorm.obj")->Mat = PierMat;
+	ModelManager->GetModelByName("PiernikNorm.obj")->BindMaterialToModel(PierMat);
 
 	ModelManager->LoadOBJ("Assets/Models/Cube.obj");
 

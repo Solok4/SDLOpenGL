@@ -2,18 +2,18 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <memory>
 
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 #include "CLog.h"
 #include "CTextureManager.h"
 
-
 enum TextureTypes
 {
-	BaseTex = 1,
-	NormalMap=2,
-	SpecularMap=4,
+	BaseTex=0,
+	NormalMap,
+	SpecularMap,
 };
 
 struct MaterialTexHandle
@@ -23,30 +23,43 @@ struct MaterialTexHandle
 	TextureTypes Type;
 };
 
-struct LightMaterial
-{
-	LightMaterial() :Ambient(glm::vec3(1.0f, 0.5f, 0.31f)), Diffuse(glm::vec3(1.0f, 0.5f, 0.31f)), Specular(glm::vec3(1.0f, 0.5f, 0.31f)), Shininess(32.f) {};
-	LightMaterial(glm::vec3 Amb, glm::vec3 Diff, glm::vec3 Spec, float Shinin) :Ambient(Amb), Diffuse(Diff), Specular(Spec), Shininess(Shinin) {};
-	glm::vec3 Ambient = glm::vec3(1.0f, 0.5f, 0.31f);
-	glm::vec3 Diffuse = glm::vec3(1.0f, 0.5f, 0.31f);
-	glm::vec3 Specular = glm::vec3(1.0f, 0.5f, 0.31f);
-	float Shininess = 32.f;
+struct MaterialData {
+	MaterialData() {
+		this->AmbientColor = glm::vec3(1.0f, 0.5f, 0.31f);
+		this->DiffuseColor = glm::vec3(1.0f, 0.5f, 0.31f);
+		this->SpecularColor = glm::vec3(1.0f, 0.5f, 0.31f);
+		this->Transparency = 1.0f;
+		this->IluminationModel = 2;
+		this->Shininess = 32.f;
+		this->DiffuseTex = -1;
+		this->SpecularTex = -1;
+		this->NormalTex = -1;
+	}
+	glm::vec3 AmbientColor;
+	glm::vec3 DiffuseColor;
+	glm::vec3 SpecularColor;
+	float Transparency;
+	uint32_t IluminationModel;
+	float Shininess;
+
+	GLuint DiffuseTex;
+	GLuint SpecularTex;
+	GLuint NormalTex;
 };
 
 class Material
 {
 public:
-	Material(std::string name) :Name(name) { Textures.reserve(4); this->LightMat = std::make_shared<LightMaterial>(); };
+	Material(std::string name) :Name(name) { this->Data = std::make_shared<MaterialData>(); };
 	~Material() {};
 	void AddTextureToMaterial(std::string name, TextureTypes type);
 	std::string GetName() { return this->Name; };
-	std::shared_ptr<LightMaterial> GetLightMaterial() { return this->LightMat; };
 	GLuint GetTextureByType(TextureTypes type);
+	std::shared_ptr<MaterialData> GetData();
 
 private:
 	std::string Name;
-	std::vector<std::shared_ptr<MaterialTexHandle>> Textures;
-	std::shared_ptr<LightMaterial> LightMat;
+	std::shared_ptr<MaterialData> Data;
 };
 
 class CMaterialManager
@@ -56,6 +69,7 @@ public:
 	~CMaterialManager();
 
 	std::shared_ptr<Material> CreateNewMaterial(std::string name);
+	std::shared_ptr<Material> CreateNewMaterialFromFile(std::string path);
 	std::shared_ptr<Material> GetMaterialByName(std::string name);
 
 private:

@@ -44,6 +44,7 @@ void CStaticMeshComponent::Draw(RenderStep step)
 		if (this->_Model != nullptr)
 		{
 			int program = 0;
+			auto oglShaderClass = OpenGL->GetShadersClass();
 
 			if (step == RenderStep::RenderVerticesOnly)
 			{
@@ -81,29 +82,37 @@ void CStaticMeshComponent::Draw(RenderStep step)
 					glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
 				if (this->_Model->HasNormals)
 					glEnableVertexAttribArray(MODEL_NORMALBUFFER);
-				glActiveTexture(GL_TEXTURE0);
-				auto base = this->_Model->Mat->GetTextureByType(TextureTypes::BaseTex);
-				if (!base)
+				for (auto chunk : this->_Model->RenderingChunks)
 				{
-					return;
+					auto matData = chunk->material;
+					oglShaderClass.Uniform3f(matData->AmbientColor, "Mat.Ambient");
+					oglShaderClass.Uniform3f(matData->DiffuseColor, "Mat.Diffuse");
+					oglShaderClass.Uniform3f(matData->SpecularColor, "Mat.Specular");
+					oglShaderClass.Uniform1f(matData->Shininess, "Mat.Shininess");
+					glActiveTexture(GL_TEXTURE0);
+					auto base = matData->DiffuseTex;
+					if (!base)
+					{
+						return;
+					}
+					glBindTexture(GL_TEXTURE_2D, base);
+					glUniform1i(glGetUniformLocation(program, "Base"), 0);
+					auto normal = matData->NormalTex;
+					if (normal != -1)
+					{
+						glActiveTexture(GL_TEXTURE1);
+						glBindTexture(GL_TEXTURE_2D, normal);
+						glUniform1i(glGetUniformLocation(program, "Normal"), 1);
+					}
+					auto specular = matData->SpecularTex;
+					if (specular != -1)
+					{
+						glActiveTexture(GL_TEXTURE2);
+						glBindTexture(GL_TEXTURE_2D, specular);
+						glUniform1i(glGetUniformLocation(program, "Specular"), 2);
+					}
+					glDrawArrays(GL_TRIANGLES, chunk->chunkOffset, chunk->chunkSize);
 				}
-				glBindTexture(GL_TEXTURE_2D, base);
-				glUniform1i(glGetUniformLocation(program, "Base"), 0);
-				auto normal = this->_Model->Mat->GetTextureByType(TextureTypes::NormalMap);
-				if (normal != -1)
-				{
-					glActiveTexture(GL_TEXTURE1);
-					glBindTexture(GL_TEXTURE_2D, normal);
-					glUniform1i(glGetUniformLocation(program, "Normal"), 1);
-				}
-				auto specular = this->_Model->Mat->GetTextureByType(TextureTypes::SpecularMap);
-				if (specular != -1)
-				{
-					glActiveTexture(GL_TEXTURE2);
-					glBindTexture(GL_TEXTURE_2D, specular);
-					glUniform1i(glGetUniformLocation(program, "Specular"), 2);
-				}
-				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
 				if (this->_Model->HasNormals)
 					glDisableVertexAttribArray(MODEL_NORMALBUFFER);
 				if (this->_Model->HasTexcords)

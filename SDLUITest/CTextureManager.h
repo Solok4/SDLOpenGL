@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include <memory>
 
 #include "GL/glew.h"
 #include "SDL_image.h"

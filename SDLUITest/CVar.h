@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <memory>
 //#include <variant>
 
 enum CvarType
