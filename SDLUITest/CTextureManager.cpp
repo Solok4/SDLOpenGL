@@ -11,7 +11,7 @@ CTextureManager::~CTextureManager()
 {
 }
 
-void CTextureManager::LoadTexture(std::string path)
+std::shared_ptr<Texture> CTextureManager::LoadTexture(std::string path)
 {
 	SDL_Surface* Tex = IMG_Load(path.c_str());
 	std::shared_ptr<Texture> TextureObject = std::make_shared<Texture>();
@@ -30,13 +30,13 @@ void CTextureManager::LoadTexture(std::string path)
 	if (ret != -1)
 	{
 		CLog::MyLog(LogType::Error, "Failed to load texture %s. File has been already loaded", path.c_str());
-		return;
+		return nullptr;
 	}
 
 	if (Tex == nullptr)
 	{
 		CLog::MyLog(LogType::Error, "Failed to load texture %s. File not found", path.c_str());
-		return;
+		return nullptr;
 	}
 	else
 	{
@@ -87,6 +87,7 @@ void CTextureManager::LoadTexture(std::string path)
 		this->TextureVector.push_back(TextureObject);
 
 		SDL_FreeSurface(FinalTex);
+		return TextureObject;
 	}
 }
 

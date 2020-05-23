@@ -3,6 +3,7 @@
 #include "Shared.h"
 #include "GL/glew.h"
 #include "glm/glm.hpp"
+#include "CMaterialManager.h"
 
 #define HEIGHT_MAP_MAX_SIZE 1024
 
@@ -43,5 +44,6 @@ private:
 	glm::vec3 _Position;
 	glm::vec3 _Rotation;
 	glm::vec3 _Scale;
+	std::shared_ptr<Material> _HeightmapMaterial;
 };
 

@@ -19,7 +19,7 @@ CSceneManager::~CSceneManager()
 
 void CSceneManager::AddNewScene(std::string Name)
 {
-	std::shared_ptr<CScene> temp(new CScene);
+	std::shared_ptr<CScene> temp = std::make_shared<CScene>();
 	temp->SetName(Name);
 	this->Scenes.push_back(temp);
 }

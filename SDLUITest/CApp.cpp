@@ -9,10 +9,6 @@
 #include "emscripten.h"
 #endif // __EMSCRIPTEN__
 
-
-
-
-
 bool Init(int argc, char** argv)
 {
 	InitialSetup = std::make_unique<CInitialSetup>(argc,argv);
@@ -30,12 +26,12 @@ bool Init(int argc, char** argv)
 	Event = std::make_unique<CEvent>();
 	LayoutManager = std::make_unique<CLayoutManager>();
 	ModelManager = std::make_unique<CModelManager>();
-	SceneManager = std::make_unique<CSceneManager>();
 	KeyboardConf = std::make_unique<CKeyboardConf>();
 	GameplayManager = std::make_unique<CGameplayManager>();
 	FontManager = std::make_unique<CFontManager>();
 	TextureManager = std::make_unique<CTextureManager>();
 	MaterialManager = std::make_unique<CMaterialManager>();
+	SceneManager = std::make_unique<CSceneManager>();
 	PreLoop();
 	return true;
 }
@@ -146,6 +142,7 @@ void PreLoop()
 	TextureManager->LoadTexture("Assets/Textures/TestTex.bmp");
 	TextureManager->GetTextureByName("Tex.tga");
 
+	MaterialManager->CreateNewMaterialFromFile("Assets/Models/PiernikNorm.mtl");
 	{
 
 		auto Layout = LayoutManager->AddNewLayout("Default");

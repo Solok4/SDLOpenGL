@@ -66,10 +66,10 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	vec3 viewDir = normalize(CameraP-FragPos);
 	vec3 HalfWayDir = normalize(LightDir+ CameraP);
 	vec3 reflectDir = reflect(-LightDir,norm);
-	//float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
-	float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
-	//vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
-	vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
+	float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
+	//float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
+	vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
+	//vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
 		
 	float bias = max(0.15 * (1.0 - dot(norm, LightDir)), 0.005);
 	

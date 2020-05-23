@@ -214,6 +214,7 @@
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="Shared.h" />
+    <ClInclude Include="TextureBaseData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CApp.cpp" />

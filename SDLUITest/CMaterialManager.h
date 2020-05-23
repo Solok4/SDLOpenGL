@@ -31,6 +31,7 @@ struct MaterialData {
 		this->Transparency = 1.0f;
 		this->IluminationModel = 2;
 		this->Shininess = 32.f;
+		this->RefractionIndex = 1.0f;
 		this->DiffuseTex = -1;
 		this->SpecularTex = -1;
 		this->NormalTex = -1;
@@ -41,6 +42,7 @@ struct MaterialData {
 	float Transparency;
 	uint32_t IluminationModel;
 	float Shininess;
+	float RefractionIndex;
 
 	GLuint DiffuseTex;
 	GLuint SpecularTex;
@@ -50,7 +52,7 @@ struct MaterialData {
 class Material
 {
 public:
-	Material(std::string name) :Name(name) { this->Data = std::make_shared<MaterialData>(); };
+	Material(std::string name);
 	~Material() {};
 	void AddTextureToMaterial(std::string name, TextureTypes type);
 	std::string GetName() { return this->Name; };
@@ -69,11 +71,13 @@ public:
 	~CMaterialManager();
 
 	std::shared_ptr<Material> CreateNewMaterial(std::string name);
-	std::shared_ptr<Material> CreateNewMaterialFromFile(std::string path);
+	std::vector<std::shared_ptr<Material>> CreateNewMaterialFromFile(std::string path);
 	std::shared_ptr<Material> GetMaterialByName(std::string name);
+	std::shared_ptr<Material> GetDefaultMaterial();
 
 private:
 	std::vector<std::shared_ptr<Material>> MaterialVector;
+	std::shared_ptr<Material> DefaultMaterial;
 };
 
 extern std::unique_ptr<CMaterialManager> MaterialManager;

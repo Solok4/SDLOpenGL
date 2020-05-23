@@ -26,7 +26,7 @@ public:
 	CTextureManager();
 	~CTextureManager();
 
-	void LoadTexture(std::string path);
+	std::shared_ptr<Texture> LoadTexture(std::string path);
 	GLuint GetTextureByName(std::string name);
 
 	std::vector<std::shared_ptr<Texture>> TextureVector;

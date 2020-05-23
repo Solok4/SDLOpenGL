@@ -29,17 +29,6 @@ public:
 	//Adds component based on another component.
 	//template<typename T>
 	void AddComponent(std::shared_ptr<CBaseComponent> comp);
-	//{
-	//	std::shared_ptr<T> newComp = std::make_shared<T>(comp);
-	//	std::shared_ptr<CBaseComponent> fix = static_cast<std::shared_ptr<CBaseComponent>>(newComp);
-	//	if (fix == nullptr)
-	//	{
-	//		CLog::MyLog(LogType::Error, "Wrong component provided to add");
-	//		return;
-	//	}
-	//	fix->AttachParrentObject(this->GetRootComponent());
-	//	this->_Components.push_back(newComp);
-	//}
 	//Removes component from the object.
 	void RemoveComponent(std::string name);
 	//Returns component by name and type.

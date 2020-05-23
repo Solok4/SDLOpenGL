@@ -34,8 +34,6 @@ void CModelManager::LoadOBJ(const char * path)
 		return;
 	}
 
-
-	
 	std::shared_ptr<Model> tempModel (new Model);
 	std::vector<glm::vec3> temp_Vertices;
 	std::vector<glm::vec2> temp_Texcords;
@@ -55,7 +53,7 @@ void CModelManager::LoadOBJ(const char * path)
 		int res = fscanf_s(file, "%s", LineHeader, sizeof(LineHeader)/sizeof(LineHeader[0]));
 		//fs >> std::ws >> LineHeader;
 #endif	
-		if (res == NULL)
+		if (res == EOF)
 			break;
 
 		if (strcmp(LineHeader, "v") == 0)
@@ -326,16 +324,9 @@ void CModelManager::LoadOBJ(const char * path)
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					fclose(file);
 					return;
-				}
-
-				
+				}	
 			}
-
-
 		}
-
-
-		
 	}
 
 	fclose(file);

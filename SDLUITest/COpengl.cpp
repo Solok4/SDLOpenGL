@@ -242,7 +242,6 @@ void COpengl::PrepareToLoop()
 		Shaders.AddUniformToShaderStruct("Default", "Base");
 		Shaders.AddUniformToShaderStruct("Default", "Normal");
 		Shaders.AddUniformToShaderStruct("Default", "Specular");
-
 		Shaders.AddUniformToShaderStruct("Default", "ShadowMap");
 #ifndef __EMSCRIPTEN__
 		Shaders.AddUniformToShaderStruct("Default", "ShadowCube");
@@ -584,8 +583,8 @@ void COpengl::UseLightFramebuffer(std::string name)
 				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
 				glClearColor(1.f, 1.f, 1.f, 1.0f);
 				glClear(GL_DEPTH_BUFFER_BIT);
-				glCullFace(GL_FRONT);
-				//glCullFace(GL_BACK);
+				//glCullFace(GL_FRONT);
+				glCullFace(GL_BACK);
 				return;
 			}
 		}

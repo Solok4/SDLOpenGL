@@ -211,15 +211,15 @@ void CScene::Draw(DrawType DType)
 			glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
 			OpenGL->UseFramebuffer("Default");
 			//HeightMap
-			OpenGL->SetCurrentShaderProgram("HeightMap");
+			//OpenGL->SetCurrentShaderProgram("HeightMap");
+			OpenGL->GetShadersClass().Uniform1i(this->Lights.size(), "LightCount");
 			OpenGL->PreLoopPerspective(this->Camera);
 			this->_HeightMap->CalculateMatrix();
 			OpenGL->SetModelMatrix(this->_HeightMap->GetModelMatrix());
 			this->_HeightMap->Draw();
 			//
-			OpenGL->SetCurrentShaderProgram("Default");
-			OpenGL->GetShadersClass().Uniform1i(this->Lights.size(), "LightCount");
-			OpenGL->PreLoopPerspective(this->Camera);
+			//OpenGL->SetCurrentShaderProgram("Default");
+			//OpenGL->PreLoopPerspective(this->Camera);
 			if (!this->DrawableCached)
 			{
 				this->CacheObjectsToDraw();
