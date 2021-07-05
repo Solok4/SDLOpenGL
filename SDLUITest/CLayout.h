@@ -5,7 +5,7 @@
 #include "SDL_ttf.h"
 
 #include "COpengl.h"
-#include "CRenderer.h"
+#include "CWindowManager.h"
 #include "CLog.h"
 
 #include "CObject2D.h"
@@ -29,7 +29,7 @@ public:
 	virtual void InitalizeLayout() {};
 
 	//Adds item to the layout.
-	void AddItem(int id, const char* name,glm::vec2 pos,glm::vec2 size);
+	void AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size);
 	//Retuns layout element by name and type.
 	template<typename T>
 	std::shared_ptr<T> FindObjectByName(const char* name)
@@ -71,5 +71,3 @@ private:
 	CTextBox* UsedTestBox;
 	std::shared_ptr<CContainer> RootContainer;
 };
-
-

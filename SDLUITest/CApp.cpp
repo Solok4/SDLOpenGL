@@ -11,9 +11,9 @@
 
 bool Init(int argc, char** argv)
 {
-	InitialSetup = std::make_unique<CInitialSetup>(argc,argv);
+	InitialSetup = std::make_unique<CInitialSetup>(argc, argv);
 	OpenGL = std::make_unique<COpengl>();
-	Renderer = std::make_unique<CRenderer>();
+	Renderer = std::make_unique<CWindowManager>();
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -52,7 +52,7 @@ void Loop()
 #ifndef __EMSCRIPTEN__
 	while (Event->GetIsRunning())
 	{
-#endif 
+#endif
 		//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
 		WInfo->BeginingOfTheFrame = std::chrono::system_clock::now();
 		CurrentLayout = LayoutManager->GetCurrentLayout();
@@ -90,7 +90,7 @@ void Loop()
 		OpenGL->FinalDraw();
 
 		OpenGL->PreLoopOrtho();
-		LayoutManager->Draw();	
+		LayoutManager->Draw();
 
 		OpenGL->ProLoop(Renderer->GetWindow());
 
@@ -98,9 +98,9 @@ void Loop()
 		WInfo->Delta = WInfo->EndOfTheFrame - WInfo->BeginingOfTheFrame;
 		if (WInfo->FPSLock != 0)
 		{
-			if (WInfo->Delta.count()*1000 < (1000/ WInfo->FPSLock))
+			if (WInfo->Delta.count() * 1000 < (1000 / WInfo->FPSLock))
 			{
-				SDL_Delay( (uint32)round( (1000/ WInfo->FPSLock) - (WInfo->Delta.count() * 1000)));
+				SDL_Delay((uint32)round((1000 / WInfo->FPSLock) - (WInfo->Delta.count() * 1000)));
 
 				WInfo->EndOfTheFrame = std::chrono::system_clock::now();
 				WInfo->Delta = WInfo->EndOfTheFrame - WInfo->BeginingOfTheFrame;
@@ -144,7 +144,6 @@ void PreLoop()
 
 	MaterialManager->CreateNewMaterialFromFile("Assets/Models/PiernikNorm.mtl");
 	{
-
 		auto Layout = LayoutManager->AddNewLayout("Default");
 		LayoutManager->ChangeCurrentLayout("Default");
 		Layout->AddItem(Object2DType::OBJECT2D_IMAGE, "TestImage", vec2(200.f, 100.f), vec2(100.f));
@@ -164,7 +163,7 @@ void PreLoop()
 		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
 		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("First Button");
-		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); },MouseButton::LEFTMOUSEBUTTON);
+		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); }, MouseButton::LEFTMOUSEBUTTON);
 
 		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
 		TempButton2->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
@@ -184,7 +183,7 @@ void PreLoop()
 		auto TempLabel = Layout->FindObjectByName<CLabel>("FrameTimeCounter");
 		TempLabel->SetFont(Font16);
 		TempLabel->SetText("FrameTime: ");
-		TempLabel->BindTickFunction([&,TempLabel](double delta)
+		TempLabel->BindTickFunction([&, TempLabel](double delta)
 			{
 				static int FrameCount = 0;
 				FrameCount++;
@@ -192,11 +191,10 @@ void PreLoop()
 				Time += delta;
 				if (Time >= 1000)
 				{
-					TempLabel->SetText("FrameTime: %.2f", Time/FrameCount);
+					TempLabel->SetText("FrameTime: %.2f", Time / FrameCount);
 					FrameCount = 0;
 					Time = 0;
 				}
-				
 			});
 
 		auto TempLabel2 = Layout->FindObjectByName<CLabel>("FpsCounter");
@@ -210,11 +208,10 @@ void PreLoop()
 				Time += delta;
 				if (Time >= 1000)
 				{
-					TempLabel2->SetText("Fps: %.2f", 1000/(Time/FrameCount));
+					TempLabel2->SetText("Fps: %.2f", 1000 / (Time / FrameCount));
 					FrameCount = 0;
 					Time = 0;
 				}
-				
 			});
 
 		auto PositionTest = Layout->FindObjectByName<CButton>("PositionTest");
@@ -225,7 +222,6 @@ void PreLoop()
 			{
 				LayoutManager->ChangeCurrentLayout("Positions");
 			}, MouseButton::LEFTMOUSEBUTTON);
-
 	}
 	{
 		//Console
@@ -335,9 +331,7 @@ void PreLoop()
 			RightBottomButton->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 			RightBottomButton->GetLabel()->SetFont(Font10);
 			RightBottomButton->GetLabel()->SetText("Right Bottom");
-			
 		}
-		
 	}
 	SceneManager->AddNewScene("Default");
 	auto tempScene(SceneManager->GetSceneByName("Default"));
@@ -389,7 +383,7 @@ void PreLoop()
 		auto light = tempLight->GetComponentByName<CLightComponent>("OrangeLight");
 		light->SetLightType(LightType::Directional);
 		light->SetLightBaseData(glm::vec3(0.2f), glm::vec3(0.9f), glm::vec3(0.5f));
-		light->SetLightColor(vec3(1.0f,1.f,1.f));
+		light->SetLightColor(vec3(1.0f, 1.f, 1.f));
 		tempScene->AddLightToScene(tempLight);
 
 		auto tempLight2 = tempScene->AddObjectToScene("Light2");
@@ -403,7 +397,6 @@ void PreLoop()
 		tempScene->AddLightToScene(tempLight2);
 	}
 
-	
 	auto tempCamera = tempScene->AddObjectToScene("CameraTest");
 	tempCamera->SetPosition(vec3(0.f, 0.f, 0.f));
 	tempCamera->AddComponent(Object3DComponent::CAMERA_COMPONENT, "Camera");

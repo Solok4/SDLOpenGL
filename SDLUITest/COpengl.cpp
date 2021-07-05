@@ -11,17 +11,14 @@
 #include "CSceneManager.h"
 #include "Primitives.h"
 
-
 std::unique_ptr<COpengl> OpenGL;
 
 COpengl::COpengl()
 {
-
 	this->FinalVao = 0;
 	//this->FinalVbo = 0;
 	this->OglRenderMode = RenderMode::RenderModeForward;
 }
-
 
 COpengl::~COpengl()
 {
@@ -45,7 +42,6 @@ bool COpengl::Create(SDL_Window* Window)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #endif // __EMSCRIPTEN__
 
-
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
@@ -66,7 +62,7 @@ bool COpengl::Create(SDL_Window* Window)
 void COpengl::Delete()
 {
 	this->ClearFramebuffers();
-	if (_Context !=NULL)
+	if (_Context != NULL)
 	{
 		SDL_GL_DeleteContext(_Context);
 	}
@@ -80,13 +76,13 @@ void COpengl::PrepareToLoop()
 #ifdef __EMSCRIPTEN__
 	Shaders.CreateShader("Assets/Shaders/gles/Gui.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/gles/Gui.frag", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Gui",false);
+	Shaders.CreateShaderProgram("Gui", false);
 	Shaders.CreateShader("Assets/Shaders/gles/Scene.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/gles/Scene.frag", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Default",false);
+	Shaders.CreateShaderProgram("Default", false);
 	Shaders.CreateShader("Assets/Shaders/gles/final.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/gles/final.frag", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Final",false);
+	Shaders.CreateShaderProgram("Final", false);
 	Shaders.CreateShader("Assets/Shaders/gles/Shadows.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/gles/Shadows.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Shadows", false);
@@ -96,7 +92,7 @@ void COpengl::PrepareToLoop()
 #else
 	Shaders.CreateShader("Assets/Shaders/Gui.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/Gui.frag", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("Gui",false);
+	Shaders.CreateShaderProgram("Gui", false);
 	Shaders.CreateShader("Assets/Shaders/Scene.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/Scene.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("Default", false);
@@ -109,7 +105,7 @@ void COpengl::PrepareToLoop()
 	Shaders.CreateShader("Assets/Shaders/PointShad.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/PointShad.geom", ShaderType::Geometry);
 	Shaders.CreateShader("Assets/Shaders/PointShad.frag", ShaderType::Fragment);
-	Shaders.CreateShaderProgram("PointShad",true);
+	Shaders.CreateShaderProgram("PointShad", true);
 	Shaders.CreateShader("Assets/Shaders/DebugLights.vert", ShaderType::Vertex);
 	Shaders.CreateShader("Assets/Shaders/DebugLights.frag", ShaderType::Fragment);
 	Shaders.CreateShaderProgram("DebugLights", false);
@@ -148,7 +144,7 @@ void COpengl::PrepareToLoop()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(panelVertices), panelVertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2*sizeof(GLfloat)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -164,7 +160,7 @@ void COpengl::PrepareToLoop()
 	this->AddNewFramebuffer("Default", "Default");
 	//Deferred
 #ifndef __EMSCRIPTEN__
-	this->AddNewFramebuffer("DeferredShading", "BaseMap",true);
+	this->AddNewFramebuffer("DeferredShading", "BaseMap", true);
 	this->AddNewFramebuffer("LightPass", "LightPass");
 #endif
 
@@ -315,7 +311,7 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("HeightMap", "View");
 	Shaders.AddUniformToShaderStruct("HeightMap", "Model");
 	Shaders.AddUniformToShaderStruct("HeightMap", "Color");
-	
+
 	//Deferred rendering geometry uniforms
 #ifndef __EMSCRIPTEN__
 	Shaders.AddUniformToShaderStruct("BaseMap", "Projection");
@@ -328,13 +324,11 @@ void COpengl::PrepareToLoop()
 	Shaders.AddUniformToShaderStruct("Final", "Base");
 }
 
-
 /*
 Clear Buffers
 */
 void COpengl::PreLoop()
 {
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -342,7 +336,6 @@ void COpengl::SetModelMatrix(glm::mat4 matrix)
 {
 	Shaders.UniformMat4f(matrix, "Model");
 }
-
 
 /*
 Sets colour of gui element
@@ -360,7 +353,6 @@ void COpengl::SetNormalMatrix(glm::mat4 matrix)
 	glm::mat4 NormalMatrix = glm::transpose(glm::inverse(matrix));
 	Shaders.UniformMat4f(NormalMatrix, "NormalMatrix");
 }
-
 
 /*
 Use default program and swap buffers
@@ -388,7 +380,6 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 	{
 		CLog::MyLog(LogType::Warning, "Passed camera doesn't exist");
 	}
-
 }
 
 /*
@@ -406,7 +397,7 @@ void COpengl::PreLoopOrtho()
 /*
 Creates new framebuffer for drawing. Creates framebuffer and renderbuffer
 */
-void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName,bool Deferred)
+void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName, bool Deferred)
 {
 	MyFrameBuffer FboStruct;
 	FboStruct.name = FBName;
@@ -440,7 +431,6 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName,bool 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, FboStruct.Deferred[2], 0);
 
-
 		glGenRenderbuffers(1, &FboStruct.RBO);
 		glBindRenderbuffer(GL_RENDERBUFFER, FboStruct.RBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->WndInfo->ScreenWidth, this->WndInfo->ScreenHeight);
@@ -448,8 +438,7 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName,bool 
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, FboStruct.RBO);
 
-		// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-
+		// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
 
 		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 		glDrawBuffers(3, attachments);
@@ -486,7 +475,7 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName,bool 
 /*
 Creates framebuffer that are used for lighting. Those saves only depth from the scene.
 */
-void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int size)
+void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int size)
 {
 	std::string name = light->GetPossesingObject()->GetName() + "_" + light->GetName();
 	for (auto x : this->LightFramebuffers)
@@ -546,22 +535,19 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light,int 
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 #endif
-
 	}
-	
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	GLuint result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (result != GL_FRAMEBUFFER_COMPLETE)
 	{
 		do {
 			result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-		
-			CLog::MyLog(LogType::Error, "Light Framebuffer isn't complete %s :%d", light->GetName().c_str(),glGetError());
 
+			CLog::MyLog(LogType::Error, "Light Framebuffer isn't complete %s :%d", light->GetName().c_str(), glGetError());
 		} while (result != GL_FRAMEBUFFER_COMPLETE);
 	}
 	this->LightFramebuffers.push_back(FboStruct);
-
 }
 
 /*
@@ -763,7 +749,7 @@ void COpengl::FinalDraw()
 /*
 Calculates data to process light on to the scene. Binds light framebuffer, sends uniforms and changes shader program depending on shadow type
 */
-void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
+void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights, int index)
 {
 	Light LightStruct;
 	std::string LightNumber;
@@ -790,34 +776,34 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 		COpengl::UseLightFramebuffer(name);
 		depthViewMatrix = glm::lookAt(lights->GetPosition(), lights->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
 		std::vector<glm::mat4> ShadowTransforms;
-		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3( 1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f, 0.0f )));
-		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f, 0.0f )));
-		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3( 0.0f, 1.0f,  0.0f), glm::vec3(0.0f,  0.0f, 1.0f )));
-		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3( 0.0f, -1.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f)));
-		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3( 0.0f, 0.0f,  1.0f), glm::vec3(0.0f, -1.0f, 0.0f )));
-		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3( 0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f )));
+		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(lights->GetPosition(), lights->GetPosition() + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
 		Shaders.SetCurrentShaderProgram("PointShad");
 		for (int i = 0; i < 6; i++)
 		{
-			glUniformMatrix4fv(Shaders.GetUniformByNameStruct("PointShad", "ShadowMatrices[" + std::to_string(i) + "]"),1,GL_FALSE, &ShadowTransforms[i][0][0]);
+			glUniformMatrix4fv(Shaders.GetUniformByNameStruct("PointShad", "ShadowMatrices[" + std::to_string(i) + "]"), 1, GL_FALSE, &ShadowTransforms[i][0][0]);
 		}
 
 		Shaders.Uniform3f(lights->GetPosition(), "LightPos");
 		Shaders.Uniform1f(FARPLANE, "FarPlane");
 #endif
 	}
-	else if(lights->GetLightStruct().LightType == LightType::Directional)
+	else if (lights->GetLightStruct().LightType == LightType::Directional)
 	{
-		depthProjectionMatrix = glm::ortho<float>(-30.f, 30.f, -30.f,30.f, 0.0f, 30.f);
+		depthProjectionMatrix = glm::ortho<float>(-30.f, 30.f, -30.f, 30.f, 0.0f, 30.f);
 		COpengl::UseLightFramebuffer(name);
 
-		auto camera =SceneManager->GetCurrentScene()->GetCamera();
+		auto camera = SceneManager->GetCurrentScene()->GetCamera();
 		glm::vec3 LightPostition = camera->GetPosition();
 
 		glm::vec3 FinalVec = lights->GetForwardVector();
 
-		glm::vec3 FVectorCamera = LightPostition + (FinalVec*10.f);
+		glm::vec3 FVectorCamera = LightPostition + (FinalVec * 10.f);
 		lights->SetPosition(FVectorCamera);
 		lights->SetRotation(lights->GetForwardVector());
 
@@ -825,7 +811,6 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> lights,int index)
 	}
 	else // spotlight
 	{
-
 	}
 
 	depthMVP = depthProjectionMatrix * depthViewMatrix;
@@ -907,7 +892,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 		glBindTexture(GL_TEXTURE_CUBE_MAP, COpengl::GetLightFrameBuffer(name).DepthBuff);
 		Uniform = "ShadowCube[" + std::to_string(count);
 		Uniform += "]";
-		this->Shaders.Uniform1i(3+count, "ShadowCube");
+		this->Shaders.Uniform1i(3 + count, "ShadowCube");
 		//glUniform1i(Shaders.GetUniformByNameStruct("Default", "ShadowCube"), 3+count);
 #endif
 	}
@@ -916,7 +901,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 		glBindTexture(GL_TEXTURE_2D, COpengl::GetLightFrameBuffer(name).DepthBuff);
 		Uniform = "ShadowMap[" + std::to_string(count);
 		Uniform += "]";
-		this->Shaders.Uniform1i(3+count, "ShadowMap");
+		this->Shaders.Uniform1i(3 + count, "ShadowMap");
 		//glUniform1i(Shaders.GetUniformByNameStruct("Default", "ShadowMap"), 3+count);
 	}
 }
@@ -930,5 +915,3 @@ void COpengl::SetCurrentShaderProgram(std::string name)
 {
 	this->Shaders.SetCurrentShaderProgram(name);
 }
-
-

@@ -6,7 +6,7 @@ class CTextBox :
 	public CButton
 {
 public:
-	CTextBox()=delete;
+	CTextBox() = delete;
 	CTextBox(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref);
 	~CTextBox();
 
@@ -23,6 +23,4 @@ private:
 	TTF_Font* Font;
 	bool CanEdit = false;
 	std::function<void()> EnterFunc;
-
 };
-

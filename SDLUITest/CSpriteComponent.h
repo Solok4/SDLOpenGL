@@ -12,7 +12,7 @@ enum SpriteBehaviour
 
 enum SpriteEightDirections
 {
-	FORWARD=0,
+	FORWARD = 0,
 	FR,
 	R,
 	BR,
@@ -23,7 +23,7 @@ enum SpriteEightDirections
 };
 
 class CSpriteComponent :
-	public CBaseComponent,IDraw
+	public CBaseComponent, IDraw
 {
 public:
 	CSpriteComponent(CObject3D* ref);
@@ -38,4 +38,3 @@ private:
 	SpriteBehaviour _SpBehaviour;
 	SpriteEightDirections _SpDirection;
 };
-

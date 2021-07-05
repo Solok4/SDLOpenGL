@@ -16,7 +16,7 @@ class CObject3D
 public:
 	CObject3D(std::string name);
 	CObject3D(std::string name, CScene* ref);
-	CObject3D(const CObject3D& obj,std::string name, CScene* ref);
+	CObject3D(const CObject3D& obj, std::string name, CScene* ref);
 	~CObject3D();
 
 	virtual void Prepare();
@@ -25,7 +25,7 @@ public:
 	//Returns name of the object.
 	std::string GetName();
 	//Adds component based on id.
-	void AddComponent(int id,std::string name);
+	void AddComponent(int id, std::string name);
 	//Adds component based on another component.
 	//template<typename T>
 	void AddComponent(std::shared_ptr<CBaseComponent> comp);
@@ -61,7 +61,6 @@ public:
 	//Called every frame.
 	void Tick(double delta);
 
-
 protected:
 
 	std::string Name;
@@ -69,4 +68,3 @@ protected:
 	std::shared_ptr<CBaseComponent> _RootComponent;
 	CScene* SceneRef;
 };
-

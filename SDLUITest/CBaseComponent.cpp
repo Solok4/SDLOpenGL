@@ -2,7 +2,6 @@
 #include "CBaseComponent.h"
 #include "CObject3D.h"
 
-
 CBaseComponent::CBaseComponent(CObject3D* ref)
 {
 	this->PossesingObject = ref;
@@ -13,7 +12,7 @@ CBaseComponent::CBaseComponent(CObject3D* ref)
 	this->CalculateMatrix();
 }
 
-CBaseComponent::CBaseComponent(const CBaseComponent& comp,CObject3D* ref)
+CBaseComponent::CBaseComponent(const CBaseComponent& comp, CObject3D* ref)
 {
 	this->PossesingObject = ref;
 	this->_Name = comp._Name;
@@ -27,7 +26,7 @@ CBaseComponent::CBaseComponent(const CBaseComponent& comp,CObject3D* ref)
 
 CBaseComponent::~CBaseComponent()
 {
-	CLog::MyLog(LogType::Debug, "BaseComponentDestructor %s_%s",this->PossesingObject->GetName().c_str(),this->GetName().c_str());
+	CLog::MyLog(LogType::Debug, "BaseComponentDestructor %s_%s", this->PossesingObject->GetName().c_str(), this->GetName().c_str());
 	this->PossesingObject = nullptr;
 	this->_ParrentObject = nullptr;
 }
@@ -71,38 +70,37 @@ Object3DComponent CBaseComponent::GetType()
 
 void CBaseComponent::CalculateMatrix()
 {
-
 	glm::mat4 Translation = glm::translate(glm::mat4(), glm::vec3(this->_Position.x, this->_Position.y, this->_Position.z));
 	glm::mat4 Scaling = glm::scale(glm::vec3(this->_Scale));
 	glm::mat4 RotationX = glm::rotate(glm::radians(this->_Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
 	glm::mat4 RotationY = glm::rotate(glm::radians(this->_Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 RotationZ = glm::rotate(glm::radians(this->_Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 Rotation = RotationX * RotationY *RotationZ;
-	this->ModelMatrix = Translation * Rotation* Scaling;
+	glm::mat4 Rotation = RotationX * RotationY * RotationZ;
+	this->ModelMatrix = Translation * Rotation * Scaling;
 }
 
 glm::vec3 CBaseComponent::GetForwardVector()
 {
 	glm::vec3 FV;
 
-	FV.x = (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y)));
+	FV.x = (cos(glm::radians(this->_Rotation.x)) * sin(glm::radians(this->_Rotation.y)));
 	FV.y = sin(glm::radians(this->_Rotation.x));
-	FV.z = (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
+	FV.z = (cos(glm::radians(this->_Rotation.x)) * cos(glm::radians(this->_Rotation.y)));
 	return FV;
 }
 
 glm::vec3 CBaseComponent::GetRightVector()
 {
 	glm::vec3 RV;
-	RV.x = (cos(glm::radians(this->_Rotation.z))*sin(glm::radians(this->_Rotation.y+90.f)));
+	RV.x = (cos(glm::radians(this->_Rotation.z)) * sin(glm::radians(this->_Rotation.y + 90.f)));
 	RV.y = sin(glm::radians(this->_Rotation.z));
-	RV.z = (cos(glm::radians(this->_Rotation.z))*cos(glm::radians(this->_Rotation.y+90.f)));
+	RV.z = (cos(glm::radians(this->_Rotation.z)) * cos(glm::radians(this->_Rotation.y + 90.f)));
 	return RV;
 }
 
 glm::vec3 CBaseComponent::GetUpVector()
 {
-	glm::vec3 UV = glm::vec3(0.0f,1.0f,0.0f);
+	glm::vec3 UV = glm::vec3(0.0f, 1.0f, 0.0f);
 	return UV;
 }
 
@@ -150,7 +148,6 @@ void CBaseComponent::SetScale(glm::vec3 scale)
 	this->CalculateMatrix();
 }
 
-
 void CBaseComponent::Tick(double delta)
 {
 	if (this->_ParrentObject != nullptr)
@@ -169,4 +166,3 @@ glm::mat4 CBaseComponent::GetModelMatrix()
 {
 	return this->ModelMatrix;
 }
-

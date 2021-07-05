@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#include "CRenderer.h"
+#include "CWindowManager.h"
 
 struct KeyFunction
 {
@@ -28,7 +28,7 @@ public:
 	CGameplay();
 	CGameplay(const char* name) :Name(std::string(name)) { this->TimeScale = 1.f; };
 	~CGameplay();
-	
+
 	void SetTimescale(float timescale);
 	float GetTimescale();
 	void SetMouseLock(bool lock);
@@ -48,8 +48,8 @@ public:
 	virtual void OnGameplayChange();
 	virtual void Tick(double delta);
 	virtual void KeyEvents(std::array<bool, 322> keys);
-	void SetFrameLimit(int frames) 
-	{ 
+	void SetFrameLimit(int frames)
+	{
 		this->FrameLimit = frames;
 		Renderer->SetFrameLock(frames);
 	};

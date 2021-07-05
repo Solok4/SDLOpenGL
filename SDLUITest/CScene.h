@@ -14,7 +14,7 @@ public:
 	~CScene();
 
 	std::shared_ptr<CObject3D> AddObjectToScene(std::string Name);
-	std::shared_ptr<CObject3D> AddObjectToScene(std::string Name, std::shared_ptr<CObject3D> &obj);
+	std::shared_ptr<CObject3D> AddObjectToScene(std::string Name, std::shared_ptr<CObject3D>& obj);
 	std::shared_ptr<CObject3D> GetObjectByName(std::string Name);
 	void RemoveObjectFromScene(std::string Name);
 	void AddLightToScene(std::shared_ptr<CObject3D> light);
@@ -42,7 +42,6 @@ public:
 	void SetMovementObject(std::shared_ptr<CObject3D> Movement);
 	std::shared_ptr<CMovementComponent> GetMovementObject();
 
-
 	void CacheObjectsToDraw();
 
 	bool DrawableCached = false;
@@ -59,6 +58,4 @@ public:
 	SkyboxType Skyboxtype;
 
 	std::shared_ptr<CHeightMap> _HeightMap;
-
 };
-

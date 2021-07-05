@@ -9,8 +9,7 @@
 #include "Primitives.h"
 #include "CLayout.h"
 
-
-CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref)
+CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref)
 	:_LocalOffset(position), _Size(objsize), Layer(-2), ObjectAligment(Object2DAligment::LEFT_TOP),
 	_Position(0.f), ModelMatrix(glm::mat4(1.0f)), _VAO(0), _Rotation(glm::vec3(0.f)), ParrentObject(nullptr), ColorMask(1.0f)
 {
@@ -21,12 +20,11 @@ CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLa
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(LogType::Debug, "Object2DDestructor %s",this->_Name.c_str());
+	CLog::MyLog(LogType::Debug, "Object2DDestructor %s", this->_Name.c_str());
 }
 
 void CObject2D::Prepare()
 {
-	
 	glGenVertexArrays(1, &this->_VAO);
 	glBindVertexArray(this->_VAO);
 
@@ -62,149 +60,148 @@ void CObject2D::RefreshModelMatrix()
 {
 	switch (this->ObjectAligment)
 	{
-		case LEFT_TOP:
+	case LEFT_TOP:
+	{
+		if (this->ParrentObject == nullptr)
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->_LocalOffset.x + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + this->_Padding.y;
 		}
-		case TOP:
+		else
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x/2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + 
-									(this->ParrentObject->GetSize().x / 2) + this->_LocalOffset.x + this->_Padding.x + this->_Size.x/2;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
 		}
-		case RIGHT_TOP:
+		break;
+	}
+	case TOP:
+	{
+		if (this->ParrentObject == nullptr)
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetSize().x - this->ParrentObject->GetPadding().x  - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + this->_Padding.y;
 		}
-		case LEFT:
+		else
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y +
-									(this->ParrentObject->GetSize().y/2) + this->_LocalOffset.y + this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x +
+				(this->ParrentObject->GetSize().x / 2) + this->_LocalOffset.x + this->_Padding.x + this->_Size.x / 2;
+			this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
 		}
-		case CENTER:
+		break;
+	}
+	case RIGHT_TOP:
+	{
+		if (this->ParrentObject == nullptr)
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + 
-									(this->ParrentObject->GetSize().x / 2) - (this->_Size.x / 2) + this->_LocalOffset.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + 
-									(this->ParrentObject->GetSize().y / 2) + (this->_Size.y/2) + this->_LocalOffset.y;
-			}
-			break;
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
 		}
-		case RIGHT:
+		else
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + (this->ParrentObject->GetSize().y / 2) + this->_LocalOffset.y + this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetSize().x - this->ParrentObject->GetPadding().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + this->_LocalOffset.y + this->_Padding.y;
 		}
-		case LEFT_BOTTOM:
+		break;
+	}
+	case LEFT:
+	{
+		if (this->ParrentObject == nullptr)
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
 		}
-		case BOTTOM:
+		else
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + 
-									(this->ParrentObject->GetSize().x/2) +  this->_LocalOffset.x + this->_Padding.x - this->_Size.x/2;
-				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + 
-									this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
-			}
-			break;
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y +
+				(this->ParrentObject->GetSize().y / 2) + this->_LocalOffset.y + this->_Padding.y;
 		}
-		case RIGHT_BOTTOM:
+		break;
+	}
+	case CENTER:
+	{
+		if (this->ParrentObject == nullptr)
 		{
-			if (this->ParrentObject == nullptr)
-			{
-				this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
-				this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
-			}
-			else
-			{
-				this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
-				this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y - this->_Size.y;
-			}
-			break;
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
 		}
-		default:
-			break;
+		else
+		{
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x +
+				(this->ParrentObject->GetSize().x / 2) - (this->_Size.x / 2) + this->_LocalOffset.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y +
+				(this->ParrentObject->GetSize().y / 2) + (this->_Size.y / 2) + this->_LocalOffset.y;
+		}
+		break;
+	}
+	case RIGHT:
+	{
+		if (this->ParrentObject == nullptr)
+		{
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
+		}
+		else
+		{
+			this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y + this->ParrentObject->GetPadding().y + (this->ParrentObject->GetSize().y / 2) + this->_LocalOffset.y + this->_Padding.y;
+		}
+		break;
+	}
+	case LEFT_BOTTOM:
+	{
+		if (this->ParrentObject == nullptr)
+		{
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
+		}
+		else
+		{
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x + this->_LocalOffset.x + this->_Padding.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
+		}
+		break;
+	}
+	case BOTTOM:
+	{
+		if (this->ParrentObject == nullptr)
+		{
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
+		}
+		else
+		{
+			this->_Position.x = this->ParrentObject->GetPosition().x + this->ParrentObject->GetPadding().x +
+				(this->ParrentObject->GetSize().x / 2) + this->_LocalOffset.x + this->_Padding.x - this->_Size.x / 2;
+			this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y +
+				this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y;
+		}
+		break;
+	}
+	case RIGHT_BOTTOM:
+	{
+		if (this->ParrentObject == nullptr)
+		{
+			this->_Position.x = this->_LocalOffset.x + (this->_Size.x / 2) + this->_Padding.x;
+			this->_Position.y = this->_LocalOffset.y + (this->_Size.y / 2) + this->_Padding.y;
+		}
+		else
+		{
+			this->_Position.x = this->ParrentObject->GetPosition().x - this->ParrentObject->GetPadding().x + this->ParrentObject->GetSize().x - this->_LocalOffset.x - this->_Padding.x - this->_Size.x;
+			this->_Position.y = this->ParrentObject->GetPosition().y - this->ParrentObject->GetPadding().y + this->ParrentObject->GetSize().y - this->_LocalOffset.y - this->_Padding.y - this->_Size.y;
+		}
+		break;
+	}
+	default:
+		break;
 	}
 	mat4 Translation = translate(mat4(1.0f), vec3(this->_Position.x, this->_Position.y, (float)Layer));
 	mat4 Scaling = scale(vec3(this->_Size.x, this->_Size.y, 1.0f));
 	mat4 RotationX = rotate(radians(this->_Rotation.x), vec3(1.0f, 0.0f, 0.0f));
 	mat4 RotationY = rotate(radians(this->_Rotation.y), vec3(0.0f, 1.0f, 0.0f));
 	mat4 RotationZ = rotate(radians(this->_Rotation.z), vec3(0.0f, 0.0f, 1.0f));
-	mat4 Rotation = RotationX * RotationY *RotationZ;
-	this->ModelMatrix = Translation * Rotation* Scaling;
-
+	mat4 Rotation = RotationX * RotationY * RotationZ;
+	this->ModelMatrix = Translation * Rotation * Scaling;
 }
 
 void CObject2D::SetPosition(vec2 vec)
@@ -219,7 +216,6 @@ void CObject2D::SetRotation(vec3 vec)
 	if (this->ParrentObject == nullptr)
 	{
 		this->_Rotation = vec;
-
 	}
 	else
 	{
@@ -265,9 +261,9 @@ std::vector<CObject2D*> CObject2D::GetParentOfTable() const
 vec3 CObject2D::GetForwardVector() const
 {
 	glm::vec3 FV;
-	FV.x = this->_Position.x + (cos(glm::radians(this->_Rotation.x))*cos(glm::radians(this->_Rotation.y)));
+	FV.x = this->_Position.x + (cos(glm::radians(this->_Rotation.x)) * cos(glm::radians(this->_Rotation.y)));
 	FV.y = this->_Position.y + sin(glm::radians(this->_Rotation.x));
-	FV.z = this->Layer + (cos(glm::radians(this->_Rotation.x))*sin(glm::radians(this->_Rotation.y)));
+	FV.z = this->Layer + (cos(glm::radians(this->_Rotation.x)) * sin(glm::radians(this->_Rotation.y)));
 	return FV;
 }
 
@@ -276,7 +272,6 @@ void CObject2D::MoveObjectLayerDown()
 	if (this->Layer <= 0)
 	{
 		this->Layer--;
-
 	}
 }
 
@@ -343,8 +338,8 @@ vec4 CObject2D::GetColorMask() const
 
 void CObject2D::Tick(double delta)
 {
-	if(this->TickFunc != nullptr)
-	this->TickFunc(delta);
+	if (this->TickFunc != nullptr)
+		this->TickFunc(delta);
 }
 
 void CObject2D::SetName(const char* name)

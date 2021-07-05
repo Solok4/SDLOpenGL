@@ -33,4 +33,3 @@ public:
 };
 
 extern std::unique_ptr<CTextureManager> TextureManager;
-

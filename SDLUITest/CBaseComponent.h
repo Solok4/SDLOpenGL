@@ -22,7 +22,7 @@ class CObject3D;
 class CBaseComponent
 {
 public:
-	CBaseComponent()=delete;
+	CBaseComponent() = delete;
 	CBaseComponent(CObject3D* ref);
 	CBaseComponent(const CBaseComponent& comp, CObject3D* ref);
 	//CBaseComponent(const CBaseComponent& comp,char* name);
@@ -86,4 +86,3 @@ protected:
 	glm::mat4 ModelMatrix;
 	bool _IsActive = true;
 };
-

@@ -6,7 +6,6 @@ CTextureManager::CTextureManager()
 {
 }
 
-
 CTextureManager::~CTextureManager()
 {
 }
@@ -26,7 +25,7 @@ std::shared_ptr<Texture> CTextureManager::LoadTexture(std::string path)
 #endif
 
 	auto ret = this->GetTextureByName(OnlyName);
-	CLog::MyLog(LogType::Debug, "Texture name %s",OnlyName);
+	CLog::MyLog(LogType::Debug, "Texture name %s", OnlyName);
 	if (ret != -1)
 	{
 		CLog::MyLog(LogType::Error, "Failed to load texture %s. File has been already loaded", path.c_str());
@@ -54,7 +53,6 @@ std::shared_ptr<Texture> CTextureManager::LoadTexture(std::string path)
 				FinalTex = Tex;
 			}
 			Format = GL_RGB;
-
 		}
 		else
 		{
@@ -80,7 +78,6 @@ std::shared_ptr<Texture> CTextureManager::LoadTexture(std::string path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
-
 
 		TextureObject->name = std::string(OnlyName);
 		TextureObject->texHandle = TexID;

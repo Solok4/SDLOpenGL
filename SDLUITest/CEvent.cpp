@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "CEvent.h"
-#include "CRenderer.h"
+#include "CWindowManager.h"
 
 std::unique_ptr<CEvent> Event;
 
@@ -12,11 +12,9 @@ CEvent::CEvent()
 	}
 }
 
-
 CEvent::~CEvent()
 {
 }
-
 
 void CEvent::PollEvents()
 {
@@ -45,8 +43,8 @@ void CEvent::PollEvents()
 		{
 			_IsRunning = false;
 		}
-			
-		switch(this->_Event.type)
+
+		switch (this->_Event.type)
 		{
 		case SDL_KEYDOWN:
 			Keys[this->_Event.key.keysym.scancode] = true;
@@ -100,11 +98,10 @@ void CEvent::PollEvents()
 	}
 }
 
-void CEvent::GetMouseMotion(int &Mx, int &My)
+void CEvent::GetMouseMotion(int& Mx, int& My)
 {
 	Mx = this->_MouseX;
 	My = this->_MouseY;
-
 }
 
 bool CEvent::GetIsRunning()

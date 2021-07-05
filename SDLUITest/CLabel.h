@@ -7,11 +7,14 @@ class CLabel :
 	public CObject2D
 {
 public:
-	CLabel()=delete;
-	CLabel(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CObject2D(name, position, objsize,ref)
-	{ 
+	CLabel() = delete;
+	CLabel(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CObject2D(name, position, objsize, ref)
+	{
 		this->_ID = Object2DType::OBJECT2D_LABEL;
 		this->_Rotation = glm::vec3(180.f, 0.0f, 0.0f);
+		this->Font = nullptr;
+		this->TextSurface = nullptr;
+		this->TextureID = -1;
 	}
 	~CLabel();
 	//Sets font that will be used in label
@@ -38,6 +41,4 @@ private:
 	SDL_Surface* TextSurface;
 	GLuint TextureID;
 	std::string Value;
-
 };
-

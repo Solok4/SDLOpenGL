@@ -51,7 +51,7 @@
     <ClInclude Include="CApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CRenderer.h">
+    <ClInclude Include="CWindowManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CLog.h">
@@ -176,7 +176,7 @@
     <ClCompile Include="CApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CRenderer.cpp">
+    <ClCompile Include="CWindowManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLog.cpp">

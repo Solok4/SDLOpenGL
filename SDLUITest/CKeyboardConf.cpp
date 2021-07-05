@@ -1,4 +1,3 @@
-
 #include "pch.h"
 #include "CKeyboardConf.h"
 #include "CLog.h"
@@ -7,16 +6,14 @@ std::unique_ptr<CKeyboardConf> KeyboardConf;
 
 CKeyboardConf::CKeyboardConf()
 {
-	for (int i = 0 ; i < 322; i++)
+	for (int i = 0; i < 322; i++)
 	{
 		this->KeyBtns[i].IsPressed = false;
 		this->KeyBtns[i].IsTriggerType = false;
 		this->KeyBtns[i].LastStatus = false;
 		this->KeyResults[i] = false;
 	}
-
 }
-
 
 CKeyboardConf::~CKeyboardConf()
 {
@@ -51,12 +48,12 @@ void CKeyboardConf::ProcessButtons(std::array<bool, 322> ButArray)
 	}
 }
 
-void CKeyboardConf::SetKeyTriggerStatus(unsigned int Key, bool Status)
+void CKeyboardConf::SetKeyToTriggerType(unsigned int Key, bool Status)
 {
 	this->KeyBtns[Key].IsTriggerType = Status;
 }
 
-void CKeyboardConf::ClearTriggerStatus()
+void CKeyboardConf::ResetKeyFromTriggerStatus()
 {
 	for (KeyboardButtons a : this->KeyBtns)
 	{

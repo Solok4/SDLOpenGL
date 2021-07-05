@@ -7,7 +7,7 @@
 
 enum CvarType
 {
-	CVAR_VOID=0,
+	CVAR_VOID = 0,
 	CVAR_INTEGER,
 	CVAR_DOUBLE,
 	CVAR_STRING,
@@ -26,8 +26,8 @@ union CVarValue
 class CVar
 {
 public:
-	CVar()=delete;
-	CVar(const char* name, int defaultvalue, const char* hint) :_Name(name),  _Hint(hint)
+	CVar() = delete;
+	CVar(const char* name, int defaultvalue, const char* hint) :_Name(name), _Hint(hint)
 	{
 		this->_Type = CVAR_INTEGER;
 		this->_DefaultValue = std::make_shared<CVarValue>();
@@ -71,4 +71,3 @@ private:
 
 	std::function<void(CVar)> _ChangeValueFunc;
 };
-

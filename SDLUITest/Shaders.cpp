@@ -3,19 +3,17 @@
 #include <fstream>
 #include <exception>
 
-
 Shaders::Shaders()
 {
 	this->VertexShader = -1;
 	this->FragmentShader = -1;
 }
 
-
 Shaders::~Shaders()
 {
 }
 
-void Shaders::CreateShader(const char * File, ShaderType type)
+void Shaders::CreateShader(const char* File, ShaderType type)
 {
 	std::string ShaderText = ReadShaderFromFile(File);
 	if (!ShaderText.empty())
@@ -33,10 +31,10 @@ void Shaders::CreateShader(const char * File, ShaderType type)
 			glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
 			CLog::MyLog(LogType::Debug, "Vertex Shader compile status: %d", Result);
 			glGetShaderInfoLog(VertexShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Debug,"Info: %s", logBuff);
+			CLog::MyLog(LogType::Debug, "Info: %s", logBuff);
 			this->VertexShader = VertexShaderID;
 		}
-		else if(type == ShaderType::Fragment)
+		else if (type == ShaderType::Fragment)
 		{
 			GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(FragmentShaderID, 1, &ShaderAsChar, NULL);
@@ -66,10 +64,9 @@ void Shaders::CreateShader(const char * File, ShaderType type)
 			return;
 		}
 	}
-
 }
 
-std::string Shaders::ReadShaderFromFile(const char * Filename)
+std::string Shaders::ReadShaderFromFile(const char* Filename)
 {
 	std::fstream ShaderFileHandle;
 	std::string ShaderName(Filename);
@@ -92,9 +89,9 @@ std::string Shaders::ReadShaderFromFile(const char * Filename)
 	return FileContent;
 }
 
-void Shaders::CreateShaderProgram(std::string name,bool UseGeometryShader)
+void Shaders::CreateShaderProgram(std::string name, bool UseGeometryShader)
 {
-	if (this->VertexShader == -1 || this->FragmentShader ==-1)
+	if (this->VertexShader == -1 || this->FragmentShader == -1)
 	{
 		if (this->VertexShader == -1)
 		{
@@ -129,7 +126,7 @@ void Shaders::CreateShaderProgram(std::string name,bool UseGeometryShader)
 
 		GLint result = GL_FALSE;
 		glGetProgramiv(Prog.Program, GL_LINK_STATUS, &result);
-		CLog::MyLog(LogType::Debug, "%s> Shader Program link status: %d",name.c_str(), result);
+		CLog::MyLog(LogType::Debug, "%s> Shader Program link status: %d", name.c_str(), result);
 		glDetachShader(Prog.Program, this->VertexShader);
 		glDetachShader(Prog.Program, this->FragmentShader);
 		if (UseGeometryShader)
@@ -177,7 +174,6 @@ std::shared_ptr<ShadProgram> Shaders::GetShaderStruct(std::string name)
 	return nullptr;
 }
 
-
 GLuint Shaders::GetShaderProgram(std::string name)
 {
 	for (auto o : this->ShaderProgram)
@@ -190,9 +186,7 @@ GLuint Shaders::GetShaderProgram(std::string name)
 	return -1;
 }
 
-
-
-void Shaders::AddUniformToShaderStruct(std::string ProgramName,std::string UnifromName)
+void Shaders::AddUniformToShaderStruct(std::string ProgramName, std::string UnifromName)
 {
 	if (Shaders::GetUniformByNameStruct(ProgramName, UnifromName) == -1)
 	{
@@ -207,7 +201,6 @@ void Shaders::AddUniformToShaderStruct(std::string ProgramName,std::string Unifr
 		return;
 	}
 	CLog::MyLog(LogType::Error, "That uniform %s already exists in %s program \n", UnifromName.c_str(), ProgramName.c_str());
-
 }
 
 GLuint Shaders::GetUniformByNameStruct(std::string ProgramName, std::string UniformName)
@@ -242,7 +235,7 @@ void Shaders::Uniform1f(float value, const char* uniformName, const char* Shader
 {
 	if (strcmp(Shader, "") == 0)
 	{
-		glUniform1f(GetUniformFromCurrentProgram(uniformName),value);
+		glUniform1f(GetUniformFromCurrentProgram(uniformName), value);
 	}
 	else
 	{
@@ -294,4 +287,3 @@ GLuint Shaders::GetUniformFromCurrentProgram(const char* name)
 	}
 	return -1;
 }
-

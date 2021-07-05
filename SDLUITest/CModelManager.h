@@ -14,7 +14,6 @@
 #include "Shared.h"
 #include "CMaterialManager.h"
 
-
 struct RenderingChunk {
 	RenderingChunk(std::shared_ptr<Material> mat, int off, int size) {
 		this->material = mat->GetData();
@@ -26,10 +25,9 @@ struct RenderingChunk {
 	std::shared_ptr<MaterialData> material;
 };
 
-
 struct Model
 {
-	void BindMaterialToModel(std::shared_ptr<Material> mat, int offset=0, unsigned int size=0) {
+	void BindMaterialToModel(std::shared_ptr<Material> mat, int offset = 0, unsigned int size = 0) {
 		if (size == 0) {
 			size = this->IndicesCount;
 		}
@@ -43,7 +41,6 @@ struct Model
 	std::vector<std::shared_ptr<RenderingChunk>> RenderingChunks;
 	const char* Name;
 };
-
 
 class CModelManager
 {
@@ -62,4 +59,3 @@ private:
 };
 
 extern std::unique_ptr<CModelManager> ModelManager;
-

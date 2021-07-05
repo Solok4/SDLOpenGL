@@ -14,8 +14,6 @@ public:
 	void DeleteGameplay(const char* name);
 	void SelectCurrentGameplay(const char* name);
 	std::shared_ptr<CGameplay> GetCurrentGameplay();
-	
-
 
 	std::vector<std::shared_ptr<CGameplay>> GameplayConfigurations;
 

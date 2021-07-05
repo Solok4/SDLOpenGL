@@ -1,6 +1,5 @@
 #pragma once
 
-
 static char DiffuseTexBase[] = {
 	255, 255, 255, 255,
 	255, 255, 255, 255,

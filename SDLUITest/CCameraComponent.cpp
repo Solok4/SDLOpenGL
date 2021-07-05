@@ -1,23 +1,22 @@
 #include "pch.h"
 #include "CCameraComponent.h"
 #include "CEvent.h"
-#include "CRenderer.h"
+#include "CWindowManager.h"
 #include "COpengl.h"
 #include "CObject3D.h"
 #ifndef __EMSCRIPTEN__
 #include <Windows.h>
 #endif
 
-
 CCameraComponent::CCameraComponent(CObject3D* ref) :CBaseComponent(ref)
 {
 	this->_Type = Object3DComponent::CAMERA_COMPONENT;
 	this->IsFree = false;
-	this->FOV =65.f;
+	this->FOV = 65.f;
 	this->Sensitivity = 5.f;
 }
 
-CCameraComponent::CCameraComponent(const CCameraComponent& cam,CObject3D* ref):CBaseComponent(cam,ref)
+CCameraComponent::CCameraComponent(const CCameraComponent& cam, CObject3D* ref) :CBaseComponent(cam, ref)
 {
 	this->_Type = Object3DComponent::CAMERA_COMPONENT;
 	this->LastX = cam.LastX;
@@ -28,7 +27,6 @@ CCameraComponent::CCameraComponent(const CCameraComponent& cam,CObject3D* ref):C
 	this->First = cam.First;
 	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 }
-
 
 CCameraComponent::~CCameraComponent()
 {
@@ -51,8 +49,6 @@ void CCameraComponent::ProcessMouseMovements()
 {
 	if (this->IsFree)
 	{
-
-
 		int DeltaX = 0;
 		int DeltaY = 0;
 		int MouseX = 0;
@@ -81,8 +77,8 @@ void CCameraComponent::ProcessMouseMovements()
 			this->First = false;
 		}
 
-		float MovementX = (DeltaX * this->Sensitivity)*0.1f;
-		float MovementY = (DeltaY * this->Sensitivity)*0.1f;
+		float MovementX = (DeltaX * this->Sensitivity) * 0.1f;
+		float MovementY = (DeltaY * this->Sensitivity) * 0.1f;
 
 		this->_Rotation.y -= MovementX;
 		this->_Rotation.x -= MovementY;
@@ -149,7 +145,7 @@ void CCameraComponent::Tick(double delta)
 	{
 		OpenGL->GetShadersClass().SetCurrentShaderProgram("Default");
 		glUniform3f(OpenGL->GetShadersClass().GetUniformByNameStruct("Default", "CameraPos"),
-			this->_Position.x+this->_PosOffset.x, this->_Position.y+ this->_PosOffset.y, this->_Position.z+ this->_PosOffset.z);
+			this->_Position.x + this->_PosOffset.x, this->_Position.y + this->_PosOffset.y, this->_Position.z + this->_PosOffset.z);
 	}
 }
 
@@ -160,17 +156,17 @@ glm::vec3 CCameraComponent::CastRay()
 	Event->GetMouseMotion(MouseX, MouseY);
 
 	float NormalizedX = (2.f * MouseX) / Renderer->GetWindowInfo()->ScreenWidth - 1.f;
-	float NormalizedY = 1.0f -(2.f * MouseY) / Renderer->GetWindowInfo()->ScreenHeight;
+	float NormalizedY = 1.0f - (2.f * MouseY) / Renderer->GetWindowInfo()->ScreenHeight;
 
 	glm::vec3 NormalizedCords = glm::vec3(NormalizedX, NormalizedY, -1.f);
 
 	glm::vec4 HomogenousClip = glm::vec4(NormalizedCords.x, NormalizedCords.y, -1.f, 1.f);
 
 	glm::mat4 PerspectiveMatrix = glm::perspective(glm::radians(this->FOV), Renderer->GetWindowInfo()->ScreenAspectRatio, 0.1f, 1000.f);
-	glm::vec4 RayEyeSpace = glm::inverse(PerspectiveMatrix)* HomogenousClip;
+	glm::vec4 RayEyeSpace = glm::inverse(PerspectiveMatrix) * HomogenousClip;
 	RayEyeSpace = glm::vec4(RayEyeSpace.x, RayEyeSpace.y, -1.f, 0.f);
 
-	glm::mat4 ViewMatrix = glm::lookAt(this->_Position, this->_Position+this->GetForwardVector(), glm::vec3(0.0f, 1.f, 0.f));
+	glm::mat4 ViewMatrix = glm::lookAt(this->_Position, this->_Position + this->GetForwardVector(), glm::vec3(0.0f, 1.f, 0.f));
 	glm::vec3 RayWorld = (glm::inverse(ViewMatrix) * RayEyeSpace);
 	this->LastRay = RayWorld;
 	//CLog::MyLog(LogType::Debug, "RayCast x: %f y: %f z: %f", RayWorld.x, RayWorld.y, RayWorld.z);

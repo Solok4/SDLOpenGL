@@ -22,7 +22,6 @@ public:
 	TTF_Font* LoadFont(std::string path, int size);
 	TTF_Font* GetFontByName(std::string name, int size);
 
-
 	std::map<std::string, std::vector<MyFont>> FontMap;
 };
 

@@ -4,13 +4,11 @@
 #include "CSceneManager.h"
 #include "CLayoutManager.h"
 #include "CKeyboardConf.h"
-#include "CRenderer.h"
-
+#include "CWindowManager.h"
 
 CGameplay::CGameplay()
 {
 }
-
 
 CGameplay::~CGameplay()
 {
@@ -139,7 +137,7 @@ void CGameplay::RemoveKeyTrigger(int key)
 
 void CGameplay::Init()
 {
-	this->AddFunctionToList("MouseLock", [this]() 
+	this->AddFunctionToList("MouseLock", [this]()
 		{
 			this->MouseLock = !this->MouseLock;
 		});
@@ -157,7 +155,7 @@ void CGameplay::Init()
 				LayoutManager->PushActiveLayout("Console");
 			}
 		});
-	this->BindKey(SDL_SCANCODE_GRAVE,"Console");
+	this->BindKey(SDL_SCANCODE_GRAVE, "Console");
 
 	this->AddKeyTrigger(SDL_SCANCODE_1);
 	this->AddKeyTrigger(SDL_SCANCODE_2);
@@ -169,7 +167,7 @@ void CGameplay::OnGameplayChange()
 {
 	for (auto a : this->KeyTriggerVector)
 	{
-		KeyboardConf->SetKeyTriggerStatus(a, true);
+		KeyboardConf->SetKeyToTriggerType(a, true);
 	}
 }
 
@@ -274,4 +272,3 @@ void CGameplay::KeyEvents(std::array<bool, 322> keys)
 		}
 	}
 }
-

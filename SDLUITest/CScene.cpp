@@ -2,8 +2,6 @@
 #include "CScene.h"
 #include "COpengl.h"
 
-
-
 CScene::CScene()
 {
 	this->Camera = nullptr;
@@ -11,10 +9,9 @@ CScene::CScene()
 	this->Prepare();
 }
 
-
 CScene::~CScene()
 {
-	CLog::MyLog(LogType::Debug, "SceneDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Debug, "SceneDestructor %s", this->GetName().c_str());
 	this->Camera = nullptr;
 	this->Lights.clear();
 	this->MovementObject = nullptr;
@@ -24,16 +21,16 @@ CScene::~CScene()
 
 std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name)
 {
-	std::shared_ptr<CObject3D> temp=std::make_shared<CObject3D>(Name,this);
+	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(Name, this);
 	//temp->SetName(Name);
 	this->Objects3D.push_back(temp);
 	this->DrawableCached = false;
 	return temp;
 }
 
-std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name, std::shared_ptr<CObject3D> &obj)
+std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name, std::shared_ptr<CObject3D>& obj)
 {
-	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(*obj,Name.c_str(),this);
+	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(*obj, Name.c_str(), this);
 	//temp->SetName(Name);
 	this->Objects3D.push_back(temp);
 	this->DrawableCached = false;
@@ -59,7 +56,7 @@ void CScene::RemoveObjectFromScene(std::string Name)
 	{
 		if (this->Objects3D[i]->GetName() == Name)
 		{
-			this->Objects3D.erase(this->Objects3D.begin()+i);
+			this->Objects3D.erase(this->Objects3D.begin() + i);
 			this->DrawableCached = false;
 			break;
 		}
@@ -70,7 +67,7 @@ void CScene::AddLightToScene(std::shared_ptr<CObject3D> light)
 {
 	if (light != nullptr)
 	{
-		if(light->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
+		if (light->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
 			this->Lights.push_back(std::dynamic_pointer_cast<CLightComponent>(light->GetComponentByType(Object3DComponent::LIGHT_COMPONENT)));
 	}
 }
@@ -130,7 +127,6 @@ std::vector<std::shared_ptr<CLightComponent>> CScene::GetLightObjects()
 	}
 	return EnabledLights;
 }
-
 
 void CScene::SetName(std::string Name)
 {
@@ -251,7 +247,6 @@ void CScene::Draw(DrawType DType)
 				}
 		}
 	}
-
 }
 
 void CScene::Tick(double delta)
@@ -272,7 +267,7 @@ void CScene::Tick(double delta)
 //	{
 //		this->Skyboxtype = type;
 //		float skyboxVertices[] = {
-//			// positions          
+//			// positions
 //			-1.0f,  1.0f, -1.0f,
 //			-1.0f, -1.0f, -1.0f,
 //			 1.0f, -1.0f, -1.0f,
@@ -386,25 +381,25 @@ void CScene::CacheObjectsToDraw()
 	for (auto o : this->Objects3D)
 	{
 		auto list = o->GetComponentList();
-			for (auto c : list)
+		for (auto c : list)
+		{
+			std::shared_ptr<IDraw> drawable = std::dynamic_pointer_cast<IDraw>(c);
+			if (drawable == nullptr)
 			{
-				std::shared_ptr<IDraw> drawable = std::dynamic_pointer_cast<IDraw>(c);
-				if (drawable == nullptr)
-				{
-					continue;
-				}
-				else
-				{
-					this->ObjectsToDraw.push_back(drawable);
-				}
+				continue;
 			}
+			else
+			{
+				this->ObjectsToDraw.push_back(drawable);
+			}
+		}
 	}
 	this->DrawableCached = true;
 }
 
 void CScene::ProcessLights()
 {
-	for (int i=0; i<this->Lights.size();i++)
+	for (int i = 0; i < this->Lights.size(); i++)
 	{
 		if (this->Lights[i]->IsActive())
 		{

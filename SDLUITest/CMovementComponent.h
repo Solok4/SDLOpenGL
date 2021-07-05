@@ -5,7 +5,7 @@ class CMovementComponent :
 {
 public:
 	CMovementComponent(CObject3D* ref);
-	CMovementComponent(const CMovementComponent& move,CObject3D* ref);
+	CMovementComponent(const CMovementComponent& move, CObject3D* ref);
 	//CMovementComponent(const std::shared_ptr<CMovementComponent>& move);
 	~CMovementComponent();
 
@@ -29,4 +29,3 @@ public:
 	float isMoveUp = 0.0f;
 	glm::vec3 ResultVector;
 };
-

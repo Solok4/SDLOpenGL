@@ -9,7 +9,6 @@
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 
-
 using namespace glm;
 
 enum Object2DType
@@ -39,13 +38,13 @@ class CLayout;
 class CObject2D
 {
 public:
-	CObject2D()=delete;
-	CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref);
+	CObject2D() = delete;
+	CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref);
 	~CObject2D();
 
 	//Prepares geometry to being used by opengl.
 	virtual void Prepare();
-	//Recalculates model matrix using actual position, rotation and scale. 
+	//Recalculates model matrix using actual position, rotation and scale.
 	void RefreshModelMatrix();
 	//Sets position object on the screen. If this object is a child of other object then the position is relative to parent object.
 	void SetPosition(vec2 vec);
@@ -135,7 +134,6 @@ public:
 
 	void SetLayoutReference(CLayout* Layout);
 	CLayout* GetLayoutReference() { return this->LayoutRef; };
-
 
 protected:
 	int _ID;

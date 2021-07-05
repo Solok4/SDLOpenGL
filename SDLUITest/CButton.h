@@ -13,7 +13,7 @@ extern "C"
 
 enum MouseButton
 {
-	LEFTMOUSEBUTTON=0,
+	LEFTMOUSEBUTTON = 0,
 	RIGTHTMOUSEBUTTON,
 	MIDDLEMOUSEBUTTON,
 };
@@ -29,9 +29,9 @@ class CButton :
 	public CImage
 {
 public:
-	CButton()=delete;
-	CButton(const char* name, glm::vec2 position, glm::vec2 objsize,CLayout* ref) :CImage(name, position, objsize,ref) 
-	{ 
+	CButton() = delete;
+	CButton(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CImage(name, position, objsize, ref)
+	{
 		this->_ID = Object2DType::OBJECT2D_BUTTON;
 		this->Funcs.push_back(std::make_shared<MouseFunc>(MouseButton::LEFTMOUSEBUTTON, []() {}));
 		this->Funcs.push_back(std::make_shared<MouseFunc>(MouseButton::RIGTHTMOUSEBUTTON, []() {}));
@@ -78,9 +78,8 @@ protected:
 	bool IsLastHit = false;
 	int LastMouseX = 0;
 	int LastMouseY = 0;
-	int ScreenWidth=0;
-	int ScreenHeight=0;
+	int ScreenWidth = 0;
+	int ScreenHeight = 0;
 	std::shared_ptr<CLabel> Label;
 	std::vector<std::shared_ptr<MouseFunc>> Funcs;
 };
-

@@ -4,8 +4,6 @@
 #include "CLog.h"
 #include "COpengl.h"
 
-
-
 CButton::~CButton()
 {
 }
@@ -87,7 +85,7 @@ void CButton::IsClicked(SDL_MouseButtonEvent MouseData)
 	}
 }
 
-void CButton::AttachFunc(std::function<void()> func,MouseButton button)
+void CButton::AttachFunc(std::function<void()> func, MouseButton button)
 {
 	for (int i = 0; i < this->Funcs.size(); i++)
 	{
@@ -110,7 +108,6 @@ void CButton::OnMiss()
 	this->SetColor(vec3(0.3f));
 }
 
-
 void CButton::SetLabel(std::shared_ptr<CLabel> label)
 {
 	if (label->GetID() == Object2DType::OBJECT2D_LABEL)
@@ -118,7 +115,6 @@ void CButton::SetLabel(std::shared_ptr<CLabel> label)
 		this->Label = label;
 	}
 }
-
 
 std::shared_ptr<CLabel> CButton::GetLabel()
 {

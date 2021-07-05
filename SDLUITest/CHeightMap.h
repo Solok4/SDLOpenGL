@@ -11,7 +11,7 @@ class CHeightMap
 {
 public:
 	CHeightMap() = delete;
-	CHeightMap(int size,float distance,int seed);
+	CHeightMap(int size, float distance, int seed);
 	~CHeightMap();
 	void CreateMesh();
 	void Draw();
@@ -46,4 +46,3 @@ private:
 	glm::vec3 _Scale;
 	std::shared_ptr<Material> _HeightmapMaterial;
 };
-

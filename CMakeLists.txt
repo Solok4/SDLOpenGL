@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 project(SDLOpenGL)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 file(GLOB_RECURSE GAME_SRC ${PROJECT_SOURCE_DIR}/SDLUITest/*.cpp ${PROJECT_SOURCE_DIR}/SDLUITest/*.h )
 list(REMOVE_ITEM GAME_SRC ${PROJECT_SOURCE_DIR}/SDLUITest/glm/detail/dummy.cpp)

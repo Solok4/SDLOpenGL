@@ -85,7 +85,7 @@ CMaterialManager::CMaterialManager()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glGenerateMipmap(GL_TEXTURE_2D);
-	
+
 	GLuint specularTex;
 	glGenTextures(1, &specularTex);
 	glBindTexture(GL_TEXTURE_2D, specularTex);
@@ -113,7 +113,6 @@ CMaterialManager::CMaterialManager()
 	material->GetData()->NormalTex = normalTex;
 	this->DefaultMaterial = material;
 }
-
 
 CMaterialManager::~CMaterialManager()
 {
@@ -154,7 +153,7 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 	}
 	std::vector<std::shared_ptr<Material>> materialsToReturn;
 	std::shared_ptr<MaterialData> currentMaterialData = nullptr;
-	while (1) 
+	while (1)
 	{
 		char LineHeader[128];
 #ifdef __EMSCRIPTEN__
@@ -162,7 +161,7 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 #else
 		int res = fscanf_s(file, "%s", LineHeader, sizeof(LineHeader) / sizeof(LineHeader[0]));
 		//fs >> std::ws >> LineHeader;
-#endif	
+#endif
 		if (res == EOF)
 			break;
 		if (strcmp(LineHeader, "newmtl") == 0)
@@ -258,8 +257,8 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 #endif
 			const char* name(path.c_str());
 			const char* slash = strrchr(name, '/');
-			std::string basePath(name, slash+1);
-			auto ambientTexture = TextureManager->LoadTexture(basePath+ambientMapPath);
+			std::string basePath(name, slash + 1);
+			auto ambientTexture = TextureManager->LoadTexture(basePath + ambientMapPath);
 			if (ambientTexture != nullptr) {
 				currentMaterialData->DiffuseTex = ambientTexture->texHandle;
 			}
@@ -299,11 +298,11 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 		else if (strcmp(LineHeader, "map_bump") == 0 || strcmp(LineHeader, "bump") == 0)
 		{
 			char normalMapPath[128];
-	#ifdef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
 			fscanf(file, "%s", &normalMapPath);
-	#else
+#else
 			fscanf_s(file, "%s", &normalMapPath, sizeof(normalMapPath) / sizeof(normalMapPath[0]));
-	#endif
+#endif
 			const char* name(path.c_str());
 			const char* slash = strrchr(name, '/');
 			std::string basePath(name, slash + 1);
@@ -333,4 +332,3 @@ std::shared_ptr<Material> CMaterialManager::GetDefaultMaterial()
 {
 	return this->DefaultMaterial;
 }
-

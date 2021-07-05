@@ -21,8 +21,6 @@ public:
 private:
 	std::vector<std::shared_ptr<CVar>> ConsoleCommands;
 	std::deque<std::string> CommandBuffer;
-	
 };
 
 extern std::unique_ptr<CConsole> Console;
-

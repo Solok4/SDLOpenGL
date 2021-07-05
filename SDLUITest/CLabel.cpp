@@ -4,13 +4,10 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <stdarg.h>
 
-
-
 CLabel::~CLabel()
 {
 	glDeleteTextures(1, &this->TextureID);
 }
-
 
 void CLabel::SetFont(TTF_Font* font)
 {
@@ -28,14 +25,14 @@ void CLabel::SetText(const char* format, ...)
 	vsprintf_s(Text, format, vl);
 #endif
 	this->Value = std::string(Text);
-	if (!(TextSurface = TTF_RenderText_Blended(this->Font, this->Value.c_str(), {255,255,255})))
+	if (!(TextSurface = TTF_RenderText_Blended(this->Font, this->Value.c_str(), { 255,255,255 })))
 	{
-		CLog::MyLog(LogType::Error, "Failed to create text surface: %s",TTF_GetError());
+		CLog::MyLog(LogType::Error, "Failed to create text surface: %s", TTF_GetError());
 		return;
 	}
 	else
 	{
-		this->SetSize(glm::vec2(TextSurface->w,TextSurface->h));
+		this->SetSize(glm::vec2(TextSurface->w, TextSurface->h));
 		glBindTexture(GL_TEXTURE_2D, this->TextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TextSurface->w, TextSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, TextSurface->pixels);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -59,7 +56,7 @@ void CLabel::SetTextWrapped(int width, const char* format, ...)
 	vsprintf_s(Text, format, vl);
 #endif
 	this->Value = std::string(Text);
-	if (!(TextSurface = TTF_RenderText_Blended_Wrapped(this->Font,this->Value.c_str(),{255,255,255},width)))
+	if (!(TextSurface = TTF_RenderText_Blended_Wrapped(this->Font, this->Value.c_str(), { 255,255,255 }, width)))
 	{
 		CLog::MyLog(LogType::Error, "Failed to create text surface: %s", TTF_GetError());
 		return;
@@ -85,14 +82,14 @@ void CLabel::Prepare()
 	glGenTextures(1, &this->TextureID);
 }
 
-TTF_Font * CLabel::GetFont()
+TTF_Font* CLabel::GetFont()
 {
 	return this->Font;
 }
 
 void CLabel::SetColorSDL(SDL_Color Col)
 {
-	this->SetColor(vec3(Col.b/255,Col.g/255,Col.r/255)) ;
+	this->SetColor(vec3(Col.b / 255, Col.g / 255, Col.r / 255));
 }
 
 void CLabel::PreDraw()
@@ -104,7 +101,6 @@ void CLabel::PreDraw()
 		glEnableVertexAttribArray(1);
 		glActiveTexture(GL_TEXTURE0);
 	}
-
 }
 
 void CLabel::Draw()
@@ -125,4 +121,3 @@ void CLabel::PostDraw()
 		glBindVertexArray(0);
 	}
 }
-

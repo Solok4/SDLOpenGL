@@ -5,11 +5,11 @@
 #include "Shared.h"
 
 class CStaticMeshComponent :
-	public CBaseComponent,public IDraw
+	public CBaseComponent, public IDraw
 {
 public:
 	CStaticMeshComponent(CObject3D* ref);
-	CStaticMeshComponent(const CStaticMeshComponent& mesh,CObject3D* ref);
+	CStaticMeshComponent(const CStaticMeshComponent& mesh, CObject3D* ref);
 	//CStaticMeshComponent(const std::shared_ptr<CStaticMeshComponent>& mesh);
 	~CStaticMeshComponent();
 
@@ -24,4 +24,3 @@ private:
 	std::shared_ptr<Model> _Model;
 	bool _CastShadow;
 };
-

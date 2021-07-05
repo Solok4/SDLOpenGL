@@ -2,8 +2,7 @@
 #include "CLightComponent.h"
 #include "CObject3D.h"
 
-
-CLightComponent::CLightComponent(CObject3D* ref): CBaseComponent(ref)
+CLightComponent::CLightComponent(CObject3D* ref) : CBaseComponent(ref)
 {
 	this->_Type = Object3DComponent::LIGHT_COMPONENT;
 	this->Light.Ambient = glm::vec3(1.0f);
@@ -18,7 +17,7 @@ CLightComponent::CLightComponent(CObject3D* ref): CBaseComponent(ref)
 	this->_Scale = glm::vec3(0.5f);
 }
 
-CLightComponent::CLightComponent(const CLightComponent& light,CObject3D* ref) :CBaseComponent(light,ref)
+CLightComponent::CLightComponent(const CLightComponent& light, CObject3D* ref) :CBaseComponent(light, ref)
 {
 	this->_Type = Object3DComponent::LIGHT_COMPONENT;
 	this->Light.Ambient = light.Light.Ambient;
@@ -35,7 +34,6 @@ CLightComponent::CLightComponent(const CLightComponent& light,CObject3D* ref) :C
 	this->AttachParrentObject(this->PossesingObject->GetRootComponent());
 	this->CalculateMatrix();
 }
-
 
 CLightComponent::~CLightComponent()
 {

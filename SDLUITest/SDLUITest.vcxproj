@@ -199,7 +199,7 @@
     <ClInclude Include="CObject2D.h" />
     <ClInclude Include="CObject3D.h" />
     <ClInclude Include="COpengl.h" />
-    <ClInclude Include="CRenderer.h" />
+    <ClInclude Include="CWindowManager.h" />
     <ClInclude Include="CScene.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CSpriteComponent.h" />
@@ -241,7 +241,7 @@
     <ClCompile Include="CObject2D.cpp" />
     <ClCompile Include="CObject3D.cpp" />
     <ClCompile Include="COpengl.cpp" />
-    <ClCompile Include="CRenderer.cpp" />
+    <ClCompile Include="CWindowManager.cpp" />
     <ClCompile Include="CScene.cpp" />
     <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="CSpriteComponent.cpp" />

@@ -1,6 +1,5 @@
 #include "CVar.h"
 
-
 void CVar::SetCurrentValue(int value)
 {
 	this->_CurrentValue->IntValue = value;

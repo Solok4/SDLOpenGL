@@ -3,7 +3,6 @@
 #ifndef CAPP
 #define CAPP
 
-
 #ifdef __EMSCRIPTEN__
 #include <SDL2/SDL.h>
 #else
@@ -14,7 +13,7 @@
 #include <array>
 #include <thread>
 
-#include "CRenderer.h"
+#include "CWindowManager.h"
 #include "CEvent.h"
 #include "COpengl.h"
 #include "CObject3D.h"
@@ -30,11 +29,10 @@
 #include "CTextureManager.h"
 #include "CMaterialManager.h"
 
-
-	bool Init(int argc, char** argv);
-	void Destroy();
-	void Loop();
-	void PollEvents();
-	void PreLoop();
+bool Init(int argc, char** argv);
+void Destroy();
+void Loop();
+void PollEvents();
+void PreLoop();
 
 #endif // !CAPP

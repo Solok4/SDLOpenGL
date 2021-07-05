@@ -10,7 +10,6 @@
 #include <array>
 #include <memory>
 
-
 using namespace std;
 class CEvent
 {
@@ -18,14 +17,13 @@ public:
 	CEvent();
 	~CEvent();
 	void PollEvents();
-	void GetMouseMotion(int &Mx, int &My);
+	void GetMouseMotion(int& Mx, int& My);
 	bool GetIsRunning();
 	SDL_MouseButtonEvent GetMouseData();
-	array<bool,322> GetKeyboardData();
+	array<bool, 322> GetKeyboardData();
 	SDL_Event GetEvent();
 	uint32_t GetRawKey() { return this->RawKey; };
 	bool GetIsEditing() { return this->IsEditing; };
-
 
 private:
 	SDL_Event _Event;
@@ -44,4 +42,3 @@ private:
 };
 
 extern std::unique_ptr<CEvent> Event;
-

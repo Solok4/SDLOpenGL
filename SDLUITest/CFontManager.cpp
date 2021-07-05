@@ -6,7 +6,6 @@ CFontManager::CFontManager()
 {
 }
 
-
 CFontManager::~CFontManager()
 {
 	for (auto font : this->FontMap)
@@ -26,7 +25,7 @@ TTF_Font* CFontManager::LoadFont(std::string path, int size)
 #ifdef __EMSCRIPTEN__
 	strcpy(OnlyName, LastSlash + 1);
 #else
-	strcpy_s(OnlyName, LastSlash+1);
+	strcpy_s(OnlyName, LastSlash + 1);
 #endif
 
 	auto bExists = CFontManager::GetFontByName(OnlyName, size);
@@ -44,7 +43,7 @@ TTF_Font* CFontManager::LoadFont(std::string path, int size)
 			}
 			else
 			{
-				this->FontMap.emplace(std::string(OnlyName), std::vector<MyFont>(1,fontStruct));
+				this->FontMap.emplace(std::string(OnlyName), std::vector<MyFont>(1, fontStruct));
 				return fontStruct.FontHandle;
 			}
 		}

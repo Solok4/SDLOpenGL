@@ -9,7 +9,6 @@ CSceneManager::CSceneManager()
 	this->SetCurrentScene("Blank");
 }
 
-
 CSceneManager::~CSceneManager()
 {
 	CLog::MyLog(LogType::Debug, "SceneManagerDestructor");
@@ -26,7 +25,7 @@ void CSceneManager::AddNewScene(std::string Name)
 
 std::shared_ptr<CScene> CSceneManager::GetSceneByName(std::string Name)
 {
-	for (auto &o : this->Scenes)
+	for (auto& o : this->Scenes)
 	{
 		if (o->GetName() == Name)
 		{

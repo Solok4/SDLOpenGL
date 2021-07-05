@@ -19,20 +19,19 @@ struct Light
 
 	int LightType;
 
-	float Constant =0;
-	float Linear =0;
-	float Quadratic=0;
+	float Constant = 0;
+	float Linear = 0;
+	float Quadratic = 0;
 
-	float CutoutDist=0;
+	float CutoutDist = 0;
 };
-
 
 class CLightComponent :
 	public CBaseComponent
 {
 public:
 	CLightComponent(CObject3D* ref);
-	CLightComponent(const CLightComponent& light,CObject3D* ref);
+	CLightComponent(const CLightComponent& light, CObject3D* ref);
 	~CLightComponent();
 	//Function called every frame.
 	void Tick(double delta) override;
@@ -51,4 +50,3 @@ public:
 private:
 	Light Light;
 };
-

@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "CImage.h"
 
-
-
-
 CImage::~CImage()
 {
 }
@@ -17,7 +14,6 @@ void CImage::PreDraw()
 		glEnableVertexAttribArray(1);
 		glActiveTexture(GL_TEXTURE0);
 	}
-
 }
 
 void CImage::Draw()

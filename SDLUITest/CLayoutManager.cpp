@@ -9,7 +9,6 @@ CLayoutManager::CLayoutManager()
 	this->ChangeCurrentLayout("Blank");
 }
 
-
 CLayoutManager::~CLayoutManager()
 {
 	CLog::MyLog(LogType::Debug, "LayoutManagerDestructor");
@@ -27,7 +26,7 @@ std::shared_ptr<CLayout> CLayoutManager::GetLayoutByName(const char* name)
 {
 	for (auto o : this->Layouts)
 	{
-		if (strcmp(o->GetName(),name) == 0)
+		if (strcmp(o->GetName(), name) == 0)
 		{
 			return o;
 		}
@@ -57,8 +56,8 @@ void CLayoutManager::Draw()
 
 std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
 {
-	if(!this->ActiveLayouts.empty())
-		return this->ActiveLayouts[this->ActiveLayouts.size()-1];
+	if (!this->ActiveLayouts.empty())
+		return this->ActiveLayouts[this->ActiveLayouts.size() - 1];
 	CLog::MyLog(LogType::Error, "There isn't any active layout");
 	return nullptr;
 }
@@ -78,7 +77,7 @@ void CLayoutManager::PopActiveLayout()
 {
 	if (!this->ActiveLayouts.empty())
 	{
-		this->ActiveLayouts.erase((this->ActiveLayouts.begin()+this->ActiveLayouts.size()-1));
+		this->ActiveLayouts.erase((this->ActiveLayouts.begin() + this->ActiveLayouts.size() - 1));
 	}
 }
 

@@ -1,13 +1,12 @@
 #include "pch.h"
 #include "CGameplayManager.h"
 #include "CKeyboardConf.h"
-#include "CRenderer.h"
+#include "CWindowManager.h"
 std::unique_ptr<CGameplayManager> GameplayManager;
 
 CGameplayManager::CGameplayManager()
 {
 }
-
 
 CGameplayManager::~CGameplayManager()
 {

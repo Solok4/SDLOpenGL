@@ -6,7 +6,7 @@ class CCameraComponent :
 {
 public:
 	CCameraComponent(CObject3D* ref);
-	CCameraComponent(const CCameraComponent& cam,CObject3D* ref);
+	CCameraComponent(const CCameraComponent& cam, CObject3D* ref);
 	~CCameraComponent();
 	//Sets field of view of the camera.
 	void SetFov(float fov);
@@ -40,4 +40,3 @@ private:
 
 	glm::vec3 LastRay;
 };
-

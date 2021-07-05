@@ -1,7 +1,6 @@
 #pragma once
 #include<string>
 
-
 enum LogType
 {
 	Log = 0,
@@ -16,6 +15,5 @@ public:
 	CLog();
 	~CLog();
 
-	static void MyLog(LogType type, const char* Message,...);
+	static void MyLog(LogType type, const char* Message, ...);
 };
-

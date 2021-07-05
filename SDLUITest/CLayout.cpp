@@ -4,21 +4,18 @@
 #include "COpengl.h"
 #include "CEvent.h"
 
-
-
 CLayout::CLayout()
 {
 	this->RefreshWindowData();
 	this->UsedTestBox = nullptr;
 	this->RefreshWindowData();
-	this->RootContainer = std::make_shared<CContainer>("root", vec2(0,0), vec2(this->WNDInfo->ScreenWidth,this->WNDInfo->ScreenHeight), this);
+	this->RootContainer = std::make_shared<CContainer>("root", vec2(0, 0), vec2(this->WNDInfo->ScreenWidth, this->WNDInfo->ScreenHeight), this);
 	this->Objects2D.push_back(this->RootContainer);
 }
 
-
 CLayout::~CLayout()
 {
-	CLog::MyLog(LogType::Debug, "LayoutDestructor %s",this->Name);
+	CLog::MyLog(LogType::Debug, "LayoutDestructor %s", this->Name);
 }
 
 void CLayout::RefreshWindowData()
@@ -53,13 +50,13 @@ void CLayout::AddItem(int id, const char* name, glm::vec2 pos, glm::vec2 size)
 {
 	if (id == Object2DType::OBJECT2D_LABEL)	//Clabel
 	{
-		std::shared_ptr<CLabel> temp = std::make_shared<CLabel>(name,pos,size,this);
+		std::shared_ptr<CLabel> temp = std::make_shared<CLabel>(name, pos, size, this);
 		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 	}
 	else if (id == Object2DType::OBJECT2D_IMAGE)	//CImage
 	{
-		std::shared_ptr<CImage> temp = std::make_shared<CImage>(name, pos, size,this);
+		std::shared_ptr<CImage> temp = std::make_shared<CImage>(name, pos, size, this);
 		temp->BindParrentObject(&*this->RootContainer);
 		Objects2D.push_back(temp);
 	}
@@ -149,7 +146,6 @@ void CLayout::ProcessTextEditing()
 	}
 	if (this->LayoutIsEditing)
 	{
-
 		bool bChanged = false;
 		uint32_t SingleKey = Event->GetRawKey();
 		std::string Text = this->UsedTestBox->GetValue();
@@ -177,7 +173,7 @@ void CLayout::ProcessTextEditing()
 		{
 			if (SDL_GetModState() & KMOD_CAPS)
 			{
-					SingleKey -= 32;
+				SingleKey -= 32;
 			}
 			if (SDL_GetModState() & KMOD_SHIFT)
 			{
@@ -190,7 +186,7 @@ void CLayout::ProcessTextEditing()
 					SingleKey += 32;
 				}
 			}
-				
+
 			Text.push_back(SingleKey);
 			bChanged = true;
 		}

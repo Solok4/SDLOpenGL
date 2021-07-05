@@ -9,7 +9,7 @@ class CListBox :
 	public CImage
 {
 public:
-	CListBox()=delete;
+	CListBox() = delete;
 	CListBox(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CImage(name, position, objsize, ref)
 	{
 		this->_ID = Object2DType::OBJECT2D_LISTBOX;
@@ -18,7 +18,7 @@ public:
 		this->CreateLabels();
 	};
 	~CListBox();
-	
+
 	void CreateLabels();
 	void SetFont(TTF_Font* fon);
 	void SetText(std::string val);
@@ -26,10 +26,8 @@ public:
 
 	virtual void PostDraw() override;
 
-
 private:
 	int FontSize;
 	std::string Value;
 	std::shared_ptr<CLabel> Label;
 };
-

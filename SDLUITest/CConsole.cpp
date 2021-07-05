@@ -2,11 +2,9 @@
 
 std::unique_ptr<CConsole> Console;
 
-
 CConsole::CConsole()
 {
 }
-
 
 CConsole::~CConsole()
 {
@@ -72,7 +70,6 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, std::string value)
 	}
 	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
 }
-
 
 void CConsole::AddCommand(std::shared_ptr<CVar> Command)
 {

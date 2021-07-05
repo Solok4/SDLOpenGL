@@ -11,7 +11,7 @@ CObject3D::CObject3D(std::string name)
 	this->Name = name;
 }
 
-CObject3D::CObject3D(std::string name,CScene* ref)
+CObject3D::CObject3D(std::string name, CScene* ref)
 {
 	this->AddComponent(0, "root");
 	this->BindRootComponent("root");
@@ -19,7 +19,7 @@ CObject3D::CObject3D(std::string name,CScene* ref)
 	this->SceneRef = ref;
 }
 
-CObject3D::CObject3D(const CObject3D& obj,std::string name,CScene* ref):CObject3D(name,ref)
+CObject3D::CObject3D(const CObject3D& obj, std::string name, CScene* ref) :CObject3D(name, ref)
 {
 	if (obj._Components.size() != 0)
 	{
@@ -28,7 +28,7 @@ CObject3D::CObject3D(const CObject3D& obj,std::string name,CScene* ref):CObject3
 			if (obj._Components[i]->GetType() == CAMERA_COMPONENT)
 			{
 				auto temp = std::dynamic_pointer_cast<CCameraComponent>(obj._Components[i]);
-				auto NewComp = std::make_shared<CCameraComponent>(*temp,this);
+				auto NewComp = std::make_shared<CCameraComponent>(*temp, this);
 				this->AddComponent(NewComp);
 			}
 			else if (obj._Components[i]->GetType() == STATIC_MESH_COMPONENT)
@@ -53,11 +53,9 @@ CObject3D::CObject3D(const CObject3D& obj,std::string name,CScene* ref):CObject3
 	}
 }
 
-
-
 CObject3D::~CObject3D()
 {
-	CLog::MyLog(LogType::Debug, "3DObjectDestructor %s",this->GetName().c_str());
+	CLog::MyLog(LogType::Debug, "3DObjectDestructor %s", this->GetName().c_str());
 	this->SceneRef = nullptr;
 	this->_RootComponent = nullptr;
 	this->_Components.clear();
@@ -81,48 +79,48 @@ void CObject3D::AddComponent(int id, std::string name)
 {
 	switch (id)
 	{
-		case(Object3DComponent::BASE_COMPONENT):
-		{
-			std::shared_ptr<CBaseComponent> temp=std::make_shared<CBaseComponent>(this);
-			temp->SetName(name);
-			temp->SetType(Object3DComponent::BASE_COMPONENT);
-			this->_Components.push_back(temp);
-			break;
-		}
+	case(Object3DComponent::BASE_COMPONENT):
+	{
+		std::shared_ptr<CBaseComponent> temp = std::make_shared<CBaseComponent>(this);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::BASE_COMPONENT);
+		this->_Components.push_back(temp);
+		break;
+	}
 
-		case(Object3DComponent::STATIC_MESH_COMPONENT): 
-		{
-			std::shared_ptr<CStaticMeshComponent> temp = std::make_shared<CStaticMeshComponent>(this);
-			temp->SetName(name);
-			temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
-			temp->AttachParrentObject(this->GetRootComponent());
-			this->_Components.push_back(temp);
-			break;
-		}
-		case(Object3DComponent::CAMERA_COMPONENT): {
-			std::shared_ptr<CCameraComponent> temp = std::make_shared<CCameraComponent>(this);
-			temp->SetName(name);
-			temp->SetType(Object3DComponent::CAMERA_COMPONENT);
-			temp->AttachParrentObject(this->GetRootComponent());
-			this->_Components.push_back(temp);
-			break;
-		}
-		case(Object3DComponent::LIGHT_COMPONENT): {
-			std::shared_ptr<CLightComponent> temp = std::make_shared<CLightComponent>(this);
-			temp->SetName(name);
-			temp->SetType(Object3DComponent::LIGHT_COMPONENT);
-			temp->AttachParrentObject(this->GetRootComponent());
-			this->_Components.push_back(temp);
-			break;
-		}
-		case(Object3DComponent::MOVEMENT_COMPONENT): {
-			std::shared_ptr<CMovementComponent> temp = std::make_shared<CMovementComponent>(this);
-			temp->SetName(name);
-			temp->SetType(Object3DComponent::MOVEMENT_COMPONENT);
-			temp->AttachParrentObject(this->GetRootComponent());
-			this->_Components.push_back(temp);
-			break;
-		}
+	case(Object3DComponent::STATIC_MESH_COMPONENT):
+	{
+		std::shared_ptr<CStaticMeshComponent> temp = std::make_shared<CStaticMeshComponent>(this);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::STATIC_MESH_COMPONENT);
+		temp->AttachParrentObject(this->GetRootComponent());
+		this->_Components.push_back(temp);
+		break;
+	}
+	case(Object3DComponent::CAMERA_COMPONENT): {
+		std::shared_ptr<CCameraComponent> temp = std::make_shared<CCameraComponent>(this);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::CAMERA_COMPONENT);
+		temp->AttachParrentObject(this->GetRootComponent());
+		this->_Components.push_back(temp);
+		break;
+	}
+	case(Object3DComponent::LIGHT_COMPONENT): {
+		std::shared_ptr<CLightComponent> temp = std::make_shared<CLightComponent>(this);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::LIGHT_COMPONENT);
+		temp->AttachParrentObject(this->GetRootComponent());
+		this->_Components.push_back(temp);
+		break;
+	}
+	case(Object3DComponent::MOVEMENT_COMPONENT): {
+		std::shared_ptr<CMovementComponent> temp = std::make_shared<CMovementComponent>(this);
+		temp->SetName(name);
+		temp->SetType(Object3DComponent::MOVEMENT_COMPONENT);
+		temp->AttachParrentObject(this->GetRootComponent());
+		this->_Components.push_back(temp);
+		break;
+	}
 	}
 }
 
@@ -137,12 +135,12 @@ void CObject3D::AddComponent(std::shared_ptr<CBaseComponent> comp)
 
 void CObject3D::RemoveComponent(std::string name)
 {
-	for(unsigned int i=0;i<this->_Components.size();i++)
+	for (unsigned int i = 0; i < this->_Components.size(); i++)
 	{
 		std::shared_ptr<CBaseComponent> temp(this->_Components[i]);
 		if (name == temp->GetName())
 		{
-			this->_Components.emplace(this->_Components.begin()+i);
+			this->_Components.emplace(this->_Components.begin() + i);
 			break;
 		}
 	}

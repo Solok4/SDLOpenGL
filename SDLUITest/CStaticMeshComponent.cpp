@@ -7,14 +7,13 @@
 #include "CSceneManager.h"
 #include "CObject3D.h"
 
-
 CStaticMeshComponent::CStaticMeshComponent(CObject3D* ref) : CBaseComponent(ref)
 {
 	this->_CastShadow = true;
 	this->_Type = Object3DComponent::STATIC_MESH_COMPONENT;
 }
 
-CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& mesh,CObject3D* ref):CBaseComponent(mesh,ref)
+CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& mesh, CObject3D* ref) :CBaseComponent(mesh, ref)
 {
 	this->_CastShadow = mesh._CastShadow;
 	this->_Model = mesh._Model;
@@ -124,5 +123,3 @@ void CStaticMeshComponent::Draw(RenderStep step)
 		}
 	}
 }
-
-

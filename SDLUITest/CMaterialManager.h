@@ -11,7 +11,7 @@
 
 enum TextureTypes
 {
-	BaseTex=0,
+	BaseTex = 0,
 	NormalMap,
 	SpecularMap,
 };

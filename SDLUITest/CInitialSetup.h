@@ -4,7 +4,7 @@
 class CInitialSetup
 {
 public:
-	CInitialSetup()=delete;
+	CInitialSetup() = delete;
 	CInitialSetup(int argv, char** argc) :ArgumentCount(argv), ArgumentContent(argc)
 	{
 		Console = std::make_unique<CConsole>();
@@ -17,11 +17,9 @@ public:
 	};
 	~CInitialSetup();
 
-
 private:
 	int ArgumentCount;
 	char** ArgumentContent;
 };
 
 extern std::unique_ptr<CInitialSetup> InitialSetup;
-

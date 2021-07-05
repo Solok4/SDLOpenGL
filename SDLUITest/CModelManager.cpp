@@ -8,17 +8,14 @@ std::unique_ptr<CModelManager> ModelManager;
 
 CModelManager::CModelManager()
 {
-
 }
-
 
 CModelManager::~CModelManager()
 {
 	CLog::MyLog(LogType::Debug, "ModelManagerDestructor");
 }
 
-
-void CModelManager::LoadOBJ(const char * path)
+void CModelManager::LoadOBJ(const char* path)
 {
 	FILE* file;
 	//std::fstream fs(path, std::fstream::in);
@@ -28,13 +25,13 @@ void CModelManager::LoadOBJ(const char * path)
 	fopen_s(&file, path, "r");
 #endif // __EMSCRIPTEN__
 	if (file == NULL)
-	//if (fs.is_open() == NULL)
+		//if (fs.is_open() == NULL)
 	{
 		CLog::MyLog(LogType::Error, "Failed to load a model from %s", path);
 		return;
 	}
 
-	std::shared_ptr<Model> tempModel (new Model);
+	std::shared_ptr<Model> tempModel(new Model);
 	std::vector<glm::vec3> temp_Vertices;
 	std::vector<glm::vec2> temp_Texcords;
 	std::vector<glm::vec3> temp_Normals;
@@ -50,9 +47,9 @@ void CModelManager::LoadOBJ(const char * path)
 #ifdef __EMSCRIPTEN__
 		int res = fscanf(file, "%s", LineHeader);
 #else
-		int res = fscanf_s(file, "%s", LineHeader, sizeof(LineHeader)/sizeof(LineHeader[0]));
+		int res = fscanf_s(file, "%s", LineHeader, sizeof(LineHeader) / sizeof(LineHeader[0]));
 		//fs >> std::ws >> LineHeader;
-#endif	
+#endif
 		if (res == EOF)
 			break;
 
@@ -99,21 +96,20 @@ void CModelManager::LoadOBJ(const char * path)
 				unsigned int vertexIndex[5], uvIndex[5], normalIndex[5];
 #ifdef __EMSCRIPTEN__
 				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n",
-										&vertexIndex[0], &uvIndex[0], &normalIndex[0],
-										&vertexIndex[1], &uvIndex[1], &normalIndex[1],
-										&vertexIndex[2], &uvIndex[2], &normalIndex[2],
-										&vertexIndex[3], &uvIndex[3], &normalIndex[3],
-										&vertexIndex[4], &uvIndex[4], &normalIndex[4]);
+					&vertexIndex[0], &uvIndex[0], &normalIndex[0],
+					&vertexIndex[1], &uvIndex[1], &normalIndex[1],
+					&vertexIndex[2], &uvIndex[2], &normalIndex[2],
+					&vertexIndex[3], &uvIndex[3], &normalIndex[3],
+					&vertexIndex[4], &uvIndex[4], &normalIndex[4]);
 #else
 				int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d\n",
-										&vertexIndex[0], &uvIndex[0], &normalIndex[0],
-										&vertexIndex[1], &uvIndex[1], &normalIndex[1],
-										&vertexIndex[2], &uvIndex[2], &normalIndex[2],
-										&vertexIndex[3], &uvIndex[3], &normalIndex[3],
-										&vertexIndex[4], &uvIndex[4], &normalIndex[4]);
+					&vertexIndex[0], &uvIndex[0], &normalIndex[0],
+					&vertexIndex[1], &uvIndex[1], &normalIndex[1],
+					&vertexIndex[2], &uvIndex[2], &normalIndex[2],
+					&vertexIndex[3], &uvIndex[3], &normalIndex[3],
+					&vertexIndex[4], &uvIndex[4], &normalIndex[4]);
 #endif
 				if (matches == 9) {
-
 					VertexIndices.push_back(vertexIndex[0]);
 					VertexIndices.push_back(vertexIndex[1]);
 					VertexIndices.push_back(vertexIndex[2]);
@@ -144,7 +140,7 @@ void CModelManager::LoadOBJ(const char * path)
 					NormalIndices.push_back(normalIndex[0]);
 					NormalIndices.push_back(normalIndex[2]);
 					NormalIndices.push_back(normalIndex[3]);
-				}	
+				}
 				else if (matches == 15)
 				{
 					VertexIndices.push_back(vertexIndex[0]);
@@ -182,28 +178,26 @@ void CModelManager::LoadOBJ(const char * path)
 					fclose(file);
 					return;
 				}
-				
 			}
 			else if (tempModel->HasNormals && !tempModel->HasTexcords)
 			{
 				unsigned int vertexIndex[5], normalIndex[5];
 #ifdef __EMSCRIPTEN__
 				int matches = fscanf(file, "%d//%d %d//%d %d//%d %d//%d %d//%d\n",
-										&vertexIndex[0], &normalIndex[0],
-										&vertexIndex[1], &normalIndex[1],
-										&vertexIndex[2], &normalIndex[2],
-										&vertexIndex[3], &normalIndex[3],
-										&vertexIndex[4], &normalIndex[4]);
+					&vertexIndex[0], &normalIndex[0],
+					&vertexIndex[1], &normalIndex[1],
+					&vertexIndex[2], &normalIndex[2],
+					&vertexIndex[3], &normalIndex[3],
+					&vertexIndex[4], &normalIndex[4]);
 #else
-				int matches =  fscanf_s(file, "%d//%d %d//%d %d//%d %d//%d %d//%d\n",
-										&vertexIndex[0], &normalIndex[0],
-										&vertexIndex[1], &normalIndex[1],
-										&vertexIndex[2], &normalIndex[2],
-										&vertexIndex[3], &normalIndex[3],
-										&vertexIndex[4], &normalIndex[4]);
+				int matches = fscanf_s(file, "%d//%d %d//%d %d//%d %d//%d %d//%d\n",
+					&vertexIndex[0], &normalIndex[0],
+					&vertexIndex[1], &normalIndex[1],
+					&vertexIndex[2], &normalIndex[2],
+					&vertexIndex[3], &normalIndex[3],
+					&vertexIndex[4], &normalIndex[4]);
 #endif
 				if (matches == 6) {
-
 					VertexIndices.push_back(vertexIndex[0]);
 					VertexIndices.push_back(vertexIndex[1]);
 					VertexIndices.push_back(vertexIndex[2]);
@@ -260,21 +254,20 @@ void CModelManager::LoadOBJ(const char * path)
 				unsigned int vertexIndex[5], uvIndex[5];
 #ifdef __EMSCRIPTEN__
 				int matches = fscanf(file, "%d/%d %d/%d %d/%d %d/%d %d/%d\n",
-										&vertexIndex[0], &uvIndex[0],
-										&vertexIndex[1], &uvIndex[1],
-										&vertexIndex[2], &uvIndex[2],
-										&vertexIndex[3], &uvIndex[3],
-										&vertexIndex[4], &uvIndex[4]);
+					&vertexIndex[0], &uvIndex[0],
+					&vertexIndex[1], &uvIndex[1],
+					&vertexIndex[2], &uvIndex[2],
+					&vertexIndex[3], &uvIndex[3],
+					&vertexIndex[4], &uvIndex[4]);
 #else
 				int matches = fscanf_s(file, "%d/%d %d/%d %d/%d %d/%d %d/%d\n",
-										&vertexIndex[0], &uvIndex[0],
-										&vertexIndex[1], &uvIndex[1],
-										&vertexIndex[2], &uvIndex[2],
-										&vertexIndex[3], &uvIndex[3],
-										&vertexIndex[4], &uvIndex[4]);
+					&vertexIndex[0], &uvIndex[0],
+					&vertexIndex[1], &uvIndex[1],
+					&vertexIndex[2], &uvIndex[2],
+					&vertexIndex[3], &uvIndex[3],
+					&vertexIndex[4], &uvIndex[4]);
 #endif
 				if (matches == 6) {
-
 					VertexIndices.push_back(vertexIndex[0]);
 					VertexIndices.push_back(vertexIndex[1]);
 					VertexIndices.push_back(vertexIndex[2]);
@@ -324,7 +317,7 @@ void CModelManager::LoadOBJ(const char * path)
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					fclose(file);
 					return;
-				}	
+				}
 			}
 		}
 	}
@@ -338,7 +331,6 @@ void CModelManager::LoadOBJ(const char * path)
 		out_Vertices.push_back(vertex);
 		if (tempModel->HasTexcords)
 		{
-
 			unsigned int TexcordIndex = TexcordIndices[i];
 			glm::vec2 texcord = temp_Texcords[TexcordIndex - 1];
 			out_Texcords.push_back(texcord);
@@ -350,9 +342,8 @@ void CModelManager::LoadOBJ(const char * path)
 			out_Normals.push_back(normal);
 		}
 	}
-	
-	tempModel->IndicesCount = VertexIndices.size();
 
+	tempModel->IndicesCount = VertexIndices.size();
 
 	glGenVertexArrays(1, &tempModel->VAO);
 	glBindVertexArray(tempModel->VAO);
@@ -381,7 +372,7 @@ void CModelManager::LoadOBJ(const char * path)
 		glDisableVertexAttribArray(MODEL_NORMALBUFFER);
 	}
 	glDisableVertexAttribArray(MODEL_MESHBUFFER);
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);

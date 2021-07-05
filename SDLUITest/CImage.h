@@ -4,8 +4,8 @@ class CImage :
 	public CObject2D
 {
 public:
-	CImage()=delete;
-	CImage(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CObject2D(name, position, objsize,ref) { this->_ID = Object2DType::OBJECT2D_IMAGE; };
+	CImage() = delete;
+	CImage(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CObject2D(name, position, objsize, ref) { this->_ID = Object2DType::OBJECT2D_IMAGE; };
 	~CImage();
 
 	//Bind texture to the object.
@@ -23,4 +23,3 @@ protected:
 
 	GLuint TextureID;
 };
-

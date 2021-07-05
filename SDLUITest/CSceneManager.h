@@ -20,4 +20,3 @@ public:
 };
 
 extern std::unique_ptr<CSceneManager> SceneManager;
-

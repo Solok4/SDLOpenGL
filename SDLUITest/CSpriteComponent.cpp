@@ -1,14 +1,11 @@
 #include "CSpriteComponent.h"
 #include "CSceneManager.h"
 
-
-
 CSpriteComponent::CSpriteComponent(CObject3D* ref) : CBaseComponent(ref)
 {
 }
 
-
-CSpriteComponent::CSpriteComponent(const CSpriteComponent& comp, CObject3D* ref):CBaseComponent(comp,ref)
+CSpriteComponent::CSpriteComponent(const CSpriteComponent& comp, CObject3D* ref) : CBaseComponent(comp, ref)
 {
 }
 
@@ -39,5 +36,4 @@ void CSpriteComponent::PreDraw()
 
 void CSpriteComponent::Draw(RenderStep step)
 {
-	
 }
