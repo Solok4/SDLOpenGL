@@ -25,16 +25,16 @@ std::shared_ptr<Texture> CTextureManager::LoadTexture(std::string path)
 #endif
 
 	auto ret = this->GetTextureByName(OnlyName);
-	CLog::MyLog(LogType::Debug, "Texture name %s", OnlyName);
+	CLog::debug("Texture name %s", OnlyName);
 	if (ret != -1)
 	{
-		CLog::MyLog(LogType::Error, "Failed to load texture %s. File has been already loaded", path.c_str());
+		CLog::error("Failed to load texture %s. File has been already loaded", path.c_str());
 		return nullptr;
 	}
 
 	if (Tex == nullptr)
 	{
-		CLog::MyLog(LogType::Error, "Failed to load texture %s. File not found", path.c_str());
+		CLog::error("Failed to load texture %s. File not found", path.c_str());
 		return nullptr;
 	}
 	else

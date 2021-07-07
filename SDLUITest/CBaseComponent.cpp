@@ -26,7 +26,7 @@ CBaseComponent::CBaseComponent(const CBaseComponent& comp, CObject3D* ref)
 
 CBaseComponent::~CBaseComponent()
 {
-	CLog::MyLog(LogType::Debug, "BaseComponentDestructor %s_%s", this->PossesingObject->GetName().c_str(), this->GetName().c_str());
+	CLog::debug("BaseComponentDestructor %s_%s", this->PossesingObject->GetName().c_str(), this->GetName().c_str());
 	this->PossesingObject = nullptr;
 	this->_ParrentObject = nullptr;
 }

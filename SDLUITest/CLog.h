@@ -15,5 +15,7 @@ public:
 	CLog();
 	~CLog();
 
-	static void MyLog(LogType type, const char* Message, ...);
+	static void debug(const char* message, ...);
+	static void info(const char* message, ...);
+	static void error(const char* message, ...);
 };

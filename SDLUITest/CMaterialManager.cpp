@@ -21,7 +21,7 @@ void Material::AddTextureToMaterial(std::string name, TextureTypes type)
 	auto tex = TextureManager->GetTextureByName(name);
 	if (!tex)
 	{
-		CLog::MyLog(LogType::Warning, "Texture named %s not found.", name.c_str());
+		CLog::error("Texture named %s not found.", name.c_str());
 		return;
 	}
 	auto exists = this->GetTextureByType(type);
@@ -137,7 +137,7 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 	const char* justExtension(slash + 1);
 	if (strcmp(justExtension, "mtl") != 0)
 	{
-		CLog::MyLog(LogType::Error, "Failed to load a material from %s. Wrong file extension.", path.c_str());
+		CLog::error("Failed to load a material from %s. Wrong file extension.", path.c_str());
 		return std::vector<std::shared_ptr<Material>>();
 	}
 	FILE* file;
@@ -148,7 +148,7 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 #endif
 	if (file == NULL)
 	{
-		CLog::MyLog(LogType::Error, "Failed to load a material from %s. No such file.", path.c_str());
+		CLog::error("Failed to load a material from %s. No such file.", path.c_str());
 		return std::vector<std::shared_ptr<Material>>();
 	}
 	std::vector<std::shared_ptr<Material>> materialsToReturn;

@@ -20,7 +20,7 @@ CObject2D::CObject2D(const char* name, glm::vec2 position, glm::vec2 objsize, CL
 
 CObject2D::~CObject2D()
 {
-	CLog::MyLog(LogType::Debug, "Object2DDestructor %s", this->_Name.c_str());
+	CLog::debug("Object2DDestructor %s", this->_Name.c_str());
 }
 
 void CObject2D::Prepare()
@@ -34,18 +34,15 @@ void CObject2D::Prepare()
 	glGenBuffers(1, &EBO);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Plane_Indices), Plane_Indices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane_Vertices), Plane_Vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(TexCords), TexCords, GL_STATIC_DRAW);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane_TexCords), Plane_TexCords, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
 

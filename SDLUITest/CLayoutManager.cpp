@@ -11,7 +11,7 @@ CLayoutManager::CLayoutManager()
 
 CLayoutManager::~CLayoutManager()
 {
-	CLog::MyLog(LogType::Debug, "LayoutManagerDestructor");
+	CLog::debug("LayoutManagerDestructor");
 }
 
 std::shared_ptr<CLayout> CLayoutManager::AddNewLayout(const char* name)
@@ -58,7 +58,7 @@ std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
 {
 	if (!this->ActiveLayouts.empty())
 		return this->ActiveLayouts[this->ActiveLayouts.size() - 1];
-	CLog::MyLog(LogType::Error, "There isn't any active layout");
+	CLog::error("There isn't any active layout");
 	return nullptr;
 }
 

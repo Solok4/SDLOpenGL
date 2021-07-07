@@ -30,7 +30,7 @@ void CGameplayManager::DeleteGameplay(const char* name)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Gameplay configuration named %s not found", name);
+	CLog::error("Gameplay configuration named %s not found", name);
 }
 
 void CGameplayManager::SelectCurrentGameplay(const char* name)
@@ -40,13 +40,13 @@ void CGameplayManager::SelectCurrentGameplay(const char* name)
 		if (strcmp(a->Name.c_str(), name) == 0)
 		{
 			this->CurrentGameplay = a;
-			KeyboardConf->ClearTriggerStatus();
+			KeyboardConf->ResetKeyFromTriggerStatus();
 			a->OnGameplayChange();
 			Renderer->SetFrameLock(a->GetFrameLimit());
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Gameplay configuration named %s not found", name);
+	CLog::error("Gameplay configuration named %s not found", name);
 }
 
 std::shared_ptr<CGameplay> CGameplayManager::GetCurrentGameplay()

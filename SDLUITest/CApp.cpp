@@ -17,7 +17,7 @@ bool Init(int argc, char** argv)
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
-		CLog::MyLog(LogType::Error, "Failed to initalize SDL");
+		CLog::error("Failed to initalize SDL");
 		return false;
 	}
 	Renderer->Init();
@@ -163,11 +163,11 @@ void PreLoop()
 		TempButton->BindTexture(TextureManager->GetTextureByName("Tex.tga"));
 		TempButton->GetLabel()->SetFont(Font10);
 		TempButton->GetLabel()->SetText("First Button");
-		TempButton->AttachFunc([]() {CLog::MyLog(LogType::Log, "TestButtonClick"); }, MouseButton::LEFTMOUSEBUTTON);
+		TempButton->AttachFunc([]() {CLog::info("TestButtonClick"); }, MouseButton::LEFTMOUSEBUTTON);
 
 		auto TempButton2 = Layout->FindObjectByName<CButton>("TestButton2");
 		TempButton2->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
-		TempButton2->AttachFunc([]() {CLog::MyLog(LogType::Log, "TempButton2 Press"); }, MouseButton::LEFTMOUSEBUTTON);
+		TempButton2->AttachFunc([]() {CLog::info("TempButton2 Press"); }, MouseButton::LEFTMOUSEBUTTON);
 		TempButton2->GetLabel()->SetFont(Font10);
 		TempButton2->GetLabel()->SetText("ASDF");
 

@@ -13,72 +13,67 @@ CLog::~CLog()
 {
 }
 
-void CLog::MyLog(LogType type, const char* Message, ...)
-{
+void CLog::debug(const char* message, ...) {
 	char VAContent[2048];
 	char Final[2048];
-	switch (type)
-	{
-	case LogType::Log: {
-		//Log
-#ifdef __EMSCRIPTEN__
-		strncpy(Final, "[Log]: ", 8);
-#else
-		strncpy_s(Final, "[Log]: ", 8);
-#endif
-		break;
-	}
 
-	case LogType::Debug: {
-#ifdef NDEBUG
-		return;
-#else
-		//Debug
 #ifdef __EMSCRIPTEN__
 		strncpy(Final, "[Debug]: ", 10);
 #else
 		strncpy_s(Final, "[Debug]: ", 10);
 #endif
-		break;
-#endif // DEBUG
-	}
-
-	case LogType::Error:
-	{
-#ifdef __EMSCRIPTEN__
-		strncpy(Final, "[Error]: ", 12);
-#else
-		strncpy_s(Final, "[Error]: ", 12);
-#endif
-		break;
-	}
-	case LogType::Warning:
-	{
-		//Warning
-#ifdef __EMSCRIPTEN__
-		strncpy(Final, "[Warning]: ", 12);
-#else
-		strncpy_s(Final, "[Warning]: ", 12);
-#endif
-		break;
-	}
-
-	default:
-	{
-		break;
-	}
-	}
 	va_list vl;
-	va_start(vl, Message);
+	va_start(vl, message);
 #ifdef __EMSCRIPTEN__
 	vsprintf(VAContent, Message, vl);
 	strcat(Final, VAContent);
 #else
-	vsprintf_s(VAContent, Message, vl);
+	vsprintf_s(VAContent, message, vl);
 	strcat_s(Final, VAContent);
 #endif
 	printf("%s\n", Final);
 	va_end(vl);
-
-	//std::cout << Prefix << Message << std::endl;
 }
+
+void CLog::info(const char* message, ...) {
+	char VAContent[2048];
+	char Final[2048];
+#ifdef __EMSCRIPTEN__
+		strncpy(Final, "[INFO]: ", 8);
+#else
+		strncpy_s(Final, "[INFO]: ", 8);
+#endif
+	va_list vl;
+	va_start(vl, message);
+#ifdef __EMSCRIPTEN__
+	vsprintf(VAContent, Message, vl);
+	strcat(Final, VAContent);
+#else
+	vsprintf_s(VAContent, message, vl);
+	strcat_s(Final, VAContent);
+#endif
+	printf("%s\n", Final);
+	va_end(vl);
+}
+
+void CLog::error(const char* message, ...){
+	char VAContent[2048];
+	char Final[2048];
+#ifdef __EMSCRIPTEN__
+	strncpy(Final, "[ERROR]: ", 9);
+#else
+	strncpy_s(Final, "[ERROR]: ", 9);
+#endif
+	va_list vl;
+	va_start(vl, message);
+#ifdef __EMSCRIPTEN__
+	vsprintf(VAContent, Message, vl);
+	strcat(Final, VAContent);
+#else
+	vsprintf_s(VAContent, message, vl);
+	strcat_s(Final, VAContent);
+#endif
+	printf("%s\n", Final);
+	va_end(vl);
+}
+

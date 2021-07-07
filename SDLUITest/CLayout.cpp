@@ -15,7 +15,7 @@ CLayout::CLayout()
 
 CLayout::~CLayout()
 {
-	CLog::MyLog(LogType::Debug, "LayoutDestructor %s", this->Name);
+	CLog::debug("LayoutDestructor %s", this->Name);
 }
 
 void CLayout::RefreshWindowData()

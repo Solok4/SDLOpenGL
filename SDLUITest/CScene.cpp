@@ -11,7 +11,7 @@ CScene::CScene()
 
 CScene::~CScene()
 {
-	CLog::MyLog(LogType::Debug, "SceneDestructor %s", this->GetName().c_str());
+	CLog::debug("SceneDestructor %s", this->GetName().c_str());
 	this->Camera = nullptr;
 	this->Lights.clear();
 	this->MovementObject = nullptr;
@@ -331,7 +331,7 @@ void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
 		this->Camera = Cam;
 		return;
 	}
-	CLog::MyLog(LogType::Error, "Camera not bound to scene: %s ", this->Name.c_str());
+	CLog::error("Camera not bound to scene: %s ", this->Name.c_str());
 }
 
 void CScene::SetCamera(std::shared_ptr<CObject3D> Cam)
@@ -339,7 +339,7 @@ void CScene::SetCamera(std::shared_ptr<CObject3D> Cam)
 	std::shared_ptr<CCameraComponent> component = std::dynamic_pointer_cast<CCameraComponent>(Cam->GetComponentByType(Object3DComponent::CAMERA_COMPONENT));
 	if (component == nullptr)
 	{
-		CLog::MyLog(LogType::Error, "This object don't have camera component in it. Object: %s", Cam->GetName().c_str());
+		CLog::error("This object don't have camera component in it. Object: %s", Cam->GetName().c_str());
 		return;
 	}
 	this->Camera = component;
@@ -357,7 +357,7 @@ void CScene::SetMovementObject(std::shared_ptr<CMovementComponent> Movement)
 		this->MovementObject = Movement;
 		return;
 	}
-	CLog::MyLog(LogType::Error, "Movement not bound to scene: %s ", this->Name.c_str());
+	CLog::error("Movement not bound to scene: %s ", this->Name.c_str());
 }
 
 void CScene::SetMovementObject(std::shared_ptr<CObject3D> Movement)
@@ -365,7 +365,7 @@ void CScene::SetMovementObject(std::shared_ptr<CObject3D> Movement)
 	std::shared_ptr<CMovementComponent> component = std::dynamic_pointer_cast<CMovementComponent>(Movement->GetComponentByType(Object3DComponent::MOVEMENT_COMPONENT));
 	if (component == nullptr)
 	{
-		CLog::MyLog(LogType::Error, "This object don't have movement component in it. Object: %s", Movement->GetName().c_str());
+		CLog::error("This object don't have movement component in it. Object: %s", Movement->GetName().c_str());
 		return;
 	}
 	this->MovementObject = component;

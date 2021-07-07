@@ -10,7 +10,7 @@ CWindowManager::CWindowManager()
 
 CWindowManager::~CWindowManager()
 {
-	CLog::MyLog(LogType::Debug, "RendererDestructor");
+	CLog::debug("RendererDestructor");
 }
 
 void CWindowManager::Init()
@@ -29,11 +29,11 @@ void CWindowManager::Init()
 	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->WInfo->ScreenWidth, this->WInfo->ScreenHeight, this->WInfo->WindowFlags);
 	if (Window == nullptr)
 	{
-		CLog::MyLog(LogType::Error, "Failed to create window: %s", SDL_GetError());
+		CLog::error("Failed to create window: %s", SDL_GetError());
 	}
 	if (TTF_Init() != 0)
 	{
-		CLog::MyLog(LogType::Error, "Failed to initalize TTF: %s", TTF_GetError());
+		CLog::error("Failed to initalize TTF: %s", TTF_GetError());
 	}
 
 	SDL_GetWindowPosition(Window, &this->WInfo->ScreenPosX, &this->WInfo->ScreenPosY);

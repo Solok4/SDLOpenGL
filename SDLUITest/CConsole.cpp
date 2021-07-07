@@ -40,7 +40,7 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, int value)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
+	CLog::error("Console command named %s not found", name.c_str());
 }
 
 void CConsole::ChangeValueOfGivenCommand(std::string name, double value)
@@ -54,7 +54,7 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, double value)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
+	CLog::error("Console command named %s not found", name.c_str());
 }
 
 void CConsole::ChangeValueOfGivenCommand(std::string name, std::string value)
@@ -68,7 +68,7 @@ void CConsole::ChangeValueOfGivenCommand(std::string name, std::string value)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Console command named %s not found", name.c_str());
+	CLog::error("Console command named %s not found", name.c_str());
 }
 
 void CConsole::AddCommand(std::shared_ptr<CVar> Command)
@@ -84,7 +84,7 @@ void CConsole::AddCommand(std::shared_ptr<CVar> Command)
 			if (strcmp(Command->GetName(), a->GetName()) == 0)
 #endif
 			{
-				CLog::MyLog(LogType::Error, "Console command named %s already exists", a->GetName());
+				CLog::error("Console command named %s already exists", a->GetName());
 				found = true;
 				return;
 			}

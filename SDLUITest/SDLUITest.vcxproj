@@ -209,7 +209,9 @@
     <ClInclude Include="CTextBox.h" />
     <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="CVar.h" />
+    <ClInclude Include="GLSLShader.h" />
     <ClInclude Include="IDraw.h" />
+    <ClInclude Include="IShader.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Shaders.h" />
@@ -251,6 +253,7 @@
     <ClCompile Include="CTextBox.cpp" />
     <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="CVar.cpp" />
+    <ClCompile Include="GLSLShader.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

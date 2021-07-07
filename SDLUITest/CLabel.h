@@ -11,7 +11,7 @@ public:
 	CLabel(const char* name, glm::vec2 position, glm::vec2 objsize, CLayout* ref) :CObject2D(name, position, objsize, ref)
 	{
 		this->_ID = Object2DType::OBJECT2D_LABEL;
-		this->_Rotation = glm::vec3(180.f, 0.0f, 0.0f);
+		this->_Rotation = glm::vec3(0.f, 0.0f, 0.0f);
 		this->Font = nullptr;
 		this->TextSurface = nullptr;
 		this->TextureID = -1;

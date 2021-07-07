@@ -49,7 +49,7 @@ void CGameplay::AddFunctionToList(std::string name, std::function<void()> fun)
 		this->KeyFunctionVector.push_back(temp);
 		return;
 	}
-	CLog::MyLog(LogType::Debug, "Keyfunction named %s already exists", name.c_str());
+	CLog::debug("Keyfunction named %s already exists", name.c_str());
 }
 
 std::shared_ptr<KeyFunction> CGameplay::GetFunctionFromList(std::string name)
@@ -71,7 +71,7 @@ void CGameplay::BindKey(int key, std::string functionName)
 		auto function = this->GetFunctionFromList(functionName);
 		if (function == nullptr)
 		{
-			CLog::MyLog(LogType::Debug, "Keyfunction named %s not found", functionName.c_str());
+			CLog::debug("Keyfunction named %s not found", functionName.c_str());
 			return;
 		}
 		auto temp = std::make_shared<KeyMapping>(key, function);

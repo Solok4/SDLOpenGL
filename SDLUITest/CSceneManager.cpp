@@ -11,7 +11,7 @@ CSceneManager::CSceneManager()
 
 CSceneManager::~CSceneManager()
 {
-	CLog::MyLog(LogType::Debug, "SceneManagerDestructor");
+	CLog::debug("SceneManagerDestructor");
 	this->CurrentScene = nullptr;
 	this->Scenes.clear();
 }

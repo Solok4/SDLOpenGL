@@ -12,7 +12,7 @@ CModelManager::CModelManager()
 
 CModelManager::~CModelManager()
 {
-	CLog::MyLog(LogType::Debug, "ModelManagerDestructor");
+	CLog::debug("ModelManagerDestructor");
 }
 
 void CModelManager::LoadOBJ(const char* path)
@@ -27,7 +27,7 @@ void CModelManager::LoadOBJ(const char* path)
 	if (file == NULL)
 		//if (fs.is_open() == NULL)
 	{
-		CLog::MyLog(LogType::Error, "Failed to load a model from %s", path);
+		CLog::error("Failed to load a model from %s", path);
 		return;
 	}
 

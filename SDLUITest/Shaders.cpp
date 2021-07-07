@@ -2,11 +2,13 @@
 #include "Shaders.h"
 #include <fstream>
 #include <exception>
+#include "GLSLShader.h"
 
 Shaders::Shaders()
 {
 	this->VertexShader = -1;
 	this->FragmentShader = -1;
+	this->shaderWrapper = std::make_shared<GLSLShader>();
 }
 
 Shaders::~Shaders()
@@ -24,43 +26,43 @@ void Shaders::CreateShader(const char* File, ShaderType type)
 		GLint Result = GL_FALSE;
 		if (type == ShaderType::Vertex)
 		{
-			GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(VertexShaderID, 1, &ShaderAsChar, NULL);
-			glCompileShader(VertexShaderID);
+			GLuint VertexShaderID = shaderWrapper->createShader(GL_VERTEX_SHADER);
+			shaderWrapper->shaderSource(VertexShaderID, 1, &ShaderAsChar, NULL);
+			shaderWrapper->compileShader(VertexShaderID);
 
-			glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(LogType::Debug, "Vertex Shader compile status: %d", Result);
-			glGetShaderInfoLog(VertexShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Debug, "Info: %s", logBuff);
+			shaderWrapper->getShaderIntValue(VertexShaderID, GL_COMPILE_STATUS, &Result);
+			CLog::debug("Vertex Shader compile status: %d", Result);
+			shaderWrapper->getShaderInfoLog(VertexShaderID, 512, NULL, logBuff);
+			CLog::debug("Info: %s", logBuff);
 			this->VertexShader = VertexShaderID;
 		}
 		else if (type == ShaderType::Fragment)
 		{
-			GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(FragmentShaderID, 1, &ShaderAsChar, NULL);
-			glCompileShader(FragmentShaderID);
+			GLuint FragmentShaderID = shaderWrapper->createShader(GL_FRAGMENT_SHADER);
+			shaderWrapper->shaderSource(FragmentShaderID, 1, &ShaderAsChar, NULL);
+			shaderWrapper->compileShader(FragmentShaderID);
 
-			glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(LogType::Debug, "Fragment Shader compile status: %d", Result);
-			glGetShaderInfoLog(FragmentShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Debug, "Info: %s", logBuff);
+			shaderWrapper->getShaderIntValue(FragmentShaderID, GL_COMPILE_STATUS, &Result);
+			CLog::debug("Fragment Shader compile status: %d", Result);
+			shaderWrapper->getShaderInfoLog(FragmentShaderID, 512, NULL, logBuff);
+			CLog::debug("Info: %s", logBuff);
 			this->FragmentShader = FragmentShaderID;
 		}
 		else if (type == ShaderType::Geometry)
 		{
-			GLuint GeometryShaderID = glCreateShader(GL_GEOMETRY_SHADER);
-			glShaderSource(GeometryShaderID, 1, &ShaderAsChar, NULL);
-			glCompileShader(GeometryShaderID);
+			GLuint GeometryShaderID = shaderWrapper->createShader(GL_GEOMETRY_SHADER);
+			shaderWrapper->shaderSource(GeometryShaderID, 1, &ShaderAsChar, NULL);
+			shaderWrapper->compileShader(GeometryShaderID);
 
-			glGetShaderiv(GeometryShaderID, GL_COMPILE_STATUS, &Result);
-			CLog::MyLog(LogType::Debug, "Geometry Shader compile status: %d", Result);
-			glGetShaderInfoLog(GeometryShaderID, 512, NULL, logBuff);
-			CLog::MyLog(LogType::Debug, "Info: %s", logBuff);
+			shaderWrapper->getShaderIntValue(GeometryShaderID, GL_COMPILE_STATUS, &Result);
+			CLog::debug("Geometry Shader compile status: %d", Result);
+			shaderWrapper->getShaderInfoLog(GeometryShaderID, 512, NULL, logBuff);
+			CLog::debug("Info: %s", logBuff);
 			this->GeometryShader = GeometryShaderID;
 		}
 		else
 		{
-			CLog::MyLog(LogType::Error, "Not recognized shaderType provided with %s file", File);
+			CLog::error("Not recognized shaderType provided with %s file", File);
 			return;
 		}
 	}
@@ -73,7 +75,7 @@ std::string Shaders::ReadShaderFromFile(const char* Filename)
 	ShaderFileHandle.open(Filename, std::ios::in);
 	if (ShaderFileHandle.good() == false)
 	{
-		CLog::MyLog(LogType::Error, "Failed to read shader from file: %s", ShaderName.c_str());
+		CLog::error("Failed to read shader from file: %s", ShaderName.c_str());
 		return "";
 	}
 
@@ -95,11 +97,11 @@ void Shaders::CreateShaderProgram(std::string name, bool UseGeometryShader)
 	{
 		if (this->VertexShader == -1)
 		{
-			CLog::MyLog(LogType::Error, "You need to load Vertex Shader first\n");
+			CLog::error("You need to load Vertex Shader first\n");
 		}
 		if (this->FragmentShader == -1)
 		{
-			CLog::MyLog(LogType::Error, "You need to load Fragment Shader first\n");
+			CLog::error("You need to load Fragment Shader first\n");
 		}
 		return;
 	}
@@ -107,7 +109,7 @@ void Shaders::CreateShaderProgram(std::string name, bool UseGeometryShader)
 	{
 		if (this->GeometryShader == -1)
 		{
-			CLog::MyLog(LogType::Error, "You need to load Geometry Shader first\n");
+			CLog::error("You need to load Geometry Shader first\n");
 			return;
 		}
 	}
@@ -115,29 +117,29 @@ void Shaders::CreateShaderProgram(std::string name, bool UseGeometryShader)
 	{
 		ShadProgram Prog;
 		Prog.name = name;
-		Prog.Program = glCreateProgram();
-		glAttachShader(Prog.Program, this->VertexShader);
-		glAttachShader(Prog.Program, this->FragmentShader);
+		Prog.Program = shaderWrapper->createProgram();
+		shaderWrapper->attachShader(Prog.Program, this->VertexShader);
+		shaderWrapper->attachShader(Prog.Program, this->FragmentShader);
 		if (UseGeometryShader)
 		{
-			glAttachShader(Prog.Program, this->GeometryShader);
+			shaderWrapper->attachShader(Prog.Program, this->GeometryShader);
 		}
-		glLinkProgram(Prog.Program);
+		shaderWrapper->linkProgram(Prog.Program);
 
 		GLint result = GL_FALSE;
-		glGetProgramiv(Prog.Program, GL_LINK_STATUS, &result);
-		CLog::MyLog(LogType::Debug, "%s> Shader Program link status: %d", name.c_str(), result);
-		glDetachShader(Prog.Program, this->VertexShader);
-		glDetachShader(Prog.Program, this->FragmentShader);
+		shaderWrapper->getProgramiv(Prog.Program, GL_LINK_STATUS, &result);
+		CLog::debug("%s> Shader Program link status: %d", name.c_str(), result);
+		shaderWrapper->detachShader(Prog.Program, this->VertexShader);
+		shaderWrapper->detachShader(Prog.Program, this->FragmentShader);
 		if (UseGeometryShader)
 		{
-			glDetachShader(Prog.Program, this->GeometryShader);
-			glDeleteShader(this->GeometryShader);
+			shaderWrapper->detachShader(Prog.Program, this->GeometryShader);
+			shaderWrapper->deleteShader(this->GeometryShader);
 			this->GeometryShader = -1;
 		}
 
-		glDeleteShader(this->VertexShader);
-		glDeleteShader(this->FragmentShader);
+		shaderWrapper->deleteShader(this->VertexShader);
+		shaderWrapper->deleteShader(this->FragmentShader);
 		this->VertexShader = -1;
 		this->FragmentShader = -1;
 		ShaderProgram.push_back(std::make_shared<ShadProgram>(Prog));
@@ -193,14 +195,14 @@ void Shaders::AddUniformToShaderStruct(std::string ProgramName, std::string Unif
 		Uniform temp;
 		auto Program = this->GetShaderStruct(ProgramName);
 		int CurrentProgram = this->GetCurrentShaderProgram();
-		glUseProgram(this->GetShaderProgram(ProgramName));
-		temp.Uni = glGetUniformLocation(Program->Program, UnifromName.c_str());
+		shaderWrapper->useProgram(this->GetShaderProgram(ProgramName));
+		temp.Uni = shaderWrapper->getUniformLocation(Program->Program, UnifromName.c_str());
 		temp.name = UnifromName;
-		glUseProgram(CurrentProgram);
+		shaderWrapper->useProgram(CurrentProgram);
 		Program->Uniforms.push_back(std::make_shared<Uniform>(temp));
 		return;
 	}
-	CLog::MyLog(LogType::Error, "That uniform %s already exists in %s program \n", UnifromName.c_str(), ProgramName.c_str());
+	CLog::error("That uniform %s already exists in %s program \n", UnifromName.c_str(), ProgramName.c_str());
 }
 
 GLuint Shaders::GetUniformByNameStruct(std::string ProgramName, std::string UniformName)
@@ -220,13 +222,13 @@ void Shaders::UniformMat4f(glm::mat4 matrix, const char* uniformName, const char
 {
 	if (strcmp(Shader, "") == 0)
 	{
-		glUniformMatrix4fv(GetUniformFromCurrentProgram(uniformName), 1, GL_FALSE, &matrix[0][0]);
+		shaderWrapper->uniformMatrix4fv(GetUniformFromCurrentProgram(uniformName), 1, GL_FALSE, &matrix[0][0]);
 	}
 	else
 	{
 		auto PastProgram = this->CurrentShaderProgram;
 		this->SetCurrentShaderProgram(Shader);
-		glUniformMatrix4fv(GetUniformFromCurrentProgram(uniformName), 1, GL_FALSE, &matrix[0][0]);
+		shaderWrapper->uniformMatrix4fv(GetUniformFromCurrentProgram(uniformName), 1, GL_FALSE, &matrix[0][0]);
 		this->SetCurrentShaderProgram(PastProgram->name);
 	}
 }
@@ -235,13 +237,13 @@ void Shaders::Uniform1f(float value, const char* uniformName, const char* Shader
 {
 	if (strcmp(Shader, "") == 0)
 	{
-		glUniform1f(GetUniformFromCurrentProgram(uniformName), value);
+		shaderWrapper->uniform1f(GetUniformFromCurrentProgram(uniformName), value);
 	}
 	else
 	{
 		auto PastProgram = this->CurrentShaderProgram;
 		this->SetCurrentShaderProgram(Shader);
-		glUniform1f(GetUniformFromCurrentProgram(uniformName), value);
+		shaderWrapper->uniform1f(GetUniformFromCurrentProgram(uniformName), value);
 		this->SetCurrentShaderProgram(PastProgram->name);
 	}
 }
@@ -250,13 +252,13 @@ void Shaders::Uniform3f(glm::vec3 value, const char* uniformName, const char* Sh
 {
 	if (strcmp(Shader, "") == 0)
 	{
-		glUniform3f(GetUniformFromCurrentProgram(uniformName), value.x, value.y, value.z);
+		shaderWrapper->uniform3f(GetUniformFromCurrentProgram(uniformName), value.x, value.y, value.z);
 	}
 	else
 	{
 		auto PastProgram = this->CurrentShaderProgram;
 		this->SetCurrentShaderProgram(Shader);
-		glUniform3f(GetUniformFromCurrentProgram(uniformName), value.x, value.y, value.z);
+		shaderWrapper->uniform3f(GetUniformFromCurrentProgram(uniformName), value.x, value.y, value.z);
 		this->SetCurrentShaderProgram(PastProgram->name);
 	}
 }
@@ -265,13 +267,13 @@ void Shaders::Uniform1i(int value, const char* uniformName, const char* Shader)
 {
 	if (strcmp(Shader, "") == 0)
 	{
-		glUniform1i(GetUniformFromCurrentProgram(uniformName), value);
+		shaderWrapper->uniform1i(GetUniformFromCurrentProgram(uniformName), value);
 	}
 	else
 	{
 		auto PastProgram = this->CurrentShaderProgram;
 		this->SetCurrentShaderProgram(Shader);
-		glUniform1i(GetUniformFromCurrentProgram(uniformName), value);
+		shaderWrapper->uniform1i(GetUniformFromCurrentProgram(uniformName), value);
 		this->SetCurrentShaderProgram(PastProgram->name);
 	}
 }

@@ -43,6 +43,12 @@
     <Filter Include="_Shaders\GLES">
       <UniqueIdentifier>{18ea5d19-9671-453e-9f8d-167210f620aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Video">
+      <UniqueIdentifier>{5e851091-b93e-4379-ad51-153d1c064d7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Video">
+      <UniqueIdentifier>{f06c7bbf-0e4a-45bf-b8ed-db80f46c1440}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -51,13 +57,7 @@
     <ClInclude Include="CApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CWindowManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CLog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="COpengl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CEvent.h">
@@ -86,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="CCameraComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CLightComponent.h">
       <Filter>Header Files\Objects 3D\Components</Filter>
@@ -165,6 +162,21 @@
     <ClInclude Include="TextureBaseData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shaders.h">
+      <Filter>Header Files\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="IShader.h">
+      <Filter>Header Files\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="CWindowManager.h">
+      <Filter>Header Files\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="COpengl.h">
+      <Filter>Header Files\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="GLSLShader.h">
+      <Filter>Header Files\Video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -176,13 +188,7 @@
     <ClCompile Include="CApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CWindowManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CLog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="COpengl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CEvent.cpp">
@@ -211,9 +217,6 @@
     </ClCompile>
     <ClCompile Include="CCameraComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CLightComponent.cpp">
       <Filter>Source Files\Objects 3D\Components</Filter>
@@ -277,6 +280,18 @@
     </ClCompile>
     <ClCompile Include="CHeightMap.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpengl.cpp">
+      <Filter>Source Files\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="CWindowManager.cpp">
+      <Filter>Source Files\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp">
+      <Filter>Source Files\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="GLSLShader.cpp">
+      <Filter>Source Files\Video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

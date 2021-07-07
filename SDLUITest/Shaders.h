@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 #include <vector>
 #include <memory>
+#include "IShader.h"
 
 struct Uniform
 {
@@ -55,6 +56,6 @@ private:
 	unsigned int FragmentShader;
 	unsigned int GeometryShader;
 	std::vector< std::shared_ptr<ShadProgram>> ShaderProgram;
-
 	std::shared_ptr<ShadProgram> CurrentShaderProgram;
+	std::shared_ptr<IShader> shaderWrapper;
 };

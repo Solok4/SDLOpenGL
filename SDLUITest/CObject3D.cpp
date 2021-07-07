@@ -55,7 +55,7 @@ CObject3D::CObject3D(const CObject3D& obj, std::string name, CScene* ref) :CObje
 
 CObject3D::~CObject3D()
 {
-	CLog::MyLog(LogType::Debug, "3DObjectDestructor %s", this->GetName().c_str());
+	CLog::debug("3DObjectDestructor %s", this->GetName().c_str());
 	this->SceneRef = nullptr;
 	this->_RootComponent = nullptr;
 	this->_Components.clear();

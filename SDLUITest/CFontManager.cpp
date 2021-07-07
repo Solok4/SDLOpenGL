@@ -49,11 +49,11 @@ TTF_Font* CFontManager::LoadFont(std::string path, int size)
 		}
 		else
 		{
-			CLog::MyLog(LogType::Warning, "Font %s %d loading failed", OnlyName, size);
+			CLog::error("Font %s %d loading failed", OnlyName, size);
 		}
 		return nullptr;
 	}
-	CLog::MyLog(LogType::Warning, "Font %s %d has been loaded already", OnlyName, size);
+	CLog::error("Font %s %d has been loaded already", OnlyName, size);
 	return bExists;
 }
 

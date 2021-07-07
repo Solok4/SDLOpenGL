@@ -22,7 +22,7 @@ COpengl::COpengl()
 
 COpengl::~COpengl()
 {
-	CLog::MyLog(LogType::Debug, "OpenglDestructor");
+	CLog::debug("OpenglDestructor");
 }
 
 /*
@@ -45,14 +45,14 @@ bool COpengl::Create(SDL_Window* Window)
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
-		CLog::MyLog(LogType::Error, "Failed to create Context");
+		CLog::error("Failed to create Context");
 		return false;
 	}
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
-		CLog::MyLog(LogType::Error, "Failed to init GLEW");
+		CLog::error("Failed to init GLEW");
 		return false;
 	}
 	this->WndInfo = Renderer->GetWindowInfo();
@@ -378,7 +378,7 @@ void COpengl::PreLoopPerspective(std::shared_ptr<CCameraComponent> Camera)
 	}
 	else
 	{
-		CLog::MyLog(LogType::Warning, "Passed camera doesn't exist");
+		CLog::error("Passed camera doesn't exist");
 	}
 }
 
@@ -388,7 +388,7 @@ Sets viewport for gui elements
 void COpengl::PreLoopOrtho()
 {
 	Shaders.SetCurrentShaderProgram("Gui");
-	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	ViewMatrix = glm::lookAt(glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 Projection = glm::ortho(0.f, (float)this->WndInfo->ScreenWidth, (float)this->WndInfo->ScreenHeight, 0.0f, 0.1f, 1000.0f);
 	Shaders.UniformMat4f(ViewMatrix, "View");
 	Shaders.UniformMat4f(Projection, "Projection");
@@ -466,7 +466,7 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName, bool
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		CLog::MyLog(LogType::Error, "Framebuffer %s is not complete", FBName.c_str());
+		CLog::error("Framebuffer %s is not complete", FBName.c_str());
 	}
 	FboStruct.ShaderName = ShaderName;
 	this->Framebuffers.push_back(FboStruct);
@@ -487,12 +487,12 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int
 	}
 	if (size < 0)
 	{
-		CLog::MyLog(LogType::Error, "Light Framebuffer has to be bigger than 0 %s", name.c_str());
+		CLog::error("Light Framebuffer has to be bigger than 0 %s", name.c_str());
 		return;
 	}
 	else if (size % 2 != 0)
 	{
-		CLog::MyLog(LogType::Warning, "It would be better if light framebuffer will be divisible by 2 %s", name.c_str());
+		CLog::error("It would be better if light framebuffer will be divisible by 2 %s", name.c_str());
 	}
 	MyLightFramebuffer FboStruct;
 	FboStruct.name = name;
@@ -544,7 +544,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int
 		do {
 			result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
-			CLog::MyLog(LogType::Error, "Light Framebuffer isn't complete %s :%d", light->GetName().c_str(), glGetError());
+			CLog::error("Light Framebuffer isn't complete %s :%d", light->GetName().c_str(), glGetError());
 		} while (result != GL_FRAMEBUFFER_COMPLETE);
 	}
 	this->LightFramebuffers.push_back(FboStruct);
@@ -557,7 +557,7 @@ void COpengl::UseLightFramebuffer(std::string name)
 {
 	if (name == "")
 	{
-		CLog::MyLog(LogType::Error, "LightFramebuffer name can't be empty");
+		CLog::error("LightFramebuffer name can't be empty");
 		return;
 	}
 	else
@@ -589,7 +589,7 @@ MyLightFramebuffer COpengl::GetLightFrameBuffer(std::string name)
 			return o;
 		}
 	}
-	CLog::MyLog(LogType::Error, "LightFramebuffer named %s not found", name.c_str());
+	CLog::error("LightFramebuffer named %s not found", name.c_str());
 	return {};
 }
 
@@ -619,7 +619,7 @@ void COpengl::UseFramebuffer(std::string name)
 			return;
 		}
 	}
-	CLog::MyLog(LogType::Error, "Framebuffer named %s not found", name.c_str());
+	CLog::error("Framebuffer named %s not found", name.c_str());
 }
 
 /*
@@ -632,7 +632,7 @@ MyFrameBuffer COpengl::GetFramebuffer(std::string name)
 		if (o.name == name)
 			return o;
 	}
-	CLog::MyLog(LogType::Error, "Framebuffer named %s not found", name.c_str());
+	CLog::error("Framebuffer named %s not found", name.c_str());
 	return {};
 }
 
@@ -686,7 +686,7 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 	}
 	else
 	{
-		CLog::MyLog(LogType::Warning, "Passed camera doesn't exist");
+		CLog::error("Passed camera doesn't exist");
 	}
 	auto model = ModelManager->GetModelByName("Cube.obj");
 	glBindVertexArray(model->VAO);
