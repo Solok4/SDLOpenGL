@@ -152,7 +152,7 @@ void PreLoop()
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton", vec2(300.f, 300.f), vec2(128.f, 64.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "TestButton2", vec2(500.f, 300.f), vec2(100.f, 20.f));
 		Layout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "TestTextBox", vec2(300.f, 500.f), vec2(100.f, 20.f));
-		Layout->AddItem(Object2DType::OBJECT2D_LISTBOX, "TestListBox", vec2(800.f, 200.f), vec2(300.f, 300.f));
+		Layout->AddItem(Object2DType::OBJECT2D_LISTBOX, "TestListBox", vec2(800.f, 400.f), vec2(300.f, 300.f));
 		Layout->AddItem(Object2DType::OBJECT2D_BUTTON, "PositionTest", vec2(300.f, 600.f), vec2(100.f, 20.f));
 		Layout->PrepareToLoop();
 
@@ -241,7 +241,7 @@ void PreLoop()
 
 			Textbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 			Textbox->GetLabel()->SetFont(Font10);
-			Textbox->GetLabel()->SetAligment(Object2DAligment::LEFT);
+			Textbox->GetLabel()->SetAligment(Object2DAligment::LEFT_TOP);
 			Textbox->MoveObjectLayerUp();
 		}
 		//Position test layout
