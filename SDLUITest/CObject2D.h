@@ -58,7 +58,7 @@ public:
 	virtual void SetAligment(Object2DAligment Aligment);
 
 	//Returns vec2 position vector relative to aligment setting.
-	vec2 GetRelativePosition() { return this->_LocalOffset; };
+	vec2 GetRelativePosition() { return this->_LocalOffset + this->_Padding; };
 	//Returns vec2 position vector
 	vec2 GetPosition() { return this->_Position; };
 	//returns vec2 rotation vector.

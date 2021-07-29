@@ -1,4 +1,6 @@
 #include "CConsole.h"
+#include "CLog.h"
+#include <string>
 
 std::unique_ptr<CConsole> Console;
 
@@ -26,6 +28,7 @@ std::shared_ptr<CVar> CConsole::GetCommandByName(std::string name)
 			}
 		}
 	}
+	CLog::error("Not found command: %s", name.c_str());
 	return {};
 }
 
@@ -91,5 +94,51 @@ void CConsole::AddCommand(std::shared_ptr<CVar> Command)
 		}
 		this->ConsoleCommands.push_back(Command);
 		return;
+	}
+}
+
+void CConsole::ParseCommand(std::string command)
+{
+	std::vector<std::string> splittedBySpace = {};
+	int beginIndex = 0;
+	int currentIndex = 0;
+	while((currentIndex = command.substr(beginIndex,command.length()).find(' ')) != std::string::npos) {
+		splittedBySpace.push_back(command.substr(beginIndex, currentIndex));
+		beginIndex = currentIndex+1;
+	}
+	splittedBySpace.push_back(command.substr(beginIndex, command.length()));
+
+	if (splittedBySpace.size() == 0 || splittedBySpace[0] == "") {
+		return;
+	}
+
+	auto cvar = this->GetCommandByName(splittedBySpace[0]);
+	if (splittedBySpace.size() >= 2) {
+		if (cvar->GetDataType() == CvarType::CVAR_INTEGER) {
+			int intValue = 0;
+			try {
+				intValue = std::stoi(splittedBySpace[1]);
+			}
+			catch (std::exception) {
+				CLog::error("Invalid integer value for command: %s", splittedBySpace[0].c_str());
+				return;
+			}
+			cvar->SetCurrentValue(intValue);
+		}
+		else if (cvar->GetDataType() == CvarType::CVAR_DOUBLE) {
+			double doubleValue = 0;
+			try {
+				doubleValue = std::stod(splittedBySpace[1]);
+			}
+			catch (std::exception) {
+				CLog::error("Invalid double value for command: %s", splittedBySpace[0].c_str());
+				return;
+			}
+			cvar->SetCurrentValue(doubleValue);
+		}
+		else if (cvar->GetDataType() == CvarType::CVAR_STRING) {
+			cvar->SetCurrentValue(splittedBySpace[1]);
+		}
+		CLog::info("Value of %s changed to %s",splittedBySpace[0].c_str(),splittedBySpace[1].c_str());
 	}
 }

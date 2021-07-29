@@ -226,30 +226,35 @@ void PreLoop()
 	{
 		//Console
 		{
-			auto Console = LayoutManager->AddNewLayout("Console");
-			Console->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth, 450.f));
-			Console->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth, 50.f));
+			auto ConsoleLayout = LayoutManager->AddNewLayout("Console");
+			ConsoleLayout->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth, 450.f));
+			ConsoleLayout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth, 50.f));
 
-			Console->PrepareToLoop();
+			ConsoleLayout->PrepareToLoop();
 
-			auto Listbox = Console->FindObjectByName<CListBox>("Text");
-			auto Textbox = Console->FindObjectByName<CTextBox>("Input");
+			auto Listbox = ConsoleLayout->FindObjectByName<CListBox>("Text");
+			auto Textbox = ConsoleLayout->FindObjectByName<CTextBox>("Input");
 
 			Listbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
+			Listbox->SetAligment(Object2DAligment::LEFT_TOP);
 			Listbox->SetFont(Font10);
 			Listbox->SetText("Console Test");
+			Listbox->SetObjectLayer(200);
 
 			Textbox->BindTexture(TextureManager->GetTextureByName("TestTex.bmp"));
 			Textbox->GetLabel()->SetFont(Font10);
 			Textbox->GetLabel()->SetAligment(Object2DAligment::LEFT_TOP);
 			Textbox->MoveObjectLayerUp();
+			Textbox->BindEnterFunc([&, Textbox]() {
+				Console->ParseCommand(Textbox->GetValue());
+			});
 		}
 		//Position test layout
 		{
 			auto PositionTest = LayoutManager->AddNewLayout("Positions");
-			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "LeftTop", vec2(0.f, 10.f), vec2(1.f));
-			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Top", vec2(0.f, 10.f), vec2(1.f));
-			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "RightTop", vec2(0.f, 10.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "LeftTop", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Top", vec2(0.f), vec2(1.f));
+			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "RightTop", vec2(0.f), vec2(1.f));
 			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Left", vec2(0.f), vec2(1.f));
 			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Center", vec2(0.f), vec2(1.f));
 			PositionTest->AddItem(Object2DType::OBJECT2D_LABEL, "Right", vec2(0.f), vec2(1.f));

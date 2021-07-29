@@ -13,7 +13,7 @@ void CListBox::CreateLabels()
 	this->Label->BindParrentObject(this);
 	this->Label->MoveObjectLayerUp();
 	this->Label->SetAligment(Object2DAligment::LEFT_TOP);
-	this->Label->SetPadding(this->_Padding + vec2(5.f));
+	this->Label->SetPadding(vec2(5.f));
 	this->Label->Prepare();
 }
 
@@ -31,7 +31,7 @@ void CListBox::SetText(std::string val)
 		return;
 	}
 	this->Label->SetTextWrapped((int)this->_Size.x - ((int)this->Label->GetPadding().x * 2), this->Value.c_str());
-	this->Label->SetPosition(glm::vec2(this->Label->GetRelativePosition().x, this->Label->GetRelativePosition().y + this->Label->GetSize().y));
+	this->Label->SetPosition(glm::vec2(this->Label->GetRelativePosition().x, this->Label->GetRelativePosition().y));
 }
 
 void CListBox::PostDraw()

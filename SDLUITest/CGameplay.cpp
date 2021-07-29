@@ -153,6 +153,7 @@ void CGameplay::Init()
 			else
 			{
 				LayoutManager->PushActiveLayout("Console");
+				LayoutManager->GetCurrentLayout()->SetUsedTextBox(&*LayoutManager->GetCurrentLayout()->FindObjectByName<CTextBox>("Input"));
 			}
 		});
 	this->BindKey(SDL_SCANCODE_GRAVE, "Console");
