@@ -1,29 +1,30 @@
-//#include "pch.h"
 #include "CApp.h"
 #include "CLog.h"
 #include <stdio.h>
 #include <chrono>
 #ifndef __EMSCRIPTEN__
-#include <Windows.h>
+	#ifdef __WIN32
+	#include <Windows.h>
+	#endif
 #else
-#include "emscripten.h"
+	#include "emscripten.h"
 #endif // __EMSCRIPTEN__
 
 bool Init(int argc, char** argv)
 {
 	InitialSetup = std::make_unique<CInitialSetup>(argc, argv);
 	OpenGL = std::make_unique<COpengl>();
-	Renderer = std::make_unique<CWindowManager>();
+	WindowManager = std::make_unique<CWindowManager>();
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		CLog::error("Failed to initalize SDL");
 		return false;
 	}
-	Renderer->Init();
-	OpenGL->Create(Renderer->GetWindow());
+	WindowManager->Init();
+	OpenGL->Create(WindowManager->GetWindow());
 
-	Event = std::make_unique<CEvent>();
+	EventManager = std::make_unique<CEventManager>();
 	LayoutManager = std::make_unique<CLayoutManager>();
 	ModelManager = std::make_unique<CModelManager>();
 	KeyboardConf = std::make_unique<CKeyboardConf>();
@@ -48,9 +49,9 @@ void Loop()
 	std::shared_ptr<CScene> CurrentScene = SceneManager->GetCurrentScene();
 	std::shared_ptr<CGameplay> CurrentGameplay = GameplayManager->GetCurrentGameplay();
 	std::vector<std::shared_ptr<CLightComponent>> LightList;
-	std::shared_ptr<WindowInfo> WInfo = Renderer->GetWindowInfo();
+	std::shared_ptr<WindowInfo> WInfo = WindowManager->GetWindowInfo();
 #ifndef __EMSCRIPTEN__
-	while (Event->GetIsRunning())
+	while (EventManager->GetIsRunning())
 	{
 #endif
 		//CLog::MyLog(0, "RenderTime: %d", this->FrameTime);
@@ -92,7 +93,7 @@ void Loop()
 		OpenGL->PreLoopOrtho();
 		LayoutManager->Draw();
 
-		OpenGL->ProLoop(Renderer->GetWindow());
+		OpenGL->ProLoop(WindowManager->GetWindow());
 
 		WInfo->EndOfTheFrame = std::chrono::system_clock::now();
 		WInfo->Delta = WInfo->EndOfTheFrame - WInfo->BeginingOfTheFrame;
@@ -113,8 +114,8 @@ void Loop()
 
 void PollEvents()
 {
-	Event->PollEvents();
-	KeyboardConf->ProcessButtons(Event->GetKeyboardData());
+	EventManager->PollEvents();
+	KeyboardConf->ProcessButtons(EventManager->GetKeyboardData());
 }
 
 void PreLoop()
@@ -227,8 +228,8 @@ void PreLoop()
 		//Console
 		{
 			auto ConsoleLayout = LayoutManager->AddNewLayout("Console");
-			ConsoleLayout->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(Renderer->GetWindowInfo()->ScreenWidth, 450.f));
-			ConsoleLayout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(Renderer->GetWindowInfo()->ScreenWidth, 50.f));
+			ConsoleLayout->AddItem(Object2DType::OBJECT2D_LISTBOX, "Text", vec2(0, 0), vec2(WindowManager->GetWindowInfo()->ScreenWidth, 450.f));
+			ConsoleLayout->AddItem(Object2DType::OBJECT2D_TEXTBOX, "Input", vec2(0, 450), vec2(WindowManager->GetWindowInfo()->ScreenWidth, 50.f));
 
 			ConsoleLayout->PrepareToLoop();
 

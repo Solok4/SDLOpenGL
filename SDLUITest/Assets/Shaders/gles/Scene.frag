@@ -10,12 +10,12 @@ struct Light
 	vec3 Specular;
 	vec3 Color;
 
-	int LightType;
 	float Constant;
 	float Linear;
 	float Quadratic;
 
 	float CutoutDist;
+	int LightType;
 };
 
 struct Material
@@ -52,7 +52,6 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	//ambient
 	vec3 Ambient = Mat.Ambient*l.Ambient*l.Color;
 
-	
 	//Diffuse
 	//NormalTex.xyz = NormalTex.xyz*2.0-1.0;
 	vec3 norm = normalize(NormalVec*NormalTex.xyz);
@@ -160,6 +159,5 @@ void main()
 			result += ProccessSpotLight(Lights[i],BaseEl,NormalEl,SpecularEl);
 	}
 	
-
 	gl_FragColor = vec4(result,1.0);
 } 

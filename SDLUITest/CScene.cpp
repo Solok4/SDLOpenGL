@@ -1,6 +1,5 @@
-#include "pch.h"
 #include "CScene.h"
-#include "COpengl.h"
+#include "core/renderer/COpengl.h"
 
 CScene::CScene()
 {
@@ -169,7 +168,7 @@ void CScene::Draw(DrawType DType)
 				else if (i == RenderStep::RenderLight)
 				{
 					this->ProcessLights();
-					glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
+					glViewport(0, 0, WindowManager->GetWindowInfo()->ScreenWidth, WindowManager->GetWindowInfo()->ScreenHeight);
 					//OpenGL->UseFramebuffer("LightPass");
 					//OpenGL->GetShadersClass().Uniform3f(this->Camera->GetPosition(),"Camera");
 					//OpenGL->GetShadersClass().Uniform1i(this->Lights.size(),"LightCount");
@@ -204,11 +203,11 @@ void CScene::Draw(DrawType DType)
 		else
 		{
 			this->ProcessLights();
-			glViewport(0, 0, Renderer->GetWindowInfo()->ScreenWidth, Renderer->GetWindowInfo()->ScreenHeight);
+			glViewport(0, 0, WindowManager->GetWindowInfo()->ScreenWidth, WindowManager->GetWindowInfo()->ScreenHeight);
 			OpenGL->UseFramebuffer("Default");
 			//HeightMap
 			//OpenGL->SetCurrentShaderProgram("HeightMap");
-			OpenGL->GetShadersClass().Uniform1i(this->Lights.size(), "LightCount");
+			OpenGL->GetShadersClass()->Uniform1i(this->Lights.size(), "LightCount");
 			OpenGL->PreLoopPerspective(this->Camera);
 			this->_HeightMap->CalculateMatrix();
 			OpenGL->SetModelMatrix(this->_HeightMap->GetModelMatrix());

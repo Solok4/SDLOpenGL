@@ -1,0 +1,91 @@
+#include "CLayoutManager.h"
+#include "../shared/Shared.h"
+
+std::unique_ptr<CLayoutManager> LayoutManager;
+
+CLayoutManager::CLayoutManager()
+{
+	this->AddNewLayout("Blank");
+	this->ChangeCurrentLayout("Blank");
+}
+
+CLayoutManager::~CLayoutManager()
+{
+	CLog::debug("LayoutManagerDestructor");
+}
+
+std::shared_ptr<CLayout> CLayoutManager::AddNewLayout(const char* name)
+{
+	std::shared_ptr<CLayout> temp = std::make_shared<CLayout>();
+	temp->SetName(name);
+	this->Layouts.push_back(temp);
+	return temp;
+}
+
+std::shared_ptr<CLayout> CLayoutManager::GetLayoutByName(const char* name)
+{
+	for (auto o : this->Layouts)
+	{
+		if (StdLibWrapper::Sstrcmp(o->GetName(), name) == 0)
+		{
+			return o;
+		}
+	}
+	return nullptr;
+}
+
+void CLayoutManager::ChangeCurrentLayout(const char* name)
+{
+	for (auto o : this->Layouts)
+	{
+		if (StdLibWrapper::Sstrcmp(o->GetName(), name) == 0)
+		{
+			this->ActiveLayouts.clear();
+			this->ActiveLayouts.push_back(o);
+		}
+	}
+}
+
+void CLayoutManager::Draw()
+{
+	for (int i = 0; i < this->ActiveLayouts.size(); i++)
+	{
+		this->ActiveLayouts[i]->Draw();
+	}
+}
+
+std::shared_ptr<CLayout> CLayoutManager::GetCurrentLayout()
+{
+	if (!this->ActiveLayouts.empty())
+		return this->ActiveLayouts[this->ActiveLayouts.size() - 1];
+	CLog::error("There isn't any active layout");
+	return nullptr;
+}
+
+void CLayoutManager::PushActiveLayout(const char* name)
+{
+	for (auto a : Layouts)
+	{
+		if (StdLibWrapper::Sstrcmp(name, a->GetName()) == 0)
+		{
+			this->ActiveLayouts.push_back(a);
+		}
+	}
+}
+
+void CLayoutManager::PopActiveLayout()
+{
+	if (!this->ActiveLayouts.empty())
+	{
+		this->ActiveLayouts.erase((this->ActiveLayouts.begin() + this->ActiveLayouts.size() - 1));
+	}
+}
+
+void CLayoutManager::RefreshWindowData()
+{
+	for (auto o : this->Layouts)
+	{
+		o->RefreshWindowData();
+		o->RefreshScreenSize();
+	}
+}

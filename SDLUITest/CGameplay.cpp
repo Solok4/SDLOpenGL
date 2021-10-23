@@ -1,10 +1,9 @@
-#include "pch.h"
 #include "CGameplay.h"
-#include "CEvent.h"
-#include "CSceneManager.h"
-#include "CLayoutManager.h"
-#include "CKeyboardConf.h"
-#include "CWindowManager.h"
+#include "core/managers/CEventManager.h"
+#include "core/managers/CSceneManager.h"
+#include "core/managers/CLayoutManager.h"
+#include "core/managers/CKeyboardConf.h"
+#include "core/managers/CWindowManager.h"
 
 CGameplay::CGameplay()
 {

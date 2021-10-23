@@ -1,6 +1,7 @@
 #include "CConsole.h"
 #include "CLog.h"
 #include <string>
+#include "core/shared/Shared.h"
 
 std::unique_ptr<CConsole> Console;
 
@@ -18,11 +19,7 @@ std::shared_ptr<CVar> CConsole::GetCommandByName(std::string name)
 	{
 		for (auto a : this->ConsoleCommands)
 		{
-#ifndef __EMSCRIPTEN__
-			if (_strcmpi(a->GetName(), name.c_str()) == 0)
-#else
-			if (strcmp(a->GetName(), name.c_str()) == 0)
-#endif
+			if (StdLibWrapper::Sstrcmpi(a->GetName(), name.c_str()) == 0)
 			{
 				return a;
 			}
@@ -81,11 +78,7 @@ void CConsole::AddCommand(std::shared_ptr<CVar> Command)
 		bool found = false;
 		for (auto a : this->ConsoleCommands)
 		{
-#ifndef __EMSCRIPTEN__
-			if (_strcmpi(Command->GetName(), a->GetName()) == 0)
-#else
-			if (strcmp(Command->GetName(), a->GetName()) == 0)
-#endif
+			if (StdLibWrapper::Sstrcmpi(Command->GetName(), a->GetName()) == 0)
 			{
 				CLog::error("Console command named %s already exists", a->GetName());
 				found = true;
