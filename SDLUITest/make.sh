@@ -1,3 +1,9 @@
 #!/bin/bash
-FILES="$(ls *.cpp)"
-em++ $FILES  -s WASM=1 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["bmp","png"]' -s FORCE_FILESYSTEM=1 -s USE_SDL_TTF=2 --preload-file Assets -std=c++14 -o ../emscriptenOutput/SDLUITest.html
+COMBINED=""
+COMBINED+="$(ls *.cpp)"
+COMBINED+=" $(ls ./core/components/*cpp)"
+COMBINED+=" $(ls ./core/managers/*cpp)"
+COMBINED+=" $(ls ./core/renderer/*cpp)"
+COMBINED+=" $(ls ./core/shared/*cpp)"
+COMBINED+=" $(ls ./core/widgets/*cpp)"
+em++ $COMBINED  -s WASM=1 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["bmp","png"]' -s FORCE_FILESYSTEM=1 -s USE_SDL_TTF=2 --preload-file Assets -std=c++14 -o ../emscriptenOutput/SDLUITest.html

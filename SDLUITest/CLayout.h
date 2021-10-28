@@ -4,17 +4,19 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 
-#include "COpengl.h"
-#include "CWindowManager.h"
+#include "core/renderer/COpengl.h"
+#include "core/managers/CWindowManager.h"
 #include "CLog.h"
 
-#include "CObject2D.h"
-#include "CButton.h"
-#include "CLabel.h"
-#include "CImage.h"
-#include "CContainer.h"
-#include "CTextBox.h"
-#include "CListBox.h"
+#include "core/widgets/CObject2D.h"
+#include "core/widgets/CButton.h"
+#include "core/widgets/CLabel.h"
+#include "core/widgets/CImage.h"
+#include "core/widgets/CContainer.h"
+#include "core/widgets/CTextBox.h"
+#include "core/widgets/CListBox.h"
+
+#include "core/shared/Shared.h"
 
 class CLayout
 {
@@ -36,7 +38,7 @@ public:
 	{
 		for (auto a : Objects2D)
 		{
-			if (strcmp(name, a->GetName()) == 0)
+			if (StdLibWrapper::Sstrcmp(name, a->GetName()) == 0)
 			{
 				return std::dynamic_pointer_cast<T>(a);
 			}

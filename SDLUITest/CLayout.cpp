@@ -1,8 +1,7 @@
-#include "pch.h"
 #include "CLayout.h"
 #include <memory>
-#include "COpengl.h"
-#include "CEvent.h"
+#include "core/renderer/COpengl.h"
+#include "core/managers/CEventManager.h"
 
 CLayout::CLayout()
 {
@@ -20,7 +19,7 @@ CLayout::~CLayout()
 
 void CLayout::RefreshWindowData()
 {
-	this->WNDInfo = Renderer->GetWindowInfo();
+	this->WNDInfo = WindowManager->GetWindowInfo();
 }
 
 void CLayout::PrepareToLoop()
@@ -121,7 +120,7 @@ void CLayout::SetName(const char* name)
 
 void CLayout::Tick(double delta)
 {
-	Event->GetMouseMotion(this->MousePosX, this->MousePosY);
+	EventManager->GetMouseMotion(this->MousePosX, this->MousePosY);
 	for (auto a : Objects2D)
 	{
 		a->Tick(delta);
@@ -132,7 +131,7 @@ void CLayout::Tick(double delta)
 		auto butt = std::dynamic_pointer_cast<CButton>(b);
 		if (butt != nullptr)
 		{
-			butt->IsClicked(Event->GetMouseData());
+			butt->IsClicked(EventManager->GetMouseData());
 		}
 	}
 	this->ProcessTextEditing();
@@ -147,7 +146,7 @@ void CLayout::ProcessTextEditing()
 	if (this->LayoutIsEditing)
 	{
 		bool bChanged = false;
-		uint32_t SingleKey = Event->GetRawKey();
+		uint32_t SingleKey = EventManager->GetRawKey();
 		std::string Text = this->UsedTestBox->GetValue();
 		if (SingleKey == SDLK_BACKSPACE && Text.length() > 0)
 		{
@@ -169,7 +168,7 @@ void CLayout::ProcessTextEditing()
 			bChanged = true;
 		}
 
-		if (Event->GetIsEditing())
+		if (EventManager->GetIsEditing())
 		{
 			if (SDL_GetModState() & KMOD_CAPS)
 			{

@@ -3,8 +3,8 @@
 #include <vector>
 #include <memory>
 
-#include "CObject3D.h"
-#include "IDraw.h"
+#include "core/components/CObject3D.h"
+#include "core/renderer/IDraw.h"
 #include "CHeightMap.h"
 
 class CScene

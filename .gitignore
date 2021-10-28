@@ -1,5 +1,7 @@
 .vs
+.vscode
 .git
+/build/
 /Debug/x64/Inter
 /Debug/x64/SDLUITest.ikk
 /Debug/x64/SDLUITest.pdb
@@ -8,3 +10,4 @@
 /Debug/x86/SDLUITest.pdb
 /Release
 /TestingProj/Debug
+/emscriptenOutput

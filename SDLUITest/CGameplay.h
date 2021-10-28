@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#include "CWindowManager.h"
+#include "core/managers/CWindowManager.h"
 
 struct KeyFunction
 {
@@ -51,7 +51,7 @@ public:
 	void SetFrameLimit(int frames)
 	{
 		this->FrameLimit = frames;
-		Renderer->SetFrameLock(frames);
+		WindowManager->SetFrameLock(frames);
 	};
 	int GetFrameLimit() { return this->FrameLimit; };
 

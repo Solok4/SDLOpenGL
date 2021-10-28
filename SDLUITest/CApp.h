@@ -1,38 +1,23 @@
-#pragma once
-
-#ifndef CAPP
-#define CAPP
-
-#ifdef __EMSCRIPTEN__
-#include <SDL2/SDL.h>
-#else
-#include "SDL.h"
-#endif // __EMSCRIPTEN__
-
 #include <vector>
 #include <array>
 #include <thread>
 
-#include "CWindowManager.h"
-#include "CEvent.h"
-#include "COpengl.h"
-#include "CObject3D.h"
-
-#include "CLayoutManager.h"
-#include "CModelManager.h"
-#include "CStaticMeshComponent.h"
-#include "CSceneManager.h"
-#include "CKeyboardConf.h"
-#include "CGameplayManager.h"
-#include "CInitialSetup.h"
-#include "CFontManager.h"
-#include "CTextureManager.h"
-#include "CMaterialManager.h"
+#include "core/managers/CWindowManager.h"
+#include "core/managers/CLayoutManager.h"
+#include "core/managers/CModelManager.h"
+#include "core/managers/CSceneManager.h"
+#include "core/managers/CKeyboardConf.h"
+#include "core/managers/CGameplayManager.h"
+#include "core/managers/CInitialSetup.h"
+#include "core/managers/CFontManager.h"
+#include "core/managers/CTextureManager.h"
+#include "core/managers/CMaterialManager.h"
+#include "core/managers/CEventManager.h"
+#include "core/renderer/COpengl.h"
+#include "core/shared/Shared.h"
 
 bool Init(int argc, char** argv);
 void Destroy();
 void Loop();
 void PollEvents();
 void PreLoop();
-
-#endif // !CAPP

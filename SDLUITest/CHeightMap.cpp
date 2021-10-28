@@ -1,5 +1,5 @@
 #include "CHeightMap.h"
-#include "COpengl.h"
+#include "core/renderer/COpengl.h"
 
 CHeightMap::~CHeightMap()
 {
@@ -102,17 +102,17 @@ void CHeightMap::Draw()
 {
 	auto oglShaderClass = OpenGL->GetShadersClass();
 	auto matData = this->_HeightmapMaterial->GetData();
-	auto program = OpenGL->GetShadersClass().GetCurrentShaderProgram();
+	auto program = oglShaderClass->GetCurrentShaderProgram();
 
 	glBindVertexArray(this->_HeightMapVAO);
 	glEnableVertexAttribArray(MODEL_MESHBUFFER);
 	glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
 	glEnableVertexAttribArray(MODEL_NORMALBUFFER);
 
-	oglShaderClass.Uniform3f(matData->AmbientColor, "Mat.Ambient");
-	oglShaderClass.Uniform3f(matData->DiffuseColor, "Mat.Diffuse");
-	oglShaderClass.Uniform3f(matData->SpecularColor, "Mat.Specular");
-	oglShaderClass.Uniform1f(matData->Shininess, "Mat.Shininess");
+	oglShaderClass->Uniform3f(matData->AmbientColor, "Mat.Ambient");
+	oglShaderClass->Uniform3f(matData->DiffuseColor, "Mat.Diffuse");
+	oglShaderClass->Uniform3f(matData->SpecularColor, "Mat.Specular");
+	oglShaderClass->Uniform1f(matData->Shininess, "Mat.Shininess");
 	glActiveTexture(GL_TEXTURE0);
 	auto base = matData->DiffuseTex;
 	if (!base)
