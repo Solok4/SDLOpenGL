@@ -141,8 +141,8 @@ std::vector<std::shared_ptr<Material>> CMaterialManager::CreateNewMaterialFromFi
 		CLog::error("Failed to load a material from %s. Wrong file extension.", path.c_str());
 		return std::vector<std::shared_ptr<Material>>();
 	}
-	FILE* file;
-	file = StdLibWrapper::Sfopen(file, path.c_str(), "r");
+
+	FILE* file = StdLibWrapper::Sfopen(path.c_str(), "r");
 	if (file == NULL)
 	{
 		CLog::error("Failed to load a material from %s. No such file.", path.c_str());

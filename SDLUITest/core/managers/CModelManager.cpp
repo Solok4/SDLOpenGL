@@ -17,8 +17,8 @@ CModelManager::~CModelManager()
 
 void CModelManager::LoadOBJ(const char* path)
 {
-	FILE* file;
-	file = StdLibWrapper::Sfopen(file, path, "r");
+	CLog::info("File open %s", path);
+	FILE *file = StdLibWrapper::Sfopen(path, "r");
 	if (file == NULL)
 	{
 		CLog::error("Failed to load a model from %s", path);
@@ -288,8 +288,6 @@ void CModelManager::LoadOBJ(const char* path)
 
 	fclose(file);
 
-	CLog::debug("Temp - V: %d, T: %d, N: %d", temp_Vertices.size(), temp_Texcords.size(), temp_Normals.size());
-
 	for (unsigned int i = 0; i < VertexIndices.size(); i++)
 	{
 		unsigned int VertIndex = VertexIndices[i];
@@ -344,7 +342,7 @@ void CModelManager::LoadOBJ(const char* path)
 	glBindVertexArray(0);
 
 	CLog::debug("Loaded model: %s", path);
-	CLog::debug("V: %d, T: %d, N: %d, I: %d", out_Vertices.size(), out_Texcords.size(), out_Normals.size(), VertexIndices.size());
+	CLog::debug("V: %d, T: %d, N: %d, I: %d", temp_Vertices.size(), temp_Texcords.size(), temp_Normals.size(), VertexIndices.size());
 
 	tempModel->Name = JustName;
 	this->Models.push_back(tempModel);

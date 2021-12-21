@@ -781,7 +781,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> light, int index)
 		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(light->GetPosition(), light->GetPosition() + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 		ShadowTransforms.push_back(depthProjectionMatrix * glm::lookAt(light->GetPosition(), light->GetPosition() + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
-		Shaders->SetCurrentShaderProgram("PointShad");
+		this->_Shaders->SetCurrentShaderProgram("PointShad");
 		for (int i = 0; i < 6; i++)
 		{
 			glUniformMatrix4fv(this->_Shaders->GetUniformByNameStruct("PointShad", "ShadowMatrices[" + std::to_string(i) + "]"), 1, GL_FALSE, &ShadowTransforms[i][0][0]);

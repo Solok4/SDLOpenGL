@@ -77,10 +77,12 @@ char* StdLibWrapper::Sstrcpy(char* buffer, const char* string)
     #endif
 }
 
-FILE* StdLibWrapper::Sfopen(FILE* file, const char* path, const char* mode)
+FILE* StdLibWrapper::Sfopen(const char* path, const char* mode)
 {
     #ifdef __WIN32
+        FILE* file;
         fopen_s(&file,path,mode);
+        return file;
     #else
         return fopen(path, mode);
     #endif

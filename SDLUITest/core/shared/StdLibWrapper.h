@@ -15,6 +15,6 @@ public:
     static char* Sstrncpy(char*, const char*, int);
     static int Sstrcmpi(const char*, const char*);
     static char* Sstrcpy(char*, const char*);
-    static FILE* Sfopen(FILE*, const char*,const char*);
+    static FILE* Sfopen(const char*,const char*);
     static int Sfscanf(FILE*, unsigned long, const char*, ...);
 };

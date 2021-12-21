@@ -3,11 +3,7 @@
 #include "../managers/CWindowManager.h"
 #include "../renderer/COpengl.h"
 #include "CObject3D.h"
-#ifndef __EMSCRIPTEN__
-	#ifdef __WIN32
-	#include <Windows.h>
-	#endif
-#endif
+#include "../managers/CWindowManager.h"
 
 CCameraComponent::CCameraComponent(CObject3D* ref) :CBaseComponent(ref)
 {
@@ -55,20 +51,13 @@ void CCameraComponent::ProcessMouseMovements()
 		int MouseX = 0;
 		int MouseY = 0;
 		EventManager->GetMouseMotion(MouseX, MouseY);
-#ifdef __EMSCRIPTEN__
-		DeltaX = MouseX - this->LastX;
-		DeltaY = MouseY - this->LastY;
-		this->LastX = MouseX;
-		this->LastY = MouseY;
-#else
 		SDL_ShowCursor(false);
 		auto WNDInfo = WindowManager->GetWindowInfo();
 		int w = WNDInfo->ScreenWidth; int h = WNDInfo->ScreenHeight;
 		int xpos = WNDInfo->ScreenPosX; int ypos = WNDInfo->ScreenPosY;
-		//SetCursorPos(xpos + (w / 2), ypos + (h / 2));
+		SDL_WarpMouseInWindow(WindowManager->GetWindow(),w / 2, h / 2);
 		DeltaX = MouseX - (w / 2);
 		DeltaY = MouseY - (h / 2);
-#endif
 		if (this->First)
 		{
 			this->LastX = MouseX;
