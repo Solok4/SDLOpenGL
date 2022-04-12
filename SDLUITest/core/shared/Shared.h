@@ -13,6 +13,18 @@
 #include <emscripten.h>
 #endif
 
+#ifdef __WIN32
+#include "GL/glew.h"
+#include <GL/GL.h>
+#include <GL/GLU.h>
+#else
+#define __RPI4__OGL
+#include "GL/glew.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
+// #include <GL/glext.h>
+#endif
+
 #ifdef HD4850
 #define MODEL_MESHBUFFER 1
 #define MODEL_TEXCORDBUFFER 2
@@ -23,4 +35,8 @@
 #define MODEL_NORMALBUFFER 2
 #endif
 
+#include <stdexcept>
+#include <vector>
+#include <array>
+#include <thread>
 #include "StdLibWrapper.h"

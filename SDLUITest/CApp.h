@@ -1,7 +1,4 @@
-#include <vector>
-#include <array>
-#include <thread>
-
+#include "core/shared/Shared.h"
 #include "core/managers/CWindowManager.h"
 #include "core/managers/CLayoutManager.h"
 #include "core/managers/CModelManager.h"
@@ -14,7 +11,6 @@
 #include "core/managers/CMaterialManager.h"
 #include "core/managers/CEventManager.h"
 #include "core/renderer/COpengl.h"
-#include "core/shared/Shared.h"
 
 bool Init(int argc, char** argv);
 void Destroy();

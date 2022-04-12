@@ -22,7 +22,6 @@ void Shaders::CreateShader(const char* File, ShaderType type)
 	{
 		char logBuff[512];
 		const char* ShaderAsChar = ShaderText.c_str();
-		//CLog::MyLog(0, ShaderAsChar);
 		GLint Result = GL_FALSE;
 		if (type == ShaderType::Vertex)
 		{

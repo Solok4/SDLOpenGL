@@ -1,6 +1,5 @@
 #pragma once
 #include <map>
-#include "GL/glew.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -8,6 +7,7 @@
 #include "../../glm/glm.hpp"
 #include "../shared/Shared.h"
 #include "CMaterialManager.h"
+#include "../shared/Shared.h"
 
 struct RenderingChunk {
 	RenderingChunk(std::shared_ptr<Material> mat, int off, int size) {

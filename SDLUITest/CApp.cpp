@@ -15,12 +15,6 @@ bool Init(int argc, char** argv)
 	InitialSetup = std::make_unique<CInitialSetup>(argc, argv);
 	OpenGL = std::make_unique<COpengl>();
 	WindowManager = std::make_unique<CWindowManager>();
-
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		CLog::error("Failed to initalize SDL");
-		return false;
-	}
 	WindowManager->Init();
 	OpenGL->Create(WindowManager->GetWindow());
 

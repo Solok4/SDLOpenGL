@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "core/shared/Shared.h"
-#include "GL/glew.h"
 #include "glm/glm.hpp"
 #include "core/managers/CMaterialManager.h"
 
@@ -27,12 +26,11 @@ public:
 	glm::vec3 GetRotation();
 	//Returns vec3 scale of the component.
 	glm::vec3 GetScale();
-
-	void CalculateMatrix();
-
 	glm::mat4 GetModelMatrix();
 
 private:
+	void CalculateMatrix();
+	
 	int _Size;
 	float _Distance;
 	int _Seed;

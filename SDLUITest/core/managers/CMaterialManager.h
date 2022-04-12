@@ -3,9 +3,8 @@
 #include <cstring>
 #include <vector>
 #include <memory>
-
+#include "../shared/Shared.h"
 #include "../../glm/glm.hpp"
-#include "GL/glew.h"
 #include "../../CLog.h"
 #include "CTextureManager.h"
 

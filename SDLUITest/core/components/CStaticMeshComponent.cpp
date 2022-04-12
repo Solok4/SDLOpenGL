@@ -1,5 +1,4 @@
 #include "CStaticMeshComponent.h"
-#include "GL/glew.h"
 #include <string>
 #include "../../CLog.h"
 #include "../renderer/COpengl.h"
