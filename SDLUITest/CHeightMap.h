@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "core/shared/Shared.h"
-#include "glm/glm.hpp"
+#include "glm.hpp"
 #include "core/managers/CMaterialManager.h"
 
 #define HEIGHT_MAP_MAX_SIZE 1024

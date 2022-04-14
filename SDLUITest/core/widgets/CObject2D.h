@@ -6,7 +6,7 @@
 #include <functional>
 #include <string>
 #include "../shared/Shared.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 
 using namespace glm;
 

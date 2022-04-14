@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 #include "../../CLog.h"
-#include "../../glm/gtc/matrix_transform.hpp"
-#include "../../glm/gtx/transform.hpp"
+#include "gtc/matrix_transform.hpp"
+#include "gtx/transform.hpp"
 
 #include <memory>
 #include <cmath>

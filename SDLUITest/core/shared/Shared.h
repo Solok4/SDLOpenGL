@@ -13,14 +13,14 @@
 #include <emscripten.h>
 #endif
 
-#ifdef __WIN32
 #include "GL/glew.h"
+
+#ifdef __WIN32
 #include <GL/GL.h>
 #include <GL/GLU.h>
 #else
 #define __RPI4__OGL
 #include "GL/glew.h"
-#include <GL/gl.h>
 #include <GL/glu.h>
 // #include <GL/glext.h>
 #endif

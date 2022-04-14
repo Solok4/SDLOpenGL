@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include "../shared/Shared.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 #include "../../CLog.h"
 #include "CTextureManager.h"
 

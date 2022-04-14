@@ -4,10 +4,9 @@
 #include <memory>
 #include <string>
 #include "SDL_image.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 #include "../shared/Shared.h"
 #include "CMaterialManager.h"
-#include "../shared/Shared.h"
 
 struct RenderingChunk {
 	RenderingChunk(std::shared_ptr<Material> mat, int off, int size) {

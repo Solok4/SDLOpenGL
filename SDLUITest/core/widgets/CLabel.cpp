@@ -1,6 +1,6 @@
 #include "CLabel.h"
-#include "../../glm/gtx/transform.hpp"
-#include "../../glm/gtc/matrix_transform.hpp"
+#include "gtx/transform.hpp"
+#include "gtc/matrix_transform.hpp"
 #include <stdarg.h>
 #include "../shared/Shared.h"
 

@@ -1,4 +1,4 @@
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 #include "../../CLog.h"
 #include "COpengl.h"
 #include "../managers/CSceneManager.h"

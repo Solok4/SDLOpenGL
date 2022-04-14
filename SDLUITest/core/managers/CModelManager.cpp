@@ -1,7 +1,6 @@
 #include "CModelManager.h"
 #include <fstream>
 #include "../../CLog.h"
-#include "../../glm/glm.hpp"
 #include "../shared/Shared.h"
 
 std::unique_ptr<CModelManager> ModelManager;

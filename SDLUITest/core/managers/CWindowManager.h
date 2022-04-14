@@ -5,10 +5,6 @@
 #include "../../CLog.h"
 #include "../shared/Shared.h"
 
-#pragma comment(lib,"SDL2.lib")
-#pragma comment(lib,"SDL2_ttf.lib")
-#pragma comment(lib,"SDL2_image.lib")
-
 struct WindowInfo
 {
 	WindowInfo() :ScreenWidth(0), ScreenHeight(0), ScreenPosX(0), ScreenPosY(0), ScreenAspectRatio(0.0f), WindowFlags(0),

@@ -5,7 +5,6 @@
 #include <memory>
 #include "../shared/Shared.h"
 #include "SDL_image.h"
-
 #include "../../CLog.h"
 
 enum SkyboxType

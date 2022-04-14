@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 #include <map>
 #include <memory>
 #include "CStaticMeshComponent.h"

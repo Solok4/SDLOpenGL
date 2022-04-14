@@ -1,5 +1,5 @@
 #include "GLSLShader.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 
 uint32_t GLSLShader::createShader(uint32_t shaderType) {
 	return glCreateShader(shaderType);
