@@ -46,10 +46,6 @@ uniform sampler2D Specular;
 uniform sampler2D ShadowMap;
 uniform samplerCube ShadowCube;
 
-int ShadowMapIterator=0;
-int ShadowCubeIterator=0;
-
-
 vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4 SpecularTex)
 {
 	//ambient
@@ -66,25 +62,25 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	vec3 viewDir = normalize(CameraP-FragPos);
 	vec3 HalfWayDir = normalize(LightDir+ CameraP);
 	vec3 reflectDir = reflect(-LightDir,norm);
-	//float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
-	float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
-	//vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
-	vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
+	float spec = pow(max(dot(normalize(SpecularTex.xyz*norm),HalfWayDir),0.0),Mat.Shininess);
+	//float spec = pow(max(dot(viewDir,reflectDir),0.0),Mat.Shininess);
+	vec3 specular = (Mat.Specular*spec*l.Specular*SpecularTex.xyz)*l.Color;
+	//vec3 specular = (Mat.Specular*spec*l.Specular)*l.Color;
 		
 	float bias = max(0.15 * (1.0 - dot(norm, LightDir)), 0.005);
 	
 	vec3 projCoords = mvp.xyz / mvp.w;
 	projCoords = projCoords *0.5+0.5;
-	float ClosestDepth = texture(ShadowMap/*[ShadowMapIterator]*/,projCoords.xy).r;
+	float ClosestDepth = texture(ShadowMap,projCoords.xy).r;
 	float CurrentDepth = projCoords.z;
 	float visibility = 0;
 	//visibility = CurrentDepth-bias > ClosestDepth? 1.0:0.5;
-	vec2 texelSize = 1.0 / textureSize(ShadowMap/*[ShadowMapIterator]*/, 0);
+	vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
 	for(int x = -1; x <= 1; ++x)
 	{
 		for(int y = -1; y <= 1; ++y)
 		{
-			float pcfDepth = texture(ShadowMap/*[ShadowMapIterator]*/, projCoords.xy + vec2(x, y) * texelSize).r; 
+			float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
 			visibility += CurrentDepth - bias > pcfDepth ? 0.5 : 1.0;        
 		}    
 	}
@@ -93,8 +89,6 @@ vec3 ProccessDirectionalLight(Light l,vec4 mvp,vec4 BaseTex, vec4 NormalTex,vec4
 	{
 		visibility = 1.0;
 	}
-
-	ShadowMapIterator++;
 
 	return ((Ambient+diffuse+specular)* BaseTex.xyz)*visibility;
 }
@@ -171,7 +165,7 @@ void main()
 
 	NormalEl.z = (NormalEl.z*2.0f-1.0f);
 
-	vec3 result;
+	vec3 result = vec3(0.0);
 	for(int i=0; i<LCount;i++)
 	{
 		if(Lights[i].LightType == 0)
