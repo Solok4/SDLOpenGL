@@ -1,5 +1,5 @@
 #pragma once
-#include "../../CScene.h"
+#include "../scene/CScene.h"
 #include "../components/CCameraComponent.h"
 #include <vector>
 

@@ -39,7 +39,7 @@ void COpengl::Create(SDL_Window *Window)
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
-		std::string throwMessage = std::string("Failed to create Context. Error: %s",SDL_GetError());
+		std::string throwMessage = std::string("Failed to create Context. Error: %s", SDL_GetError());
 		CLog::error(throwMessage.c_str());
 		throw std::runtime_error(throwMessage);
 	}
@@ -47,7 +47,7 @@ void COpengl::Create(SDL_Window *Window)
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
-		std::string throwMessage = std::string("Failed to init GLEW. Error: %s",SDL_GetError());
+		std::string throwMessage = std::string("Failed to init GLEW. Error: %s", SDL_GetError());
 		CLog::error(throwMessage.c_str());
 		throw std::runtime_error(throwMessage);
 	}
@@ -665,10 +665,8 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 	this->_Shaders->SetCurrentShaderProgram("DebugLights");
 	if (camera != nullptr)
 	{
-		this->_ViewMatrix = glm::lookAt(camera->GetPosition(), camera->GetPosition() + camera->GetForwardVector(), glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 Projection = glm::perspective(glm::radians(camera->GetFov()), this->_WndInfo->ScreenAspectRatio, 0.1f, 100.0f);
-		this->_Shaders->UniformMat4f(this->_ViewMatrix, "View");
-		this->_Shaders->UniformMat4f(Projection, "Projection");
+		this->_Shaders->UniformMat4f(camera->GetViewMatrix(), "View");
+		this->_Shaders->UniformMat4f(camera->GetPerspectiveMatrix(), "Projection");
 	}
 	else
 	{
@@ -685,7 +683,7 @@ void COpengl::DrawDebugLights(std::vector<std::shared_ptr<CLightComponent>> list
 			this->_Shaders->UniformMat4f(a->GetModelMatrix(), "Model");
 			Color = glm::vec3(a->GetColor().r, a->GetColor().g, a->GetColor().b);
 			this->_Shaders->Uniform3f(Color, "Color");
-			glDrawArrays(GL_TRIANGLES, 0, model->IndicesCount);
+			glDrawArrays(GL_TRIANGLES, 0, model->modelData->indicesCount);
 		}
 	}
 	glDisableVertexAttribArray(MODEL_MESHBUFFER);

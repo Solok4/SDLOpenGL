@@ -12,13 +12,12 @@ CWindowManager::~CWindowManager()
 	CLog::debug("WindowManagerDestructor");
 }
 
-void CWindowManager::Init()
+void CWindowManager::Init(std::shared_ptr<WindowInfo> WindowInfo)
 {
-	this->WInfo = std::make_shared<WindowInfo>();
-	this->DemandWinfo = std::make_shared<WindowInfo>();
+	this->WInfo = WindowInfo;
 	this->WInfo->ScreenHeight = 720;
 	this->WInfo->ScreenWidth = 1280;
-	this->WInfo->ScreenAspectRatio = (float)1280 / 720;
+	this->WInfo->ScreenAspectRatio = (float)this->WInfo->ScreenWidth / this->WInfo->ScreenHeight;
 	this->WInfo->WindowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL;
 	this->WInfo->BeginingOfTheFrame = std::chrono::system_clock::now();
 	this->WInfo->EndOfTheFrame = std::chrono::system_clock::now();
@@ -30,7 +29,12 @@ void CWindowManager::Init()
 		CLog::error("Failed to initalize SDL");
 	}
 
-	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->WInfo->ScreenWidth, this->WInfo->ScreenHeight, this->WInfo->WindowFlags);
+	Window = SDL_CreateWindow("Title",
+							  SDL_WINDOWPOS_UNDEFINED,
+							  SDL_WINDOWPOS_UNDEFINED,
+							  this->WInfo->ScreenWidth,
+							  this->WInfo->ScreenHeight,
+							  this->WInfo->WindowFlags);
 	if (Window == nullptr)
 	{
 		CLog::error("Failed to create window: %s", SDL_GetError());
@@ -75,14 +79,9 @@ void CWindowManager::OnWindowMove()
 	SDL_GetWindowPosition(this->Window, &this->WInfo->ScreenPosX, &this->WInfo->ScreenPosY);
 }
 
-SDL_Window* CWindowManager::GetWindow()
+SDL_Window *CWindowManager::GetWindow()
 {
 	return Window;
-}
-
-std::shared_ptr<WindowInfo> CWindowManager::GetWindowInfo()
-{
-	return this->WInfo;
 }
 
 void CWindowManager::SetFrameLock(int frames)

@@ -1,7 +1,7 @@
 #include "CObject3D.h"
 #include "gtx/transform.hpp"
 #include "gtc/matrix_transform.hpp"
-#include "../../CScene.h"
+#include "../scene/CScene.h"
 
 CObject3D::CObject3D(std::string name)
 {

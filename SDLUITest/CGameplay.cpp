@@ -137,14 +137,12 @@ void CGameplay::RemoveKeyTrigger(int key)
 void CGameplay::Init()
 {
 	this->AddFunctionToList("MouseLock", [this]()
-		{
-			this->MouseLock = !this->MouseLock;
-		});
+							{ this->MouseLock = !this->MouseLock; });
 
 	this->BindKey(SDL_SCANCODE_1, "MouseLock");
 
 	this->AddFunctionToList("Console", [this]()
-		{
+							{
 			if (strcmp(LayoutManager->GetCurrentLayout()->GetName(), "Console") == 0)
 			{
 				LayoutManager->PopActiveLayout();
@@ -153,8 +151,7 @@ void CGameplay::Init()
 			{
 				LayoutManager->PushActiveLayout("Console");
 				LayoutManager->GetCurrentLayout()->SetUsedTextBox(&*LayoutManager->GetCurrentLayout()->FindObjectByName<CTextBox>("Input"));
-			}
-		});
+			} });
 	this->BindKey(SDL_SCANCODE_GRAVE, "Console");
 
 	this->AddKeyTrigger(SDL_SCANCODE_1);
@@ -218,57 +215,62 @@ void CGameplay::KeyEvents(std::array<bool, 322> keys)
 				OpenGL->SetRenderMode(RenderMode::RenderModeForward);
 			}
 		}
-		//Movement related events
+		// Movement related events
 		if (SceneManager->GetCurrentScene()->GetMovementObject() != nullptr)
 		{
-			//move forward/backwards
-			if (keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_S])
-			{
-				if (keys[SDL_SCANCODE_W])
-				{
-					SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(1.0f);
-				}
-				if (keys[SDL_SCANCODE_S])
-				{
-					SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(-1.0f);
-				}
-			}
-			else
-			{
-				SceneManager->GetCurrentScene()->GetMovementObject()->MoveForward(0.0f);
-			}
-			//move right/left
-			if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_A])
-			{
-				if (keys[SDL_SCANCODE_D])
-				{
-					SceneManager->GetCurrentScene()->GetMovementObject()->MoveHorizontal(1.0f);
-				}
-				if (keys[SDL_SCANCODE_A])
-				{
-					SceneManager->GetCurrentScene()->GetMovementObject()->MoveHorizontal(-1.0f);
-				}
-			}
-			else
-			{
-				SceneManager->GetCurrentScene()->GetMovementObject()->MoveHorizontal(0.0f);
-			}
-			//move up/down
-			if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_LSHIFT])
-			{
-				if (keys[SDL_SCANCODE_SPACE])
-				{
-					SceneManager->GetCurrentScene()->GetMovementObject()->MoveVertical(1.0f);
-				}
-				if (keys[SDL_SCANCODE_LSHIFT])
-				{
-					SceneManager->GetCurrentScene()->GetMovementObject()->MoveVertical(-1.0f);
-				}
-			}
-			else
-			{
-				SceneManager->GetCurrentScene()->GetMovementObject()->MoveVertical(0.0f);
-			}
+			CGameplay::handleMovement(keys, SceneManager->GetCurrentScene()->GetMovementObject());
 		}
+	}
+}
+
+void CGameplay::handleMovement(std::array<bool, 322> keys, std::shared_ptr<CMovementComponent> movement)
+{
+	// move forward/backwards
+	if (keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_S])
+	{
+		if (keys[SDL_SCANCODE_W])
+		{
+			movement->MoveForward(1.0f);
+		}
+		if (keys[SDL_SCANCODE_S])
+		{
+			movement->MoveForward(-1.0f);
+		}
+	}
+	else
+	{
+		movement->MoveForward(0.0f);
+	}
+	// move right/left
+	if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_A])
+	{
+		if (keys[SDL_SCANCODE_D])
+		{
+			movement->MoveHorizontal(1.0f);
+		}
+		if (keys[SDL_SCANCODE_A])
+		{
+			movement->MoveHorizontal(-1.0f);
+		}
+	}
+	else
+	{
+		movement->MoveHorizontal(0.0f);
+	}
+	// move up/down
+	if (keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_LSHIFT])
+	{
+		if (keys[SDL_SCANCODE_SPACE])
+		{
+			movement->MoveVertical(1.0f);
+		}
+		if (keys[SDL_SCANCODE_LSHIFT])
+		{
+			movement->MoveVertical(-1.0f);
+		}
+	}
+	else
+	{
+		movement->MoveVertical(0.0f);
 	}
 }

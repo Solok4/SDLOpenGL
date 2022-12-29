@@ -6,12 +6,12 @@
 
 #define HEIGHT_MAP_MAX_SIZE 1024
 
-class CHeightMap
+class CHeightMapComponent
 {
 public:
-	CHeightMap() = delete;
-	CHeightMap(int size, float distance, int seed);
-	~CHeightMap();
+	CHeightMapComponent() = delete;
+	CHeightMapComponent(int size, float distance, int seed);
+	~CHeightMapComponent();
 	void CreateMesh();
 	void Draw();
 

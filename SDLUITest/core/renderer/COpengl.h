@@ -56,8 +56,6 @@ public:
 	void PreLoop();
 	//Set model matrix to scene rendering shader uniform.
 	void SetModelMatrix(glm::mat4 matrix);
-	//Set model matrix to layout rendering shader uniform.
-	void SetModelMatrixLayout(glm::mat4 matrix);
 	//Set colour of layout element.
 	void SetColorMaskLayout(glm::vec3 ColorMask);
 	//Sends inverted and transposed normal matrix to scene rendering shader.
@@ -70,10 +68,6 @@ public:
 	//Prepares view and perspective for layout rendering.
 	void PreLoopOrtho();
 
-	//void SetAspectRatio(SDL_Window* Window);
-
-	//Return screen aspect ratio.
-	float GetAspectRatio() { return this->_WndInfo->ScreenAspectRatio; };
 	//Adds new framebuffer for drawing.
 	void AddNewFramebuffer(std::string FBName, const char* ShaderName, bool Deferred = false);
 	//Changes current drawing framebuffer.
@@ -112,9 +106,6 @@ public:
 	void SetCurrentShaderProgram(std::string name);
 
 private:
-
-
-
 	SDL_GLContext _Context;
 	std::shared_ptr<Shaders> _Shaders;
 	std::shared_ptr<WindowInfo> _WndInfo;

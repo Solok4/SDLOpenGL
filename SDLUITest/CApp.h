@@ -1,4 +1,5 @@
 #include "core/shared/Shared.h"
+#include "core/managers/CSettingsManager.h"
 #include "core/managers/CWindowManager.h"
 #include "core/managers/CLayoutManager.h"
 #include "core/managers/CModelManager.h"

@@ -16,12 +16,29 @@ CModelManager::~CModelManager()
 
 void CModelManager::LoadOBJ(const char* path)
 {
+	std::shared_ptr<ModelData> loadedModel = CModelManager::LoadObjFromFile(path);
+	CModelManager::prepareModelForRendering(loadedModel);
+}
+
+std::shared_ptr<Model> CModelManager::GetModelByName(std::string name)
+{
+	for (auto o : this->Models)
+	{
+		if (StdLibWrapper::Sstrcmp(o->modelData->Name, name.c_str()) == 0)
+		{
+			return o;
+		}
+	}
+	return {};
+}
+
+std::shared_ptr<ModelData> CModelManager::LoadObjFromFile(const char* path){
 	CLog::info("File open %s", path);
 	FILE *file = StdLibWrapper::Sfopen(path, "r");
 	if (file == NULL)
 	{
 		CLog::error("Failed to load a model from %s", path);
-		return;
+		return nullptr;
 	}
 	const char* name(path);
 	const char* slash = strrchr(name, '/');
@@ -29,7 +46,7 @@ void CModelManager::LoadOBJ(const char* path)
 
 	CLog::debug("Loading model %s", JustName);
 
-	std::shared_ptr<Model> tempModel(new Model);
+	std::shared_ptr<ModelData> modelData = std::make_shared<ModelData>();
 	std::vector<glm::vec3> temp_Vertices;
 	std::vector<glm::vec2> temp_Texcords;
 	std::vector<glm::vec3> temp_Normals;
@@ -56,7 +73,7 @@ void CModelManager::LoadOBJ(const char* path)
 		}
 		else if (strcmp(LineHeader, "vt") == 0)
 		{
-			tempModel->HasTexcords = true;
+			modelData->HasTexcords = true;
 			glm::vec2 Texcord;
 			StdLibWrapper::Sfscanf(file,  sizeof(glm::vec2), "%f %f", &Texcord.x, &Texcord.y);
 
@@ -65,7 +82,7 @@ void CModelManager::LoadOBJ(const char* path)
 		}
 		else if (strcmp(LineHeader, "vn") == 0)
 		{
-			tempModel->HasNormals = true;
+			modelData->HasNormals = true;
 			glm::vec3 Normal;
 			StdLibWrapper::Sfscanf(file,  sizeof(glm::vec3), "%f %f %f", &Normal.x, &Normal.y, &Normal.z);
 
@@ -73,7 +90,7 @@ void CModelManager::LoadOBJ(const char* path)
 		}
 		else if (strcmp(LineHeader, "f") == 0)
 		{
-			if (tempModel->HasNormals && tempModel->HasTexcords)
+			if (modelData->HasNormals && modelData->HasTexcords)
 			{
 				unsigned int vertexIndex[5], uvIndex[5], normalIndex[5];
 				int matches = StdLibWrapper::Sfscanf(file,
@@ -151,10 +168,10 @@ void CModelManager::LoadOBJ(const char* path)
 					if (matches == -1)	break;
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					fclose(file);
-					return;
+					return nullptr;
 				}
 			}
-			else if (tempModel->HasNormals && !tempModel->HasTexcords)
+			else if (modelData->HasNormals && !modelData->HasTexcords)
 			{
 				unsigned int vertexIndex[5], normalIndex[5];
 				int matches = StdLibWrapper::Sfscanf(file, 
@@ -215,10 +232,10 @@ void CModelManager::LoadOBJ(const char* path)
 					if (matches == -1)	break;
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					fclose(file);
-					return;
+					return nullptr;
 				}
 			}
-			else if (!tempModel->HasNormals && tempModel->HasTexcords)
+			else if (!modelData->HasNormals && modelData->HasTexcords)
 			{
 				unsigned int vertexIndex[5], uvIndex[5];
 				
@@ -279,7 +296,7 @@ void CModelManager::LoadOBJ(const char* path)
 					if (matches == -1)	break;
 					printf("File can't be read by our simple parser : ( Try exporting with other options\n");
 					fclose(file);
-					return;
+					return nullptr;
 				}
 			}
 		}
@@ -292,13 +309,13 @@ void CModelManager::LoadOBJ(const char* path)
 		unsigned int VertIndex = VertexIndices[i];
 		glm::vec3 vertex = temp_Vertices[VertIndex - 1];
 		out_Vertices.push_back(vertex);
-		if (tempModel->HasTexcords)
+		if (modelData->HasTexcords)
 		{
 			unsigned int TexcordIndex = TexcordIndices[i];
 			glm::vec2 texcord = temp_Texcords[TexcordIndex - 1];
 			out_Texcords.push_back(texcord);
 		}
-		if (tempModel->HasNormals)
+		if (modelData->HasNormals)
 		{
 			unsigned int NormalIndex = NormalIndices[i];
 			glm::vec3 normal = temp_Normals[NormalIndex - 1];
@@ -306,31 +323,45 @@ void CModelManager::LoadOBJ(const char* path)
 		}
 	}
 
-	tempModel->IndicesCount = VertexIndices.size();
+	CLog::debug("Loaded model: %s", path);
+	CLog::debug("V: %d, T: %d, N: %d, I: %d", temp_Vertices.size(), temp_Texcords.size(), temp_Normals.size(), VertexIndices.size());
 
-	glGenVertexArrays(1, &tempModel->VAO);
-	glBindVertexArray(tempModel->VAO);
-	glGenBuffers(3, tempModel->VBOs);
+	modelData->vertices = out_Vertices;
+	modelData->texCords = out_Texcords;
+	modelData->normals = out_Normals;
+	modelData->indicesCount = VertexIndices.size();
+	modelData->Name = JustName;
+	this->loadedModels.push_back(modelData);
+	return modelData;
+}
+
+void CModelManager::prepareModelForRendering(std::shared_ptr<ModelData> modelData){
+	std::shared_ptr<Model> model = std::make_shared<Model>();
+	model->modelData = modelData;
+
+	glGenVertexArrays(1, &model->VAO);
+	glBindVertexArray(model->VAO);
+	glGenBuffers(3, model->VBOs);
 
 	glEnableVertexAttribArray(MODEL_MESHBUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, out_Vertices.size() * sizeof(glm::vec3), &out_Vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBOs[0]);
+	glBufferData(GL_ARRAY_BUFFER, modelData->vertices.size() * sizeof(glm::vec3), &modelData->vertices[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(MODEL_MESHBUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	if (tempModel->HasTexcords)
+	if (model->modelData->HasTexcords)
 	{
 		glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[1]);
-		glBufferData(GL_ARRAY_BUFFER, out_Texcords.size() * sizeof(glm::vec2), &out_Texcords[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, model->VBOs[1]);
+		glBufferData(GL_ARRAY_BUFFER, modelData->texCords.size() * sizeof(glm::vec2), &modelData->texCords[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(MODEL_TEXCORDBUFFER, 2, GL_FLOAT, GL_FALSE, 0, 0);
 		glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
 	}
 
-	if (tempModel->HasNormals)
+	if (model->modelData->HasNormals)
 	{
 		glEnableVertexAttribArray(MODEL_NORMALBUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, tempModel->VBOs[2]);
-		glBufferData(GL_ARRAY_BUFFER, out_Normals.size() * sizeof(glm::vec3), &out_Normals[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, model->VBOs[2]);
+		glBufferData(GL_ARRAY_BUFFER, modelData->normals.size() * sizeof(glm::vec3), &modelData->normals[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(MODEL_NORMALBUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glDisableVertexAttribArray(MODEL_NORMALBUFFER);
 	}
@@ -338,21 +369,5 @@ void CModelManager::LoadOBJ(const char* path)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	CLog::debug("Loaded model: %s", path);
-	CLog::debug("V: %d, T: %d, N: %d, I: %d", temp_Vertices.size(), temp_Texcords.size(), temp_Normals.size(), VertexIndices.size());
-
-	tempModel->Name = JustName;
-	this->Models.push_back(tempModel);
-}
-
-std::shared_ptr<Model> CModelManager::GetModelByName(std::string name)
-{
-	for (auto o : this->Models)
-	{
-		if (StdLibWrapper::Sstrcmp(o->Name, name.c_str()) == 0)
-		{
-			return o;
-		}
-	}
-	return {};
+	this->Models.push_back(model);
 }

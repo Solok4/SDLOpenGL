@@ -13,9 +13,10 @@
 bool Init(int argc, char** argv)
 {
 	InitialSetup = std::make_unique<CInitialSetup>(argc, argv);
+	SettingsManager = std::make_unique<CSettingsManager>();
 	OpenGL = std::make_unique<COpengl>();
 	WindowManager = std::make_unique<CWindowManager>();
-	WindowManager->Init();
+	WindowManager->Init(SettingsManager->getSettings()->window);
 	OpenGL->Create(WindowManager->GetWindow());
 
 	EventManager = std::make_unique<CEventManager>();

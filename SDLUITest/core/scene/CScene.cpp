@@ -21,16 +21,14 @@ CScene::~CScene()
 std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name)
 {
 	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(Name, this);
-	//temp->SetName(Name);
 	this->Objects3D.push_back(temp);
 	this->DrawableCached = false;
 	return temp;
 }
 
-std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name, std::shared_ptr<CObject3D>& obj)
+std::shared_ptr<CObject3D> CScene::AddObjectToScene(std::string Name, std::shared_ptr<CObject3D> &obj)
 {
 	std::shared_ptr<CObject3D> temp = std::make_shared<CObject3D>(*obj, Name.c_str(), this);
-	//temp->SetName(Name);
 	this->Objects3D.push_back(temp);
 	this->DrawableCached = false;
 	return temp;
@@ -40,7 +38,7 @@ std::shared_ptr<CObject3D> CScene::GetObjectByName(std::string Name)
 {
 	for (auto o : this->Objects3D)
 	{
-		if (o->GetName() == Name)
+		if (o->GetName().compare(Name) == 0)
 		{
 			return o;
 		}
@@ -53,7 +51,7 @@ void CScene::RemoveObjectFromScene(std::string Name)
 {
 	for (unsigned int i = 0; i < this->Objects3D.size(); i++)
 	{
-		if (this->Objects3D[i]->GetName() == Name)
+		if (this->Objects3D[i]->GetName().compare(Name) == 0)
 		{
 			this->Objects3D.erase(this->Objects3D.begin() + i);
 			this->DrawableCached = false;
@@ -73,15 +71,15 @@ void CScene::AddLightToScene(std::shared_ptr<CObject3D> light)
 
 void CScene::AddLightToScene(std::string Name)
 {
-	for (auto o : this->Objects3D)
+	auto object = CScene::GetObjectByName(Name);
+	if (object == nullptr)
 	{
-		if (o->GetName() == Name)
-		{
-			if (o->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
-			{
-				this->Lights.push_back(std::dynamic_pointer_cast<CLightComponent>(o->GetComponentByType(Object3DComponent::LIGHT_COMPONENT)));
-			}
-		}
+		return;
+	}
+
+	if (object->GetComponentByType(Object3DComponent::LIGHT_COMPONENT) != nullptr)
+	{
+		this->Lights.push_back(std::dynamic_pointer_cast<CLightComponent>(object->GetComponentByType(Object3DComponent::LIGHT_COMPONENT)));
 	}
 }
 
@@ -93,7 +91,7 @@ void CScene::RemoveLightFromScene(std::shared_ptr<CObject3D> light)
 		{
 			for (unsigned int i = 0; i < this->Lights.size(); i++)
 			{
-				if (this->Lights[i]->GetName() == light->GetName())
+				if (this->Lights[i]->GetName().compare(light->GetName()) == 0)
 				{
 					this->Lights.erase(this->Lights.begin() + i);
 					break;
@@ -108,7 +106,7 @@ void CScene::RemoveLightFromScene(std::string Name)
 {
 	for (unsigned int i = 0; i < this->Lights.size(); i++)
 	{
-		if (this->Lights[i]->GetName() == Name)
+		if (this->Lights[i]->GetName().compare(Name) == 0)
 		{
 			this->Lights.erase(this->Lights.begin() + i);
 			break;
@@ -119,10 +117,13 @@ void CScene::RemoveLightFromScene(std::string Name)
 
 std::vector<std::shared_ptr<CLightComponent>> CScene::GetLightObjects()
 {
-	std::vector < std::shared_ptr < CLightComponent >> EnabledLights;
+	std::vector<std::shared_ptr<CLightComponent>> EnabledLights;
 	for (auto a : this->Lights)
 	{
-		if (a->IsActive())	EnabledLights.push_back(a);
+		if (a->IsActive())
+		{
+			EnabledLights.push_back(a);
+		}
 	}
 	return EnabledLights;
 }
@@ -158,7 +159,6 @@ void CScene::Draw(DrawType DType)
 						auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
 						if (sm != nullptr)
 						{
-							sm->CalculateMatrix();
 							OpenGL->SetModelMatrix(sm->GetModelMatrix());
 							OpenGL->SetNormalMatrix(sm->GetModelMatrix());
 							c->Draw((RenderStep)i);
@@ -169,24 +169,24 @@ void CScene::Draw(DrawType DType)
 				{
 					this->ProcessLights();
 					glViewport(0, 0, WindowManager->GetWindowInfo()->ScreenWidth, WindowManager->GetWindowInfo()->ScreenHeight);
-					//OpenGL->UseFramebuffer("LightPass");
-					//OpenGL->GetShadersClass().Uniform3f(this->Camera->GetPosition(),"Camera");
-					//OpenGL->GetShadersClass().Uniform1i(this->Lights.size(),"LightCount");
-					//OpenGL->PreLoopPerspective(this->Camera);
-					//auto basemap = OpenGL->GetFramebuffer("DeferredShading");
+					// OpenGL->UseFramebuffer("LightPass");
+					// OpenGL->GetShadersClass().Uniform3f(this->Camera->GetPosition(),"Camera");
+					// OpenGL->GetShadersClass().Uniform1i(this->Lights.size(),"LightCount");
+					// OpenGL->PreLoopPerspective(this->Camera);
+					// auto basemap = OpenGL->GetFramebuffer("DeferredShading");
 
 					////glActiveTexture(GL_TEXTURE0);
-					//glBindTexture(GL_TEXTURE_2D, basemap.Deferred[0]);
-					//OpenGL->GetShadersClass().Uniform1i(0, "gDiffuse");
+					// glBindTexture(GL_TEXTURE_2D, basemap.Deferred[0]);
+					// OpenGL->GetShadersClass().Uniform1i(0, "gDiffuse");
 
 					////glActiveTexture(GL_TEXTURE1);
-					//glBindTexture(GL_TEXTURE_2D, basemap.Deferred[1]);
-					//OpenGL->GetShadersClass().Uniform1i(1, "gNormal");
+					// glBindTexture(GL_TEXTURE_2D, basemap.Deferred[1]);
+					// OpenGL->GetShadersClass().Uniform1i(1, "gNormal");
 
 					////glActiveTexture(GL_TEXTURE2);
-					//glBindTexture(GL_TEXTURE_2D, basemap.Deferred[2]);
-					//OpenGL->GetShadersClass().Uniform1i(2, "gSpecular");
-					//for (auto c : this->ObjectsToDraw)
+					// glBindTexture(GL_TEXTURE_2D, basemap.Deferred[2]);
+					// OpenGL->GetShadersClass().Uniform1i(2, "gSpecular");
+					// for (auto c : this->ObjectsToDraw)
 					//{
 					//	auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(c);
 					//	if (sm != nullptr)
@@ -196,7 +196,7 @@ void CScene::Draw(DrawType DType)
 					//		OpenGL->SetNormalMatrix(sm->GetModelMatrix());
 					//		c->Draw(RenderStep::RenderJustBuffers);
 					//	}
-					//}
+					// }
 				}
 			}
 		}
@@ -205,15 +205,15 @@ void CScene::Draw(DrawType DType)
 			this->ProcessLights();
 			glViewport(0, 0, WindowManager->GetWindowInfo()->ScreenWidth, WindowManager->GetWindowInfo()->ScreenHeight);
 			OpenGL->UseFramebuffer("Default");
-			//HeightMap
-			//OpenGL->SetCurrentShaderProgram("HeightMap");
+			// HeightMap
+			// OpenGL->SetCurrentShaderProgram("HeightMap");
 			OpenGL->GetShadersClass()->Uniform1i(this->Lights.size(), "LightCount");
 			OpenGL->PreLoopPerspective(this->Camera);
 			OpenGL->SetModelMatrix(this->_HeightMap->GetModelMatrix());
 			this->_HeightMap->Draw();
 			//
-			//OpenGL->SetCurrentShaderProgram("Default");
-			//OpenGL->PreLoopPerspective(this->Camera);
+			// OpenGL->SetCurrentShaderProgram("Default");
+			// OpenGL->PreLoopPerspective(this->Camera);
 			if (!this->DrawableCached)
 			{
 				this->CacheObjectsToDraw();
@@ -223,7 +223,6 @@ void CScene::Draw(DrawType DType)
 				auto sm = std::dynamic_pointer_cast<CStaticMeshComponent>(a);
 				if (sm != nullptr)
 				{
-					sm->CalculateMatrix();
 					OpenGL->SetModelMatrix(sm->GetModelMatrix());
 					OpenGL->SetNormalMatrix(sm->GetModelMatrix());
 					a->Draw(RenderStep::RenderDeferred);
@@ -239,7 +238,6 @@ void CScene::Draw(DrawType DType)
 			if (sm != nullptr)
 				if (sm->GetCastShadow())
 				{
-					sm->CalculateMatrix();
 					OpenGL->SetModelMatrix(sm->GetModelMatrix());
 					c->Draw(RenderVerticesOnly);
 				}
@@ -255,89 +253,34 @@ void CScene::Tick(double delta)
 	}
 }
 
-//void CScene::SetSkyBox(SkyboxType type, Texture texture)
-//{
-//	glGenVertexArrays(1, &this->SkyboxVAO);
-//	glBindVertexArray(this->SkyboxVAO);
-//	glGenBuffers(2, this->SkyboxVBOs);
-//
-//	if (type == SkyboxType::CubeType)
-//	{
-//		this->Skyboxtype = type;
-//		float skyboxVertices[] = {
-//			// positions
-//			-1.0f,  1.0f, -1.0f,
-//			-1.0f, -1.0f, -1.0f,
-//			 1.0f, -1.0f, -1.0f,
-//			 1.0f, -1.0f, -1.0f,
-//			 1.0f,  1.0f, -1.0f,
-//			-1.0f,  1.0f, -1.0f,
-//
-//			-1.0f, -1.0f,  1.0f,
-//			-1.0f, -1.0f, -1.0f,
-//			-1.0f,  1.0f, -1.0f,
-//			-1.0f,  1.0f, -1.0f,
-//			-1.0f,  1.0f,  1.0f,
-//			-1.0f, -1.0f,  1.0f,
-//
-//			 1.0f, -1.0f, -1.0f,
-//			 1.0f, -1.0f,  1.0f,
-//			 1.0f,  1.0f,  1.0f,
-//			 1.0f,  1.0f,  1.0f,
-//			 1.0f,  1.0f, -1.0f,
-//			 1.0f, -1.0f, -1.0f,
-//
-//			-1.0f, -1.0f,  1.0f,
-//			-1.0f,  1.0f,  1.0f,
-//			 1.0f,  1.0f,  1.0f,
-//			 1.0f,  1.0f,  1.0f,
-//			 1.0f, -1.0f,  1.0f,
-//			-1.0f, -1.0f,  1.0f,
-//
-//			-1.0f,  1.0f, -1.0f,
-//			 1.0f,  1.0f, -1.0f,
-//			 1.0f,  1.0f,  1.0f,
-//			 1.0f,  1.0f,  1.0f,
-//			-1.0f,  1.0f,  1.0f,
-//			-1.0f,  1.0f, -1.0f,
-//
-//			-1.0f, -1.0f, -1.0f,
-//			-1.0f, -1.0f,  1.0f,
-//			 1.0f, -1.0f, -1.0f,
-//			 1.0f, -1.0f, -1.0f,
-//			-1.0f, -1.0f,  1.0f,
-//			 1.0f, -1.0f,  1.0f
-//		};
-//		glEnableVertexAttribArray(0);
-//		glBindBuffer(GL_ARRAY_BUFFER, this->SkyboxVBOs[0]);
-//		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
-//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//		glDisableVertexAttribArray(0);
-//	}
-//}
-
 void CScene::Prepare()
 {
-	this->_HeightMap = std::make_shared<CHeightMap>(32, 4.f, 0);
+	this->_HeightMap = std::make_shared<CHeightMapComponent>(32, 4.f, 0);
 	this->_HeightMap->CreateMesh();
 }
 
-void CScene::SetCamera(std::shared_ptr<CCameraComponent> Cam)
+void CScene::SetCamera(std::shared_ptr<CCameraComponent> cam)
 {
-	if (Cam != nullptr)
+	if (cam == nullptr)
 	{
-		this->Camera = Cam;
+		CLog::error("Camera not bound to scene: %s ", this->Name.c_str());
 		return;
 	}
-	CLog::error("Camera not bound to scene: %s ", this->Name.c_str());
+	this->Camera = cam;
 }
 
-void CScene::SetCamera(std::shared_ptr<CObject3D> Cam)
+void CScene::SetCamera(std::shared_ptr<CObject3D> cam)
 {
-	std::shared_ptr<CCameraComponent> component = std::dynamic_pointer_cast<CCameraComponent>(Cam->GetComponentByType(Object3DComponent::CAMERA_COMPONENT));
+	if (cam == nullptr)
+	{
+		CLog::error("Failed to assign camera component. Object is empty");
+		return;
+	}
+	std::shared_ptr<CCameraComponent> component =
+		std::dynamic_pointer_cast<CCameraComponent>(cam->GetComponentByType(Object3DComponent::CAMERA_COMPONENT));
 	if (component == nullptr)
 	{
-		CLog::error("This object don't have camera component in it. Object: %s", Cam->GetName().c_str());
+		CLog::error("Failed to assign camera component. Camera component is missing. Object: %s", cam->GetName().c_str());
 		return;
 	}
 	this->Camera = component;
@@ -350,20 +293,26 @@ std::shared_ptr<CCameraComponent> CScene::GetCamera()
 
 void CScene::SetMovementObject(std::shared_ptr<CMovementComponent> Movement)
 {
-	if (Movement != nullptr)
+	if (Movement == nullptr)
 	{
-		this->MovementObject = Movement;
+		CLog::error("Movement not bound to scene: %s ", this->Name.c_str());
 		return;
 	}
-	CLog::error("Movement not bound to scene: %s ", this->Name.c_str());
+	this->MovementObject = Movement;
 }
 
-void CScene::SetMovementObject(std::shared_ptr<CObject3D> Movement)
+void CScene::SetMovementObject(std::shared_ptr<CObject3D> movement)
 {
-	std::shared_ptr<CMovementComponent> component = std::dynamic_pointer_cast<CMovementComponent>(Movement->GetComponentByType(Object3DComponent::MOVEMENT_COMPONENT));
+	if (movement == nullptr)
+	{
+		CLog::error("Failed to assign movement object to scene. This object is empty");
+		return;
+	}
+	std::shared_ptr<CMovementComponent> component =
+		std::dynamic_pointer_cast<CMovementComponent>(movement->GetComponentByType(Object3DComponent::MOVEMENT_COMPONENT));
 	if (component == nullptr)
 	{
-		CLog::error("This object don't have movement component in it. Object: %s", Movement->GetName().c_str());
+		CLog::error("Failed to assign movement object to scene. Movement component is missing. Object: %s", movement->GetName().c_str());
 		return;
 	}
 	this->MovementObject = component;

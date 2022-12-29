@@ -48,7 +48,7 @@ void CStaticMeshComponent::Draw(RenderStep step)
 				program = OpenGL->GetShadersClass()->GetCurrentShaderProgram();
 				glBindVertexArray(this->_Model->VAO);
 				glEnableVertexAttribArray(MODEL_MESHBUFFER);
-				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->modelData->indicesCount);
 				glDisableVertexAttribArray(MODEL_MESHBUFFER);
 				glBindVertexArray(0);
 			}
@@ -58,14 +58,14 @@ void CStaticMeshComponent::Draw(RenderStep step)
 				glBindVertexArray(this->_Model->VAO);
 				glBindVertexArray(this->_Model->VAO);
 				glEnableVertexAttribArray(MODEL_MESHBUFFER);
-				if (this->_Model->HasTexcords)
+				if (this->_Model->modelData->HasTexcords)
 					glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
-				if (this->_Model->HasNormals)
+				if (this->_Model->modelData->HasNormals)
 					glEnableVertexAttribArray(MODEL_NORMALBUFFER);
-				glDrawArrays(GL_TRIANGLES, 0, this->_Model->IndicesCount);
-				if (this->_Model->HasNormals)
+				glDrawArrays(GL_TRIANGLES, 0, this->_Model->modelData->indicesCount);
+				if (this->_Model->modelData->HasNormals)
 					glDisableVertexAttribArray(MODEL_NORMALBUFFER);
-				if (this->_Model->HasTexcords)
+				if (this->_Model->modelData->HasTexcords)
 					glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
 				glDisableVertexAttribArray(MODEL_MESHBUFFER);
 				glBindVertexArray(0);
@@ -75,9 +75,9 @@ void CStaticMeshComponent::Draw(RenderStep step)
 				program = OpenGL->GetShadersClass()->GetCurrentShaderProgram();
 				glBindVertexArray(this->_Model->VAO);
 				glEnableVertexAttribArray(MODEL_MESHBUFFER);
-				if (this->_Model->HasTexcords)
+				if (this->_Model->modelData->HasTexcords)
 					glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
-				if (this->_Model->HasNormals)
+				if (this->_Model->modelData->HasNormals)
 					glEnableVertexAttribArray(MODEL_NORMALBUFFER);
 				for (auto chunk : this->_Model->RenderingChunks)
 				{
@@ -110,9 +110,9 @@ void CStaticMeshComponent::Draw(RenderStep step)
 					}
 					glDrawArrays(GL_TRIANGLES, chunk->chunkOffset, chunk->chunkSize);
 				}
-				if (this->_Model->HasNormals)
+				if (this->_Model->modelData->HasNormals)
 					glDisableVertexAttribArray(MODEL_NORMALBUFFER);
-				if (this->_Model->HasTexcords)
+				if (this->_Model->modelData->HasTexcords)
 					glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
 				glDisableVertexAttribArray(MODEL_MESHBUFFER);
 

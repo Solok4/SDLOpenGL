@@ -1,16 +1,15 @@
-#include "CHeightMap.h"
+#include "CHeightMapComponent.h"
 #include "core/renderer/COpengl.h"
 
-CHeightMap::~CHeightMap()
+CHeightMapComponent::~CHeightMapComponent()
 {
 }
 
-void CHeightMap::CreateMesh()
+void CHeightMapComponent::CreateMesh()
 {
 	std::vector<glm::vec3> MapBuffer;
 	std::vector<glm::vec2> UVBuffer;
 	std::vector<glm::vec3> NormalBuffer;
-	int counter = 0;
 	for (int CurrentHeight = 0; CurrentHeight < this->_Size - 1; CurrentHeight++)
 		for (int CurrentWidth = 0; CurrentWidth < this->_Size - 1; CurrentWidth++)
 		{
@@ -98,7 +97,7 @@ void CHeightMap::CreateMesh()
 	glBindVertexArray(0);
 }
 
-void CHeightMap::Draw()
+void CHeightMapComponent::Draw()
 {
 	auto oglShaderClass = OpenGL->GetShadersClass();
 	auto matData = this->_HeightmapMaterial->GetData();
@@ -144,7 +143,7 @@ void CHeightMap::Draw()
 	glBindVertexArray(0);
 }
 
-CHeightMap::CHeightMap(int size, float distance, int seed)
+CHeightMapComponent::CHeightMapComponent(int size, float distance, int seed)
 {
 	this->_Distance = distance;
 	this->_Seed = seed;
@@ -164,40 +163,40 @@ CHeightMap::CHeightMap(int size, float distance, int seed)
 	this->_HeightMap.resize(this->_Size, std::vector<float>(this->_Size, 0.0f));
 }
 
-void CHeightMap::SetPosition(glm::vec3 pos)
+void CHeightMapComponent::SetPosition(glm::vec3 pos)
 {
 	this->_Position = pos;
 	this->CalculateMatrix();
 }
 
-glm::vec3 CHeightMap::GetPosition()
+glm::vec3 CHeightMapComponent::GetPosition()
 {
 	return this->_Position;
 }
 
-void CHeightMap::SetRotation(glm::vec3 rot)
+void CHeightMapComponent::SetRotation(glm::vec3 rot)
 {
 	this->_Rotation = rot;
 	this->CalculateMatrix();
 }
 
-glm::vec3 CHeightMap::GetRotation()
+glm::vec3 CHeightMapComponent::GetRotation()
 {
 	return this->_Rotation;
 }
 
-void CHeightMap::SetScale(glm::vec3 scale)
+void CHeightMapComponent::SetScale(glm::vec3 scale)
 {
 	this->_Scale = scale;
 	this->CalculateMatrix();
 }
 
-glm::vec3 CHeightMap::GetScale()
+glm::vec3 CHeightMapComponent::GetScale()
 {
 	return this->_Scale;
 }
 
-void CHeightMap::CalculateMatrix()
+void CHeightMapComponent::CalculateMatrix()
 {
 	glm::mat4 Translation = glm::translate(glm::mat4(), glm::vec3(this->_Position.x, this->_Position.y, this->_Position.z));
 	glm::mat4 Scaling = glm::scale(glm::vec3(this->_Scale));
@@ -208,7 +207,7 @@ void CHeightMap::CalculateMatrix()
 	this->_ModelMatrix = Translation * Rotation * Scaling;
 }
 
-glm::mat4 CHeightMap::GetModelMatrix()
+glm::mat4 CHeightMapComponent::GetModelMatrix()
 {
 	return this->_ModelMatrix;
 }

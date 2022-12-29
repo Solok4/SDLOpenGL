@@ -25,7 +25,7 @@ void CGameplayManager::DeleteGameplay(const char* name)
 {
 	for (int i = 0; i < this->GameplayConfigurations.size(); i++)
 	{
-		if (StdLibWrapper::Sstrcmp(this->GameplayConfigurations[i]->Name.c_str(), name) == 0)
+		if (StdLibWrapper::Sstrcmp(this->GameplayConfigurations[i]->getName().c_str(), name) == 0)
 		{
 			this->GameplayConfigurations.erase(this->GameplayConfigurations.begin() + i);
 			return;
@@ -38,7 +38,7 @@ void CGameplayManager::SelectCurrentGameplay(const char* name)
 {
 	for (auto a : this->GameplayConfigurations)
 	{
-		if (StdLibWrapper::Sstrcmp(a->Name.c_str(), name) == 0)
+		if (StdLibWrapper::Sstrcmp(a->getName().c_str(), name) == 0)
 		{
 			this->CurrentGameplay = a;
 			KeyboardConf->ResetKeyFromTriggerStatus();

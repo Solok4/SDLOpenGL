@@ -37,7 +37,7 @@ public:
 	{
 		for (std::shared_ptr<CBaseComponent> o : this->_Components)
 		{
-			if (o->GetName() == name)
+			if (o->GetName().compare(name) == 0)
 			{
 				return std::dynamic_pointer_cast<T>(o);
 			}

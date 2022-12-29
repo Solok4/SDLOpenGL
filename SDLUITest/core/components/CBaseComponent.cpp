@@ -99,8 +99,7 @@ glm::vec3 CBaseComponent::GetRightVector()
 
 glm::vec3 CBaseComponent::GetUpVector()
 {
-	glm::vec3 UV = glm::vec3(0.0f, 1.0f, 0.0f);
-	return UV;
+	return glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
 void CBaseComponent::SetPosition(glm::vec3 pos)
@@ -153,6 +152,7 @@ void CBaseComponent::Tick(double delta)
 	{
 		this->_Position = this->_ParrentObject->_Position + this->_PosOffset;
 		this->_Rotation = this->_ParrentObject->_Rotation + this->_RotOffset;
+		this->CalculateMatrix();
 	}
 }
 

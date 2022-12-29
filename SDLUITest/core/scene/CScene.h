@@ -3,9 +3,10 @@
 #include <vector>
 #include <memory>
 
-#include "core/components/CObject3D.h"
-#include "core/renderer/IDraw.h"
-#include "CHeightMap.h"
+#include "../components/CObject3D.h"
+#include "../renderer/IDraw.h"
+#include "../components/CHeightMapComponent.h"
+#include "CSkybox.h"
 
 class CScene
 {
@@ -28,8 +29,6 @@ public:
 
 	void Tick(double delta);
 
-	//void SetSkyBox(SkyboxType type, Texture texture);
-
 	void Prepare();
 
 	void ProcessLights();
@@ -44,18 +43,16 @@ public:
 
 	void CacheObjectsToDraw();
 
+private:
 	bool DrawableCached = false;
 	std::vector <std::shared_ptr<IDraw>> ObjectsToDraw;
 
 	std::vector <std::shared_ptr<CObject3D>> Objects3D;
 	std::vector <std::shared_ptr<CLightComponent>> Lights;
 	std::string Name;
+
 	std::shared_ptr<CCameraComponent> Camera;
 	std::shared_ptr<CMovementComponent> MovementObject;
-
-	GLuint SkyboxVAO;
-	GLuint SkyboxVBOs[2];
-	SkyboxType Skyboxtype;
-
-	std::shared_ptr<CHeightMap> _HeightMap;
+	std::shared_ptr<CSkybox> Skybox;
+	std::shared_ptr<CHeightMapComponent> _HeightMap;
 };

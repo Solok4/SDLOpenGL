@@ -22,6 +22,8 @@ struct KeyMapping
 	std::shared_ptr<KeyFunction> Function;
 };
 
+class CMovementComponent;
+
 class CGameplay
 {
 public:
@@ -54,6 +56,12 @@ public:
 		WindowManager->SetFrameLock(frames);
 	};
 	int GetFrameLimit() { return this->FrameLimit; };
+
+	std::string getName() {return this->Name;};
+	void setName(std::string name) {this->Name = name;};
+
+private:
+	void handleMovement(std::array<bool, 322>, std::shared_ptr<CMovementComponent>);
 
 	std::string Name;
 	float TimeScale;
