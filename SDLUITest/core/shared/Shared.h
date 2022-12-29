@@ -19,7 +19,6 @@
 #include <GL/GL.h>
 #include <GL/GLU.h>
 #else
-#define __RPI4__OGL
 #include "GL/glew.h"
 #include <GL/glu.h>
 // #include <GL/glext.h>
