@@ -1,11 +1,10 @@
 #pragma once
 #include <map>
-#include "GL/glew.h"
 #include <vector>
 #include <memory>
 #include <string>
 #include "SDL_image.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 #include "../shared/Shared.h"
 #include "CMaterialManager.h"
 

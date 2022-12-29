@@ -1,5 +1,6 @@
 #pragma once
 #include "IShader.h"
+#include "../shared/Shared.h"
 class GLSLShader :
     public IShader
 {

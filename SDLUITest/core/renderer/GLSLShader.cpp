@@ -1,6 +1,5 @@
 #include "GLSLShader.h"
-#include "GL/glew.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
 
 uint32_t GLSLShader::createShader(uint32_t shaderType) {
 	return glCreateShader(shaderType);
@@ -17,7 +16,6 @@ void GLSLShader::getShaderIntValue(uint32_t shaderIndex, uint32_t parameter, int
 void GLSLShader::getShaderInfoLog(uint32_t shaderIndex, uint32_t maxLength, int32_t* length, char* result) {
 	glGetShaderInfoLog(shaderIndex, maxLength, length, result);
 }
-
 uint32_t GLSLShader::createProgram() {
 	return glCreateProgram();
 }

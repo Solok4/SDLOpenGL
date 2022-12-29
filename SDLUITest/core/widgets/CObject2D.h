@@ -5,9 +5,8 @@
 #include <memory>
 #include <functional>
 #include <string>
-
-#include "../../glm/glm.hpp"
-#include "GL/glew.h"
+#include "../shared/Shared.h"
+#include "glm.hpp"
 
 using namespace glm;
 

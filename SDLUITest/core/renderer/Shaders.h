@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../CLog.h"
-#include "GL/glew.h"
-#include "../../glm/glm.hpp"
+#include "glm.hpp"
+#include "../shared/Shared.h"
 #include <vector>
 #include <memory>
 #include <string>

@@ -209,7 +209,6 @@ void CScene::Draw(DrawType DType)
 			//OpenGL->SetCurrentShaderProgram("HeightMap");
 			OpenGL->GetShadersClass()->Uniform1i(this->Lights.size(), "LightCount");
 			OpenGL->PreLoopPerspective(this->Camera);
-			this->_HeightMap->CalculateMatrix();
 			OpenGL->SetModelMatrix(this->_HeightMap->GetModelMatrix());
 			this->_HeightMap->Draw();
 			//

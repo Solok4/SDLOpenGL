@@ -3,10 +3,8 @@
 #include <vector>
 #include <cstring>
 #include <memory>
-
-#include "GL/glew.h"
+#include "../shared/Shared.h"
 #include "SDL_image.h"
-
 #include "../../CLog.h"
 
 enum SkyboxType

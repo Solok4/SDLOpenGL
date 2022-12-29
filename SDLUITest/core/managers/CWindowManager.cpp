@@ -25,6 +25,11 @@ void CWindowManager::Init()
 	this->WInfo->Delta = this->WInfo->EndOfTheFrame - this->WInfo->BeginingOfTheFrame;
 	this->WInfo->FPSLock = 60;
 
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	{
+		CLog::error("Failed to initalize SDL");
+	}
+
 	Window = SDL_CreateWindow("Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, this->WInfo->ScreenWidth, this->WInfo->ScreenHeight, this->WInfo->WindowFlags);
 	if (Window == nullptr)
 	{

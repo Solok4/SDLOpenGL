@@ -1,14 +1,9 @@
-#include "GL/glew.h"
-#include "../../glm/glm.hpp"
-#ifndef __EMSCRIPTEN__
-#include <GL/GL.h>
-#include <GL/GLU.h>
-#endif // !__EMSCRIPTEN__
+#include "glm.hpp"
 #include "../../CLog.h"
 #include "COpengl.h"
-#include <fstream>
 #include "../managers/CSceneManager.h"
 #include "../shared/Primitives.h"
+#include "../shared/Shared.h"
 
 std::unique_ptr<COpengl> OpenGL;
 
@@ -27,7 +22,7 @@ COpengl::~COpengl()
 /*
 Creates context and initalize glew
 */
-bool COpengl::Create(SDL_Window *Window)
+void COpengl::Create(SDL_Window *Window)
 {
 #ifdef __EMSCRIPTEN__
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -44,18 +39,19 @@ bool COpengl::Create(SDL_Window *Window)
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
-		CLog::error("Failed to create Context. Error: %s", SDL_GetError());
-		return false;
+		std::string throwMessage = std::string("Failed to create Context. Error: %s",SDL_GetError());
+		CLog::error(throwMessage.c_str());
+		throw std::runtime_error(throwMessage);
 	}
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
-		CLog::error("Failed to init GLEW. Error: %s", SDL_GetError());
-		return false;
+		std::string throwMessage = std::string("Failed to init GLEW. Error: %s",SDL_GetError());
+		CLog::error(throwMessage.c_str());
+		throw std::runtime_error(throwMessage);
 	}
 	this->_WndInfo = WindowManager->GetWindowInfo();
-	return true;
 }
 
 void COpengl::Delete()

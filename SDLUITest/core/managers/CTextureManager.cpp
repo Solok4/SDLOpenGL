@@ -1,5 +1,4 @@
 #include "CTextureManager.h"
-#include "../shared/Shared.h"
 
 std::unique_ptr<CTextureManager> TextureManager;
 

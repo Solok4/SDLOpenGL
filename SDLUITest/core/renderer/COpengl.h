@@ -2,10 +2,9 @@
 
 #include <vector>
 #include <memory>
-#include "GL/glew.h"
-#include "../../glm/glm.hpp"
-#include "../../glm/gtx/transform.hpp"
-#include "../../glm/gtc/matrix_transform.hpp"
+#include "glm.hpp"
+#include "gtx/transform.hpp"
+#include "gtc/matrix_transform.hpp"
 #include "../components/CCameraComponent.h"
 #include "../components/CLightComponent.h"
 #include "../managers/CWindowManager.h"
@@ -15,9 +14,6 @@
 #define MAX_LIGHTS 8
 #define SHADOWMAP_SIZE 1024
 #define FARPLANE 50.0f
-
-#pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glew32.lib")
 
 struct MyFrameBuffer
 {
@@ -50,7 +46,7 @@ public:
 	~COpengl();
 
 	//Create context, initalize glew.
-	bool Create(SDL_Window* Window);
+	void Create(SDL_Window* Window);
 	//Clear context and all framebuffers.
 	void Delete();
 
@@ -116,6 +112,8 @@ public:
 	void SetCurrentShaderProgram(std::string name);
 
 private:
+
+
 
 	SDL_GLContext _Context;
 	std::shared_ptr<Shaders> _Shaders;
