@@ -27,7 +27,7 @@ COpengl::~COpengl()
 /*
 Creates context and initalize glew
 */
-bool COpengl::Create(SDL_Window* Window)
+bool COpengl::Create(SDL_Window *Window)
 {
 #ifdef __EMSCRIPTEN__
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -44,14 +44,14 @@ bool COpengl::Create(SDL_Window* Window)
 	_Context = SDL_GL_CreateContext(Window);
 	if (_Context == NULL)
 	{
-		CLog::error("Failed to create Context. Error: %s",SDL_GetError());
+		CLog::error("Failed to create Context. Error: %s", SDL_GetError());
 		return false;
 	}
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
 	{
-		CLog::error("Failed to init GLEW. Error: %s",SDL_GetError());
+		CLog::error("Failed to init GLEW. Error: %s", SDL_GetError());
 		return false;
 	}
 	this->_WndInfo = WindowManager->GetWindowInfo();
@@ -124,28 +124,27 @@ void COpengl::PrepareToLoop()
 
 	glClearColor(0, 0, 0, 1);
 
-	//Panel vertices
+	// Panel vertices
 	GLfloat panelVertices[] = {
-		-1.0f,  -1.0f,  0.0f, 0.0f,
-		 1.0f,  -1.0f,  1.0f, 0.0f,
-		 1.0f, 1.0f,  1.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f,
 
-		 1.0f, 1.0f,  1.0f, 1.0f,
-		-1.0f, 1.0f,  0.0f, 1.0f,
-		-1.0f,  -1.0f,  0.0f, 0.0f
-	};
+		1.0f, 1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f};
 
 	glGenVertexArrays(1, &this->_FinalVao);
 	glBindVertexArray(this->_FinalVao);
 	glGenBuffers(1, &this->_FinalVbo);
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(MODEL_TEXCORDBUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, this->_FinalVbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(panelVertices), panelVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(0);
+	glVertexAttribPointer(MODEL_TEXCORDBUFFER, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glEnableVertexAttribArray(MODEL_MESHBUFFER);
+	glVertexAttribPointer(MODEL_MESHBUFFER, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void *)(2 * sizeof(GLfloat)));
+	glDisableVertexAttribArray(MODEL_MESHBUFFER);
+	glDisableVertexAttribArray(MODEL_TEXCORDBUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
@@ -155,9 +154,9 @@ void COpengl::PrepareToLoop()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//Forward
+	// Forward
 	this->AddNewFramebuffer("Default", "Default");
-	//Deferred
+	// Deferred
 #ifndef __EMSCRIPTEN__
 	this->AddNewFramebuffer("DeferredShading", "BaseMap", true);
 	this->AddNewFramebuffer("LightPass", "LightPass");
@@ -165,7 +164,7 @@ void COpengl::PrepareToLoop()
 
 	this->_Shaders->SetCurrentShaderProgram("Default");
 #ifndef __EMSCRIPTEN__
-	//Deferred rendering light uniforms
+	// Deferred rendering light uniforms
 	{
 		this->_Shaders->AddUniformToShaderStruct("LightPass", "BaseMap");
 		this->_Shaders->AddUniformToShaderStruct("LightPass", "NormalMap");
@@ -226,7 +225,7 @@ void COpengl::PrepareToLoop()
 		this->_Shaders->AddUniformToShaderStruct("LightPass", "FarPlane");
 	}
 #endif
-	//Forward rendering uniforms
+	// Forward rendering uniforms
 	{
 		this->_Shaders->AddUniformToShaderStruct("Default", "View");
 		this->_Shaders->AddUniformToShaderStruct("Default", "Projection");
@@ -311,7 +310,7 @@ void COpengl::PrepareToLoop()
 	this->_Shaders->AddUniformToShaderStruct("HeightMap", "Model");
 	this->_Shaders->AddUniformToShaderStruct("HeightMap", "Color");
 
-	//Deferred rendering geometry uniforms
+	// Deferred rendering geometry uniforms
 #ifndef __EMSCRIPTEN__
 	this->_Shaders->AddUniformToShaderStruct("BaseMap", "Projection");
 	this->_Shaders->AddUniformToShaderStruct("BaseMap", "View");
@@ -356,10 +355,9 @@ void COpengl::SetNormalMatrix(glm::mat4 matrix)
 /*
 Use default program and swap buffers
 */
-void COpengl::ProLoop(SDL_Window* Window)
+void COpengl::ProLoop(SDL_Window *Window)
 {
 	glUseProgram(0);
-	//SDL_GL_SetSwapInterval(1);
 	SDL_GL_SwapWindow(Window);
 }
 
@@ -396,7 +394,7 @@ void COpengl::PreLoopOrtho()
 /*
 Creates new framebuffer for drawing. Creates framebuffer and renderbuffer
 */
-void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName, bool Deferred)
+void COpengl::AddNewFramebuffer(std::string FBName, const char *ShaderName, bool Deferred)
 {
 	MyFrameBuffer FboStruct;
 	FboStruct.name = FBName;
@@ -439,7 +437,7 @@ void COpengl::AddNewFramebuffer(std::string FBName, const char* ShaderName, bool
 
 		// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
 
-		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+		unsigned int attachments[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 		glDrawBuffers(3, attachments);
 	}
 	else
@@ -479,7 +477,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int
 	std::string name = light->GetPossesingObject()->GetName() + "_" + light->GetName();
 	for (auto x : this->_LightFramebuffers)
 	{
-		if (strcmp(name.c_str(), x.name.c_str()) == 0)
+		if (name.compare(x.name) == 0)
 		{
 			return;
 		}
@@ -488,10 +486,6 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int
 	{
 		CLog::error("Light Framebuffer has to be bigger than 0 %s", name.c_str());
 		return;
-	}
-	else if (size % 2 != 0)
-	{
-		CLog::error("It would be better if light framebuffer will be divisible by 2 %s", name.c_str());
 	}
 	MyLightFramebuffer FboStruct;
 	FboStruct.name = name;
@@ -526,7 +520,7 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, FboStruct.DepthBuff, 0);
@@ -540,9 +534,9 @@ void COpengl::AddNewLightFramebuffer(std::shared_ptr<CLightComponent> light, int
 	GLuint result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (result != GL_FRAMEBUFFER_COMPLETE)
 	{
-		do {
+		do
+		{
 			result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
 			CLog::error("Light Framebuffer isn't complete %s :%d", light->GetName().c_str(), glGetError());
 		} while (result != GL_FRAMEBUFFER_COMPLETE);
 	}
@@ -559,19 +553,16 @@ void COpengl::UseLightFramebuffer(std::string name)
 		CLog::error("LightFramebuffer name can't be empty");
 		return;
 	}
-	else
+
+	for (auto o : this->_LightFramebuffers)
 	{
-		for (auto o : this->_LightFramebuffers)
+		if (o.name.compare(name) == 0)
 		{
-			if (strcmp(o.name.c_str(), name.c_str()) == 0)
-			{
-				glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
-				glClearColor(1.f, 1.f, 1.f, 1.0f);
-				glClear(GL_DEPTH_BUFFER_BIT);
-				//glCullFace(GL_FRONT);
-				glCullFace(GL_BACK);
-				return;
-			}
+			glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
+			glClearColor(1.f, 1.f, 1.f, 1.0f);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glCullFace(GL_BACK);
+			return;
 		}
 	}
 }
@@ -597,7 +588,7 @@ Binds normal framebuffer for drawing. If name == "0" default framebuffer will be
 */
 void COpengl::UseFramebuffer(std::string name)
 {
-	if (name == "0")
+	if (name.compare("0") == 0)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		this->_Shaders->SetCurrentShaderProgram("Final");
@@ -608,7 +599,7 @@ void COpengl::UseFramebuffer(std::string name)
 	}
 	for (auto o : this->_Framebuffers)
 	{
-		if (name == o.name)
+		if (name.compare(o.name) == 0)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, o.FBO);
 			this->_Shaders->SetCurrentShaderProgram(o.ShaderName);
@@ -628,7 +619,7 @@ MyFrameBuffer COpengl::GetFramebuffer(std::string name)
 {
 	for (auto o : this->_Framebuffers)
 	{
-		if (o.name == name)
+		if (o.name.compare(name) == 0)
 			return o;
 	}
 	CLog::error("Framebuffer named %s not found", name.c_str());
@@ -738,7 +729,6 @@ void COpengl::FinalDraw()
 		this->_Shaders->Uniform1i(0, "Base");
 	}
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(0);
@@ -761,8 +751,7 @@ void COpengl::ProcessLight(std::shared_ptr<CLightComponent> light, int index)
 		0.5, 0.0, 0.0, 0.0,
 		0.0, 0.5, 0.0, 0.0,
 		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
-	);
+		0.5, 0.5, 0.5, 1.0);
 	glm::mat4 depthBiasMatrix;
 	std::string name = light->GetPossesingObject()->GetName() + "_" + light->GetName();
 
@@ -890,7 +879,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 		Uniform = "ShadowCube[" + std::to_string(count);
 		Uniform += "]";
 		this->_Shaders->Uniform1i(3 + count, "ShadowCube");
-		//glUniform1i(Shaders->GetUniformByNameStruct("Default", "ShadowCube"), 3+count);
+		// glUniform1i(Shaders->GetUniformByNameStruct("Default", "ShadowCube"), 3+count);
 #endif
 	}
 	else
@@ -899,7 +888,7 @@ void COpengl::PostProcessLight(std::shared_ptr<CLightComponent> light, int count
 		Uniform = "ShadowMap[" + std::to_string(count);
 		Uniform += "]";
 		this->_Shaders->Uniform1i(3 + count, "ShadowMap");
-		//glUniform1i(Shaders->GetUniformByNameStruct("Default", "ShadowMap"), 3+count);
+		// glUniform1i(Shaders->GetUniformByNameStruct("Default", "ShadowMap"), 3+count);
 	}
 }
 

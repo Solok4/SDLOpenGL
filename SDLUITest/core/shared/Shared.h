@@ -2,7 +2,7 @@
 
 #ifndef __EMSCRIPTEN__
 //This define makes my gpu to properly bind vbos to shaders. Changes vertexattribarray order.
-#define HD4850
+//#define HD4850
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "SDL_image.h"

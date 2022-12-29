@@ -336,9 +336,7 @@ void CModelManager::LoadOBJ(const char* path)
 		glDisableVertexAttribArray(MODEL_NORMALBUFFER);
 	}
 	glDisableVertexAttribArray(MODEL_MESHBUFFER);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	glBindVertexArray(0);
 
 	CLog::debug("Loaded model: %s", path);

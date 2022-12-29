@@ -24,6 +24,7 @@ void CLabel::SetText(const char* format, ...)
 	if (!(TextSurface = TTF_RenderText_Blended(this->Font, this->Value.c_str(), { 255,255,255 })))
 	{
 		CLog::error("Failed to create text surface: %s", TTF_GetError());
+		va_end(vl);
 		return;
 	}
 	else
@@ -51,6 +52,7 @@ void CLabel::SetTextWrapped(int width, const char* format, ...)
 	if (!(TextSurface = TTF_RenderText_Blended_Wrapped(this->Font, this->Value.c_str(), { 255,255,255 }, width)))
 	{
 		CLog::error("Failed to create text surface: %s", TTF_GetError());
+		va_end(vl);
 		return;
 	}
 	else
